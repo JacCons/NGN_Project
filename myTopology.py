@@ -16,6 +16,7 @@ class MinimalTopo(Topo):
         h1 = self.addHost('h1',mac='00:00:00:00:00:01')
         h2 = self.addHost('h2',mac='00:00:00:00:00:02')
        
+       
         # Aggiungi uno switch
         s1 = self.addSwitch('s1',protocols='OpenFlow13')
         s2 = self.addSwitch('s2',protocols='OpenFlow13')
