@@ -9,8 +9,7 @@ from mininet.node import OVSSwitch, Controller, OVSController
 class MinimalTopo(Topo):
     "Rete minima con due switch e due host."
 
-    def build(self):
-        
+    def build(self):  
         
         # Aggiungi due host
         h1 = self.addHost('h1',mac='00:00:00:00:00:01')
