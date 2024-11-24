@@ -3,11 +3,17 @@ import tkinter.messagebox
 import customtkinter
 import subprocess
 
+from openShellWithPy import open_terminal
+
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
 
 
 class App(customtkinter.CTk):
+    
+    open_terminal()
+    open_terminal()
+
     def __init__(self):
         super().__init__()
         
