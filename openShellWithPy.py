@@ -11,11 +11,15 @@ class open_terminal:
 
                 subprocess.Popen(["powershell", "-Command", powershell_command])
             case "darwin":
-                subprocess.Popen(["open", "-a", "Terminal"])
+                # subprocess.Popen(["open", "-a", "Terminal"])
+                command = "echo \"Next Generation Networking Project\n\""
+                command += "echo \"Password: vagrant\""
+                command += "ssh -X -p 2222 vagrant@localhost"
+                subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
             case "linux":
                 subprocess.Popen(["gnome-terminal"])
 
-open_terminal()
+# open_terminal()
 
 
 # import subprocess
