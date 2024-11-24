@@ -1,8 +1,66 @@
 import subprocess
 import sys
+import paramiko 
 
-class open_terminal:
-    def __init__(self):
+# ssh -X -p 2222 vagrant@localhost
+# sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller remote
+# h1 ping -c 1 h2
+
+# cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app
+# ryu-manager simple_switch_13.py
+
+
+# ! REMEMBER client.close() to close the SSH connection
+
+
+# localhost credentials: vagrant@localhost:2222
+hostname = "localhost" 
+username = "vagrant" 
+password = "vagrant" 
+port = 2222
+
+class myClass:
+    
+    def start_controller():
+        
+        print("Starting ryu-manager...\n")
+        
+        # Create an SSH client instance 
+        client = paramiko.SSHClient() 
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+        
+        # Connect to the server 
+        client.connect(hostname, username=username, password=password, port=port) 
+
+        # Extecute the Ryu-controller with the simple_switch_13.py script
+        client.exec_command("cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
+
+        print("Ryu-manager started\n")
+
+    def start_mininet():
+        
+        print("Starting mininet...\n")
+
+        # Create an SSH client instance 
+        client = paramiko.SSHClient() 
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+        
+        # Connect to the server 
+        client.connect(hostname, username=username, password=password, port=port) 
+
+        # Extecute the Ryu-controller with the simple_switch_13.py script
+        stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller remote \n h1 ping -c 1 h2", timeout=10)
+
+        # print("OUTPUT\n")
+        # print(stdout.read())
+        # print("ERROR\n")
+        # print(stderr.read())
+
+        print("Mininet started\n")
+
+      
+    def open_terminal():
+      # if(self.string_attr == "topology"):
         match sys.platform:
             case "win32":
                 echo_command = 'Write-Host Next Generation Networking Project\n\r'
@@ -12,14 +70,15 @@ class open_terminal:
                 subprocess.Popen(["powershell", "-Command", powershell_command])
             case "darwin":
                 # subprocess.Popen(["open", "-a", "Terminal"])
-                command = "echo \"Next Generation Networking Project\n\""
-                command += "echo \"Password: vagrant\""
+                # command = "echo \"Next Generation Networking Project\n\""
+                # command += "echo \"Password: vagrant\""
                 command += "ssh -X -p 2222 vagrant@localhost"
                 subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
             case "linux":
                 subprocess.Popen(["gnome-terminal"])
 
-# open_terminal()
+# open_terminal.start_controller()
+
 
 
 # import subprocess

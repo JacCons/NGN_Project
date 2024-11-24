@@ -3,7 +3,7 @@ import tkinter.messagebox
 import customtkinter
 import subprocess
 
-from openShellWithPy import open_terminal
+from openShellWithPy import myClass
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -11,8 +11,8 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard),
 
 class App(customtkinter.CTk):
     
-    open_terminal()
-    open_terminal()
+    myClass.start_controller()
+    myClass.start_mininet()
 
     def __init__(self):
         super().__init__()
