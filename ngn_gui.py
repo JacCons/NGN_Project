@@ -1,6 +1,7 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
+import subprocess
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -9,11 +10,12 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard),
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
-
-
+        
+        
+    
         #Configurazione della finestra
         self.title("NGN Project")
-        self.geometry(f"{1100}x{455}")
+        self.geometry(f"{1100}x{600}")
 
 
         #Configurazione a griglia della finestra
@@ -34,7 +36,7 @@ class App(customtkinter.CTk):
         self.topo_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.sidebar_topo = customtkinter.CTkLabel(self.topo_frame, text="Topos:")
         self.sidebar_topo.grid(row=0, column=0, padx=20, pady=(10,0))
-        self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Reversed", "Linear", "Tree", "Torus"])
+        self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"])
         self.sidebar_entrytopo.grid(row=1, column=0, padx=20, pady=(10,10))
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
@@ -51,12 +53,12 @@ class App(customtkinter.CTk):
         self.sidebar_entrynumswitch = customtkinter.CTkEntry(master=self.switch_frame)
         self.sidebar_entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE", font=customtkinter.CTkFont(size=15, weight="bold"))
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
         self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
-        self.statusbox = customtkinter.CTkTextbox(self, height=80)
-        self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 0), pady=(20, 20), sticky="nsew")
+        self.statusbox = customtkinter.CTkTextbox(self, height=200)
+        self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         #self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         #self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
@@ -121,6 +123,21 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("sidebar_button click")
 
+    def create_button_event(self):
+        topo = self.sidebar_entrytopo.get()
+        flags = "--mac --switch=ovsk,protocols=OpenFlow13 --controller=remote"
+        match topo:
+            case "Single":
+                print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
+            case "Linear":
+                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+            #case "Reversed":
+                #print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
+            case "Tree":
+                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+            case "Torus":
+                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+        
 
 if __name__ == "__main__":
     app = App()
