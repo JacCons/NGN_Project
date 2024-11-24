@@ -4,6 +4,15 @@
 
 ## Description
 
+## Roadmap
+
+1) utilizziamo le topologia già predeterminate di mininet, utilizzando il file `mn` il quale ci permette di creare una topologia di rete con più switch e più host leggendo da terminale la topologia.
+ >SVANTAGGIO: tutti gli switch hanno gli stessi host, magari trovare un modo per farli variare.
+2) Assegnare ad ogni host i servizi, scrivendo su un file l'IP e il nome del servizio, (servizio "data e ora" e ci collegheremo al server)
+ > Assegnare dei nomi in maniera intelligente per poterli riconoscere (data è pure client e server).
+3) asseganre randomicamente i servizi agli host
+4) Mostrae le FlowTable e se aggregare i servizi se sono splittati (eg data e ora su server diversi)
+
 ## Requirements
 
 - [x] Creare una repository su GitHub
