@@ -49,14 +49,14 @@ class myClass:
         # Connect to the server 
         client.connect(hostname, username=username, password=password, port=port) 
 
-        # Extecute the Ryu-controller with the simple_switch_13.py script
+        # Create the mininet and ping
         stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller remote \n h1 ping -c 1 h2", timeout=10)
 
         # print("OUTPUT\n")
         # print(stdout.read())
         # print("ERROR\n")
         # print(stderr.read())
-
+        
         print("Mininet started\n")
         #return client
 
@@ -97,7 +97,7 @@ class myClass:
 
 #open_terminal.start_controller()
 myClass.start_controller()
-myClass.start_mininet()
+#myClass.start_mininet()
 myClass.open_terminal()
 
 
