@@ -36,6 +36,7 @@ class myClass:
         client.exec_command("cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
 
         print("Ryu-manager started\n")
+        #return client
 
     def start_mininet():
         
@@ -57,6 +58,7 @@ class myClass:
         # print(stderr.read())
 
         print("Mininet started\n")
+        #return client
 
       
     def open_terminal():
@@ -70,14 +72,33 @@ class myClass:
                 subprocess.Popen(["powershell", "-Command", powershell_command])
             case "darwin":
                 # subprocess.Popen(["open", "-a", "Terminal"])
+                #subprocess.Popen(["open", "-a", "Terminal"])
                 # command = "echo \"Next Generation Networking Project\n\""
                 # command += "echo \"Password: vagrant\""
-                command += "ssh -X -p 2222 vagrant@localhost"
-                subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
+                #command += "ssh -X -p 2222 vagrant@localhost"
+                #subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
+                #print("Opening macOS Terminal for SSH interaction...\n")
+                #subprocess.Popen(["open", "-a", "Terminal", "--args", "ssh", f"-p {port}", f"{username}@{hostname}"])
+                print("Opening macOS Terminal for SSH interaction...\n")
+                command = f'ssh -X -p {port} {username}@{hostname}'
+                # Usando AppleScript per eseguire il comando SSH in una nuova finestra
+                applescript = f'''
+                    tell application "Terminal"
+                    do script "{command}"
+                    delay 1
+                    do script "{password}" in front window
+                    activate
+                end tell'''
+
+                subprocess.Popen(["osascript", "-e", applescript])
+            
             case "linux":
                 subprocess.Popen(["gnome-terminal"])
 
-# open_terminal.start_controller()
+#open_terminal.start_controller()
+myClass.start_controller()
+myClass.start_mininet()
+myClass.open_terminal()
 
 
 
