@@ -12,7 +12,9 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard),
 class App(customtkinter.CTk):
     
     myClass.start_controller()
-    myClass.start_mininet()
+    # myClass.start_mininet()
+    # myClass.open_terminal()
+    myClass.open_terminal_with_vagrant_console()
 
     def __init__(self):
         super().__init__()

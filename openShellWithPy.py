@@ -33,7 +33,8 @@ class myClass:
         client.connect(hostname, username=username, password=password, port=port) 
 
         # Extecute the Ryu-controller with the simple_switch_13.py script
-        client.exec_command("cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py", timeout=10) 
+        client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
+        # client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
 
         print("Ryu-manager started\n")
         #return client
@@ -50,7 +51,7 @@ class myClass:
         client.connect(hostname, username=username, password=password, port=port) 
 
         # Create the mininet and ping
-        stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller=remote \n h1 ping -c 1 h2", timeout=10)
+        stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller remote \n h1 ping -c 1 h2", timeout=10)
 
         # print("OUTPUT\n")
         # print(stdout.read())
@@ -59,6 +60,32 @@ class myClass:
 
         print("Mininet started\n")
         #return client
+
+    def open_terminal_with_vagrant_console():
+
+        echo_command = 'Write-Host Next Generation Networking Project\n\r'
+        echo_command += 'Write-Host Password: vagrant'
+        powershell_command = f"Start-Process powershell -ArgumentList '-Command \"ssh -X -p 2222 vagrant@localhost\"'"
+
+        process = subprocess.Popen(["powershell", "-Command", powershell_command], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # command = f"powershell -Command Start-Process powershell -ArgumentList '-Command  \"ssh -X -p {port} {username}@{hostname}\""
+
+        # # Create a subprocess to run the PowerShell command
+        # process = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Send the password to the subprocess's standard input
+        process.stdin.write(password.encode() + b'\n')
+        process.stdin.flush()
+
+        # Read the output and errors from the subprocess
+        output, error = process.communicate()
+
+        # Print the output and errors
+        print(output.decode())
+        print(error.decode())
+        
+        
 
       
     def open_terminal():
@@ -100,7 +127,7 @@ class myClass:
 #open_terminal.start_controller()
 #myClass.start_controller()
 #myClass.start_mininet()
-myClass.open_terminal()
+# myClass.open_terminal()
 
 
 
