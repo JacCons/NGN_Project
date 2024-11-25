@@ -101,18 +101,11 @@ class myClass:
                 
                 print("Opening macOS Terminal for SSH interaction...\n")
                 command = f'ssh -X -p {port} {username}@{hostname}'
-                change_dir = "cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py"
+                #change_dir = "cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py"
+                change_dir = "cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py"
                 # Usando AppleScript per eseguire il comando SSH in una nuova finestra
-                applescript = f'''
+                applescript = f'''                    
                     tell application "Terminal"
-                    do script "{command}"
-                    delay 1
-                    do script "{password}"  in front window 
-                    delay 1
-                    do script "sudo mn -c" in front window
-                    delay 1
-                    do script "{change_dir}"  in front window 
-                    delay 2
                     do script "{command}"
                     delay 1
                     do script "{password}" in front window
@@ -125,13 +118,21 @@ class myClass:
                 subprocess.Popen(["gnome-terminal"])
 
 #open_terminal.start_controller()
-#myClass.start_controller()
+myClass.start_controller()
 #myClass.start_mininet()
 # myClass.open_terminal()
 
+#
+                   # do script "{command}"
+                    #delay 1
+                    #do script "{password}"  in front window 
+                    #delay 1
+                    #do script "sudo mn -c" in front window
+                    #delay 1
+                   # do script "{change_dir}"  in front window 
+                    #delay 2
 
-
-# import subprocess
+# import subprocess 
 
 # def run_powershell_command(command):
 #     subprocess.Popen(["powershell", "-Command", command])
