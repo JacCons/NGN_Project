@@ -33,7 +33,7 @@ class myClass:
         client.connect(hostname, username=username, password=password, port=port) 
 
         # Extecute the Ryu-controller with the simple_switch_13.py script
-        client.exec_command("cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
+        client.exec_command("cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py", timeout=10) 
 
         print("Ryu-manager started\n")
         #return client
@@ -50,13 +50,13 @@ class myClass:
         client.connect(hostname, username=username, password=password, port=port) 
 
         # Create the mininet and ping
-        stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller remote \n h1 ping -c 1 h2", timeout=10)
+        stdin, stdout, stderr  = client.exec_command("sudo mn --topo single,3 --mac --switch=ovsk,protocols=OpenFlow13 --controller=remote \n h1 ping -c 1 h2", timeout=10)
 
         # print("OUTPUT\n")
         # print(stdout.read())
         # print("ERROR\n")
         # print(stderr.read())
-        
+
         print("Mininet started\n")
         #return client
 
@@ -71,32 +71,34 @@ class myClass:
 
                 subprocess.Popen(["powershell", "-Command", powershell_command])
             case "darwin":
-                # subprocess.Popen(["open", "-a", "Terminal"])
-                #subprocess.Popen(["open", "-a", "Terminal"])
-                # command = "echo \"Next Generation Networking Project\n\""
-                # command += "echo \"Password: vagrant\""
-                #command += "ssh -X -p 2222 vagrant@localhost"
-                #subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
-                #print("Opening macOS Terminal for SSH interaction...\n")
-                #subprocess.Popen(["open", "-a", "Terminal", "--args", "ssh", f"-p {port}", f"{username}@{hostname}"])
+                
                 print("Opening macOS Terminal for SSH interaction...\n")
                 command = f'ssh -X -p {port} {username}@{hostname}'
+                change_dir = "cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py"
                 # Usando AppleScript per eseguire il comando SSH in una nuova finestra
                 applescript = f'''
                     tell application "Terminal"
+                    do script "{command}"
+                    delay 1
+                    do script "{password}"  in front window 
+                    delay 1
+                    do script "sudo mn -c" in front window
+                    delay 1
+                    do script "{change_dir}"  in front window 
+                    delay 2
                     do script "{command}"
                     delay 1
                     do script "{password}" in front window
                     activate
                 end tell'''
 
-                subprocess.Popen(["osascript", "-e", applescript])
+                subprocess.Popen(["osascript", "-e", applescript])      
             
             case "linux":
                 subprocess.Popen(["gnome-terminal"])
 
 #open_terminal.start_controller()
-myClass.start_controller()
+#myClass.start_controller()
 #myClass.start_mininet()
 myClass.open_terminal()
 
@@ -109,3 +111,14 @@ myClass.open_terminal()
 
 # command = "Write-Host 'Hello, world!'; echo ciao"
 # run_powershell_command(command)
+
+
+#prevoiusly in darwin
+# subprocess.Popen(["open", "-a", "Terminal"])
+                #subprocess.Popen(["open", "-a", "Terminal"])
+                # command = "echo \"Next Generation Networking Project\n\""
+                # command += "echo \"Password: vagrant\""
+                #command += "ssh -X -p 2222 vagrant@localhost"
+                #subprocess.Popen(["osascript", "-e", f'do shell script "{command}"'])
+                #print("Opening macOS Terminal for SSH interaction...\n")
+                #subprocess.Popen(["open", "-a", "Terminal", "--args", "ssh", f"-p {port}", f"{username}@{hostname}"])
