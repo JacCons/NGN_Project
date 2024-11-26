@@ -11,10 +11,10 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard),
 
 class App(customtkinter.CTk):
     
-    myClass.start_controller()
+    # myClass.start_controller()
     # myClass.start_mininet()
     # myClass.open_terminal()
-    myClass.open_terminal_with_vagrant_console()
+    # myClass.open_terminal_with_vagrant_console()
 
     def __init__(self):
         super().__init__()
@@ -23,7 +23,7 @@ class App(customtkinter.CTk):
     
         #Configurazione della finestra
         self.title("NGN Project")
-        self.geometry(f"{1100}x{600}")
+        self.geometry("1100x600+0+0")
 
 
         #Configurazione a griglia della finestra
@@ -44,7 +44,7 @@ class App(customtkinter.CTk):
         self.topo_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.sidebar_topo = customtkinter.CTkLabel(self.topo_frame, text="Topos:")
         self.sidebar_topo.grid(row=0, column=0, padx=20, pady=(10,0))
-        self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"])
+        self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"],command=self.switch_option)
         self.sidebar_entrytopo.grid(row=1, column=0, padx=20, pady=(10,10))
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
@@ -84,7 +84,7 @@ class App(customtkinter.CTk):
         self.services_label = customtkinter.CTkLabel(self.sidebar_framedx, text="Services", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
 
-        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="DATA E ORA", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="DATA E ORA", font=customtkinter.CTkFont(size=15, weight="bold"), height=40, command=self.play_service1)
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text="NUMERO FORTUNATO", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
@@ -116,6 +116,8 @@ class App(customtkinter.CTk):
         self.statusbox.insert("0.0", "Status Box\n\n")
         # self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
         # self.seg_button_1.set("Value 2")
+        self.sidebar_entrytopo.set("Single")
+        self.switch_frame.grid_forget()
 
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
@@ -146,6 +148,24 @@ class App(customtkinter.CTk):
             case "Torus":
                 print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
         
+    def switch_option(self, selected_option):
+        if selected_option == "Single":
+            self.switch_frame.grid_forget()
+        else:
+            self.switch_frame.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
+
+    def play_service1(self):
+        data_ora = customtkinter.CTkToplevel(self)
+        data_ora.title("Service 1")
+        data_ora.geometry("300x200+1100+0")
+
+        # Contenuto della nuova finestra
+        label = customtkinter.CTkLabel(data_ora, text="DATA E ORA")
+        label.pack(pady=20)
+
+        close_button = customtkinter.CTkButton(data_ora, text="Arresta servizio", command=data_ora.destroy)
+        close_button.pack(pady=20)
+
 
 if __name__ == "__main__":
     app = App()
