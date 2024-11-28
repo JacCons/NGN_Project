@@ -120,7 +120,7 @@ class myClass:
 #open_terminal.start_controller()
 myClass.start_controller()
 #myClass.start_mininet()
-# myClass.open_terminal()
+myClass.open_terminal()
 
 #
                    # do script "{command}"
