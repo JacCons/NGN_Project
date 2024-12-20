@@ -5,6 +5,7 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.cli import CLI
 from mininet.node import OVSSwitch, Controller, OVSController
+#ssh -X -p 2222 vagrant@localhost
 
 class MyTopo (Topo):
     
@@ -26,12 +27,22 @@ class MyTopo (Topo):
             hosts_NODES.append(hostname)
             hosts_MN.append(self.addHost(hostname))
         G.add_nodes_from(hosts_NODES, type="host")
+       
+        #Print all hosts
+        print ("----Hosts----")
+        print (hosts_NODES)
+        print("\n")
 
         for k in range (n_switch):
             switchname = f"s{k+1}"
             switch_NODES.append(switchname)
             switch_MN.append(self.addSwitch(switchname,protocols='OpenFlow13'))
         G.add_nodes_from(switch_NODES, type="switch")
+        
+        #Print all switches
+        print ("----Switches----")
+        print (switch_NODES)
+        print("\n")
 
         # Connessioni casuali tra host e switch
         for host in hosts_NODES:
@@ -47,14 +58,13 @@ class MyTopo (Topo):
             self.addLink(switch1, switch2)
             link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
             G.add_edge(switch1, switch2)
-        print (switch_NODES)
-        print("\n")
-        print(link_NODES)
+        
+       
         
         temp = []
         #for cycle from 0 to the second-to-last switch
         for i in range (n_switch-2):
-            print("--------")
+            #print("--------")
             #clear the temporary array
             temp.clear()
             #assign to switch 1 the selected seitch in switch_NODES
@@ -62,27 +72,30 @@ class MyTopo (Topo):
             #random number of non adjacent (+2) links a switch can have
             n_links= random.randint(0,n_switch-(i+2)) 
             
-            print (f"N= {n_links}")
+            #print (f"N= {n_links}")
             
             #fill the temporary array [OK]
             for m in range (i+2, n_switch):
                 temp.append(switch_NODES[m])
             
-            print(temp)
+            #print(temp)
             
             #create the new links
             for k in range (n_links):
                 #select a random switch in the temp list
                 switch2 = random.choice(temp)
-                print(switch2)
+                #print(switch2)
                 #remove the selected switch from the temp list to avoid having duplicate links
                 temp.remove(switch2)
-                print(temp)
+                #print(temp)
                 self.addLink(switch1, switch2)
                 link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
                 G.add_edge(switch1, switch2)
-
+        
+        #Print links
+        print ("----Links----")
         print(link_NODES)
+        print("\n")
             
 
         # Disegno del grafo
