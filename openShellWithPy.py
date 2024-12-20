@@ -22,7 +22,7 @@ class myClass:
         # Connect to the server 
         client.connect(hostname, username=username, password=password, port=port) 
 
-        # Extecute the Ryu-controller with the simple_switch_13.py script
+        #Extecute the Ryu-controller with the simple_switch_13.py script
         stdin, stdout, stderr = client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
 
         # Read output in a non-blocking way
@@ -42,7 +42,7 @@ class myClass:
         if stdout_output:
             print(stdout_output.decode())
 
-        # stdin, stdout, stderr = client.exec_command("sudo mn -c \n sudo su \n cd /media/sf_shared_NGN_Project/ \n ryu-manager simple_switch_13.py", timeout=10) 
+        # stdin, stdout, stderr = client.exec_command("sudo mn -c \n cd /home \n ryu-manager simple_switch_13.py", timeout=10) 
 
         # # Read output in a non-blocking way
         # stdout.channel.settimeout(2)
@@ -61,7 +61,7 @@ class myClass:
         # if stdout_output:
         #     print(stdout_output.decode())
 
-        print("Ryu-manager started\n")
+        # print("Ryu-manager started\n")
         #return client
 
     def open_terminal_with_vagrant_console():
