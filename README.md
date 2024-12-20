@@ -2,16 +2,44 @@
 
 > NOTE: to visualize on VSCode this file press `Ctrl+Shift+V` or `Cmd+Shift+V` on Mac
 
+## Steps to execute the project
+
+1. Open VirtualBox and start comnetsemu
+2. Opena a terminal and execute the following command:
+
+```bash
+ssh -X -p 2222 vagrant@localhost
+password: vagrant
+```
+
+3. **(Not necessarly)** Open a terminal and execute the following command :
+
+```bash
+sudo su
+```
+
+4. Open a terminal and execute the following command:
+
+```bash
+cd /media/sf_shared_NGN_Project
+```
+
+5. Open a terminal and execute the following command:
+
+```bash
+python3 <file_you_want_to_execute>.py
+```
+
 ## Description
 
 ## Roadmap
 
-1) utilizziamo le topologia già predeterminate di mininet, utilizzando il file `mn` il quale ci permette di creare una topologia di rete con più switch e più host leggendo da terminale la topologia.
- >SVANTAGGIO: tutti gli switch hanno gli stessi host, magari trovare un modo per farli variare.
-2) Assegnare ad ogni host i servizi, scrivendo su un file l'IP e il nome del servizio, (servizio "data e ora" e ci collegheremo al server)
- > Assegnare dei nomi in maniera intelligente per poterli riconoscere (data è pure client e server).
-3) asseganre randomicamente i servizi agli host
-4) Mostrae le FlowTable e se aggregare i servizi se sono splittati (eg data e ora su server diversi)
+1. utilizziamo le topologia già predeterminate di mininet, utilizzando il file `mn` il quale ci permette di creare una topologia di rete con più switch e più host leggendo da terminale la topologia.
+   > SVANTAGGIO: tutti gli switch hanno gli stessi host, magari trovare un modo per farli variare.
+2. Assegnare ad ogni host i servizi, scrivendo su un file l'IP e il nome del servizio, (servizio "data e ora" e ci collegheremo al server)
+   > Assegnare dei nomi in maniera intelligente per poterli riconoscere (data è pure client e server).
+3. asseganre randomicamente i servizi agli host
+4. Mostrae le FlowTable e se aggregare i servizi se sono splittati (eg data e ora su server diversi)
 
 ## Requirements
 
