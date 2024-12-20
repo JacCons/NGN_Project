@@ -113,19 +113,21 @@ class MyTopo (Topo):
         switch_connections = {}
         for switch in net.switches:
             switch_connections[switch.name] = {}
-            for link in switch.links:
+            for link in net.links:
                 if link.intf1.node.name == switch.name:
                     neighbor_switch = link.intf2.node.name
-                else:
+                elif link.intf2.node.name == switch.name:
                     neighbor_switch = link.intf1.node.name
+                else:
+                    continue
                 switch_connections[switch.name][neighbor_switch] = 1  # Unit weight for simplicity
+
+        # Get source and destination switch names
+        src_switch = src_host.defaultIntf().node.name  # Access switch through default interface
+        dst_switch = dst_host.defaultIntf().node.name  # Access switch through default interface
 
         # Create a networkx graph
         graph = nx.Graph(switch_connections)
-
-        # Get source and destination switch names
-        src_switch = src_host.connections[0].intf1.node.name
-        dst_switch = dst_host.connections[0].intf1.node.name
 
         # Calculate shortest path using Dijkstra's algorithm
         shortest_path = nx.shortest_path(graph, source=src_switch, target=dst_switch)
@@ -144,18 +146,28 @@ def run_minimal_network():
     # Start the network
     net.start()
 
+    # Get references to host objects (assuming they exist in the network)
+    h1 = net.get('h1')
+    h2 = net.get('h2')
+
+    # Check if hosts were found before proceeding
+    if h1 is None or h2 is None:
+        print("Error: Hosts h1 or h2 not found in the network.")
+        net.stop()
+        return
+
     # (Optional) Verify connectivity between hosts
     print("Testing connectivity...")
     net.pingAll()
 
+    # Now that h1 and h2 are guaranteed to be valid objects, call get_shortest_path
+    shortest_path = MyTopo.get_shortest_path(net, h1, h2)
+    print(f"\nShortest path between h1 and h2: {shortest_path}\n")
+
     # Start the CLI for manual interaction
     CLI(net)
 
-    # Assuming you have references to the host objects (h1, h2)
-    h1 = net.get('h1')
-    h2 = net.get('h2')
-    shortest_path = MyTopo.get_shortest_path(net, h1, h2)
-    print(f"Shortest path between h1 and h2: {shortest_path}")
+    
 
     # Stop the network when exiting the CLI
     net.stop()
