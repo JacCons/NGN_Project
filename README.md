@@ -8,11 +8,14 @@
 2. Opena a terminal and execute the following command:
 
 ```bash
-ssh -X -p 2222 vagrant@localhost
-password: vagrant
+production:
+python3 ngn_gui.py #  open the GUI and start controller and mininet
+
+dev:
+python3 openShellWithPy.py # open terminal and start controller and mininet
 ```
 
-3. **(Not necessarly)** Open a terminal and execute the following command :
+3. **(Not necessarly - raccomanded on windows system)** Open a terminal and execute the following command :
 
 ```bash
 sudo su
