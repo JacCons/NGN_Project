@@ -13,9 +13,9 @@ class MyTopo (Topo):
         n_host = 8
         n_switch = 7
         hosts_NODES=[]
-        hosts_MN=[]
+        hosts_MN=[] #array of hosts
         switch_NODES=[]
-        switch_MN=[]
+        switch_MN=[] #array of switches
         link_NODES = []
         # Creazione del grafo
         G = nx.Graph()
@@ -112,7 +112,8 @@ def run_minimal_network():
     net.stop()
 
 if __name__ == '__main__':
-    topo = MyTopo()
+    topo = MyTopo() #create a Mytopo object
     topo.gen_topology() 
+    run_minimal_network()
 
 
