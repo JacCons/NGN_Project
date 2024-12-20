@@ -4,12 +4,11 @@ import random
 from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.cli import CLI
-from mininet.node import OVSSwitch, Controller, OVSController
+from mininet.node import OVSSwitch, RemoteController
 #ssh -X -p 2222 vagrant@localhost
 
-class MyTopo (Topo):
-    
-    def gen_topology(self):
+class MyTopo (Topo):    
+    def build(self):
         
         n_host = 8
         n_switch = 7
@@ -59,38 +58,31 @@ class MyTopo (Topo):
             link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
             G.add_edge(switch1, switch2)
         
-       
-        
         temp = []
-        #for cycle from 0 to the second-to-last switch
-        for i in range (n_switch-2):
-            #print("--------")
+        #for cycle from 0 to the second-to-last switch (doesn't work)
+        '''for i in range (n_switch-2):
             #clear the temporary array
             temp.clear()
-            #assign to switch 1 the selected seitch in switch_NODES
+            #assign to switch 1 the selected switch in switch_NODES
             switch1 = switch_NODES[i]
             #random number of non adjacent (+2) links a switch can have
             n_links= random.randint(0,n_switch-(i+2)) 
             
-            #print (f"N= {n_links}")
+            #fill the temporary array
+            temp = switch_NODES[i + 2:]
             
-            #fill the temporary array [OK]
-            for m in range (i+2, n_switch):
-                temp.append(switch_NODES[m])
-            
-            #print(temp)
-            
-            #create the new links
-            for k in range (n_links):
+            #create the new links (doesn't work properly with mininet)
+            for _ in range (n_links):
                 #select a random switch in the temp list
+                if not temp:  # Stop if no more candidates
+                    break
                 switch2 = random.choice(temp)
-                #print(switch2)
                 #remove the selected switch from the temp list to avoid having duplicate links
                 temp.remove(switch2)
-                #print(temp)
-                self.addLink(switch1, switch2)
-                link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
-                G.add_edge(switch1, switch2)
+                if not G.has_edge(switch1, switch2):
+                    self.addLink(switch1, switch2)
+                    link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
+                    G.add_edge(switch1, switch2)'''
         
         #Print links
         print ("----Links----")
@@ -103,6 +95,7 @@ class MyTopo (Topo):
         colors = ["red" if G.nodes[node]['type'] == "host" else "blue" for node in G.nodes]
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
         plt.show()
+        
 
     def get_shortest_path(net, src_host, dst_host):
         """
@@ -141,19 +134,21 @@ class MyTopo (Topo):
 
 
 def run_minimal_network():
-    "Crea la rete minima e avvia la CLI."
-    # Crea la rete usando la topologia minimale
-    c1 = Controller('c0', controller=OVSController)
-    net = Mininet(topo=MyTopo(), switch=OVSSwitch, controller=c1)
     
-    # Avvia la rete
+    # Connect Mininet to the already running Ryu controller at localhost:6653
+    c0 = RemoteController('c0', ip='127.0.0.1', port=6653)
+    
+    # Create the network using the custom topology and connect it to the Ryu controller
+    net = Mininet(topo=MyTopo(), switch=OVSSwitch, controller=c0)
+
+    # Start the network
     net.start()
 
-    # Verifica connettività (opzionale)
-    print("Eseguo un ping tra gli host...")
+    # (Optional) Verify connectivity between hosts
+    print("Testing connectivity...")
     net.pingAll()
 
-    # Avvia la CLI per interazione manuale
+    # Start the CLI for manual interaction
     CLI(net)
 
     # Assuming you have references to the host objects (h1, h2)
@@ -162,12 +157,10 @@ def run_minimal_network():
     shortest_path = MyTopo.get_shortest_path(net, h1, h2)
     print(f"Shortest path between h1 and h2: {shortest_path}")
 
-    # Ferma la rete quando esci dalla CLI
+    # Stop the network when exiting the CLI
     net.stop()
 
-if __name__ == '__main__':
-    topo = MyTopo() #create a Mytopo object
-    topo.gen_topology() 
+if __name__ == '__main__': 
     run_minimal_network()
 
 
