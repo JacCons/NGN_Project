@@ -21,6 +21,7 @@ from ryu.ofproto import ofproto_v1_3
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
+from ryu.lib.packet import ipv4
 
 
 class SimpleSwitch13(app_manager.RyuApp):
@@ -63,6 +64,7 @@ class SimpleSwitch13(app_manager.RyuApp):
                                     match=match, instructions=inst)
         datapath.send_msg(mod)
 
+
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         # If you hit this you might want to increase
@@ -76,8 +78,21 @@ class SimpleSwitch13(app_manager.RyuApp):
         parser = datapath.ofproto_parser
         in_port = msg.match['in_port']
 
+
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
+
+        #! block packets
+        ips = pkt.get_protocols(ipv4.ipv4)
+        if len(ips) > 0:
+            ip = ips[0]
+            self.logger.info("packet in ipv4 src=%s dst=%s", ip.src, ip.dst)
+            if (ip.src == "10.0.0.1" and ip.dst == "10.0.0.2") or \
+               (ip.src == "10.0.0.2" and ip.dst == "10.0.0.1") or \
+               (ip.src == "10.0.0.3" and ip.dst == "10.0.0.4"):
+                self.logger.info("dropping packet!")
+                return
+
 
         if eth.ethertype == ether_types.ETH_TYPE_LLDP:
             # ignore lldp packet
@@ -95,8 +110,11 @@ class SimpleSwitch13(app_manager.RyuApp):
 
         if dst in self.mac_to_port[dpid]:
             out_port = self.mac_to_port[dpid][dst]
+            self.logger.info("output port for %s is known: %d", dst, out_port)
+
         else:
             out_port = ofproto.OFPP_FLOOD
+            self.logger.info("output port for %s is unknown: FLOODING", dst)
 
         actions = [parser.OFPActionOutput(out_port)]
 
