@@ -60,7 +60,7 @@ class MyTopo (Topo):
         
         temp = []
         #for cycle from 0 to the second-to-last switch (doesn't work)
-        '''for i in range (n_switch-2):
+        for i in range (n_switch-2):
             #clear the temporary array
             temp.clear()
             #assign to switch 1 the selected switch in switch_NODES
@@ -82,7 +82,7 @@ class MyTopo (Topo):
                 if not G.has_edge(switch1, switch2):
                     self.addLink(switch1, switch2)
                     link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
-                    G.add_edge(switch1, switch2)'''
+                    G.add_edge(switch1, switch2)
         
         #Print links
         print ("----Links----")
@@ -158,7 +158,7 @@ def run_minimal_network():
 
     # (Optional) Verify connectivity between hosts
     print("Testing connectivity...")
-    net.pingAll()
+    #net.pingAll()
 
     # Now that h1 and h2 are guaranteed to be valid objects, call get_shortest_path
     shortest_path = MyTopo.get_shortest_path(net, h1, h2)

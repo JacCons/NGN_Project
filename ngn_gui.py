@@ -16,8 +16,6 @@ class App(customtkinter.CTk):
 
     def __init__(self):
         super().__init__()
-        
-        
     
         #Configurazione della finestra
         self.title("NGN Project")
@@ -129,20 +127,20 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("sidebar_button click")
 
-    def create_button_event(self):
-        topo = self.sidebar_entrytopo.get()
-        flags = "--mac --switch=ovsk,protocols=OpenFlow13 --controller=remote"
-        match topo:
-            case "Single":
-                print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
-            case "Linear":
-                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
-            #case "Reversed":
-                #print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
-            case "Tree":
-                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
-            case "Torus":
-                print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+    # def create_button_event(self):
+    #     topo = self.sidebar_entrytopo.get()
+    #     flags = "--mac --switch=ovsk,protocols=OpenFlow13 --controller=remote"
+    #     match topo:
+    #         case "Single":
+    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
+    #         case "Linear":
+    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+    #         #case "Reversed":
+    #             #print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
+    #         case "Tree":
+    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+    #         case "Torus":
+    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
         
 
 if __name__ == "__main__":
