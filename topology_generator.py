@@ -104,6 +104,41 @@ class MyTopo (Topo):
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
         plt.show()
 
+    def get_shortest_path(net, src_host, dst_host):
+        """
+        Calculates the shortest path between two hosts in the Mininet network.
+
+        Args:
+            net: The Mininet network object.
+            src_host: The source host object.
+            dst_host: The destination host object.
+
+        Returns:
+            A list of switches representing the shortest path between the hosts.
+        """
+        # Get switch connections from Mininet network
+        switch_connections = {}
+        for switch in net.switches:
+            switch_connections[switch.name] = {}
+            for link in switch.links:
+                if link.intf1.node.name == switch.name:
+                    neighbor_switch = link.intf2.node.name
+                else:
+                    neighbor_switch = link.intf1.node.name
+                switch_connections[switch.name][neighbor_switch] = 1  # Unit weight for simplicity
+
+        # Create a networkx graph
+        graph = nx.Graph(switch_connections)
+
+        # Get source and destination switch names
+        src_switch = src_host.connections[0].intf1.node.name
+        dst_switch = dst_host.connections[0].intf1.node.name
+
+        # Calculate shortest path using Dijkstra's algorithm
+        shortest_path = nx.shortest_path(graph, source=src_switch, target=dst_switch)
+
+        return shortest_path
+
 
 def run_minimal_network():
     "Crea la rete minima e avvia la CLI."
@@ -120,6 +155,12 @@ def run_minimal_network():
 
     # Avvia la CLI per interazione manuale
     CLI(net)
+
+    # Assuming you have references to the host objects (h1, h2)
+    h1 = net.get('h1')
+    h2 = net.get('h2')
+    shortest_path = MyTopo.get_shortest_path(net, h1, h2)
+    print(f"Shortest path between h1 and h2: {shortest_path}")
 
     # Ferma la rete quando esci dalla CLI
     net.stop()
