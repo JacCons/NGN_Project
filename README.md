@@ -47,14 +47,13 @@ python3 <file_you_want_to_execute>.py
 ## Requirements
 
 - [x] Creare una repository su GitHub
-- [ ] Create an SDN network in mininet with multiple switches
+- [x] Create an SDN network in mininet with multiple switches
 - [ ] Create a software that is capable of deploying services in the network
   - Services are composed of multiple applications that communicate together to deliver the service (e.g., web server and database)
 - [ ] Create a GUI (python recommended) capable of:
   - Deploying service in the network (i.e., starting required applications on existing hosts)
     - Basic idea: choose host depending on usage (e.g., max 2 applications per host)
   - Choose communication requirements for applications
-    - Choose communication requirements for applications
     - Choose communication requirements for applications
   - Stopping applications
     - Upon stopping, remove flows if not required anymore
