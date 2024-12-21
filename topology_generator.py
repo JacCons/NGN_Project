@@ -5,6 +5,10 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
+
+# Imposta il backend di matplotlib su Agg
+plt.switch_backend('Agg')
+
 #ssh -X -p 2222 vagrant@localhost
 
 class MyTopo (Topo):    
@@ -94,7 +98,9 @@ class MyTopo (Topo):
         pos = nx.spring_layout(G)  # Layout per una visualizzazione più chiara
         colors = ["red" if G.nodes[node]['type'] == "host" else "blue" for node in G.nodes]
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
-        plt.show()
+        # plt.show()
+        plt.savefig("./img/graph.png")
+        print("Graph saved as graph.png")
         
 
     def get_shortest_path(net, src_host, dst_host):
