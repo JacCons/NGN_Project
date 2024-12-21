@@ -11,6 +11,9 @@ plt.switch_backend('Agg')
 
 #ssh -X -p 2222 vagrant@localhost
 
+# Creazione del grafo
+G = nx.Graph()
+
 class MyTopo (Topo):    
     def build(self):
         
@@ -22,7 +25,7 @@ class MyTopo (Topo):
         switch_MN=[] #array of switches
         link_NODES = []
         # Creazione del grafo
-        G = nx.Graph()
+        # G = nx.Graph()
 
         # Aggiunta dei nodi host
         for i in range (n_host):
@@ -95,12 +98,12 @@ class MyTopo (Topo):
             
 
         # Disegno del grafo
-        pos = nx.spring_layout(G)  # Layout per una visualizzazione più chiara
+        pos = nx.spring_layout(G, seed=42)  # Layout per una visualizzazione più chiara con seme fisso
         colors = ["red" if G.nodes[node]['type'] == "host" else "blue" for node in G.nodes]
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
-        # plt.show()
-        plt.savefig("./img/graph.png")
-        print("Graph saved as graph.png")
+        plt.savefig("img/graph.png")
+        print("Graph saved as graph.png\n")
+        plt.clf()  # Pulisce la figura corrente
         
 
     def get_shortest_path(net, src_host, dst_host):
@@ -126,17 +129,39 @@ class MyTopo (Topo):
                     neighbor_switch = link.intf1.node.name
                 else:
                     continue
-                switch_connections[switch.name][neighbor_switch] = 1  # Unit weight for simplicity
+                # Assign a random weight to each link
+                weight = random.randint(1, 10)
+                switch_connections[switch.name][neighbor_switch] = weight
+                G.add_edge(switch.name, neighbor_switch, weight=weight)  # Aggiorna il grafo G con il peso
+        
+       # Stampa i collegamenti e i loro pesi
+        # for switch, connections in switch_connections.items():
+        #     print(f"Switch {switch} connections:")
+        #     for neighbor, weight in connections:
+        #         print(f"  -> {neighbor} with weight {weight}")
 
         # Get source and destination switch names
         src_switch = src_host.defaultIntf().node.name  # Access switch through default interface
         dst_switch = dst_host.defaultIntf().node.name  # Access switch through default interface
 
-        # Create a networkx graph
-        graph = nx.Graph(switch_connections)
-
         # Calculate shortest path using Dijkstra's algorithm
-        shortest_path = nx.shortest_path(graph, source=src_switch, target=dst_switch)
+        shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch)
+        print(f"\nShortest path between h1 and h2 without weights: {shortest_path}")
+        # Calculate shortest path using Dijkstra's algorithm and weights
+        shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch, weight='weight')
+
+        # Draw the graph with weights
+
+        # Usa lo stesso seme per una disposizione coerente
+        # Aumenta il valore di k per più spazio
+        pos = nx.spring_layout(G, k=3)   
+        edge_labels = nx.get_edge_attributes(G, 'weight')
+        node_colors = ["red" if G.nodes[node].get('type') == "host" else "blue" for node in G.nodes]
+        nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=1000, font_size=11)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        plt.savefig("img/graph_with_weights.png")
+        print("\nGraph with weights saved as graph_with_weights.png")
+        plt.close()  # Chiude la figura corrente
 
         return shortest_path
 
