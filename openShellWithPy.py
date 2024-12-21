@@ -8,23 +8,40 @@ hostname = "localhost"
 username = "vagrant" 
 password = "vagrant" 
 port = 2222
+simple_switch_custom_name = "NGN_simple_switch_custom.py"
 
 class myClass:
     
     def start_controller():
         
-        print("Starting ryu-manager...\n")
+        print("\nStarting ryu-manager...\n")
         
         # Create an SSH client instance 
         client = paramiko.SSHClient() 
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
         
         # Connect to the server 
-        client.connect(hostname, username=username, password=password, port=port) 
+        try:
+            client.connect(hostname, username=username, password=password, port=port)
+            print("Connected to the server")
+        except Exception as e:
+            print(f"Error connecting to the server: {e}")
+            return
 
-        #Extecute the Ryu-controller with the simple_switch_13.py script
-        stdin, stdout, stderr = client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10) 
+        try:
+            command = (
+                "sudo mn -c \n"
+                f"sudo cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/{simple_switch_custom_name} \n"
+                "cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n"
+            )
+            stdin, stdout, stderr = client.exec_command(command, timeout=20)
 
+            client.exec_command(f"ryu-manager {simple_switch_custom_name}", timeout=20)
+            print("Command executed")
+        except Exception as e:
+            print(f"Error executing command: {e}")
+            return
+        
         # Read output in a non-blocking way
         stdout.channel.settimeout(2)
         stderr.channel.settimeout(2)
@@ -38,31 +55,11 @@ class myClass:
             stderr_output = ""
 
         if stderr_output:
-            print(stderr_output.decode())
+            print(f"\nstderr:\n{stderr_output.decode()}")
         if stdout_output:
-            print(stdout_output.decode())
+            print(f"\nstdout:\n{stdout_output.decode()}")
 
-        # stdin, stdout, stderr = client.exec_command("sudo mn -c \n cd /home \n ryu-manager simple_switch_13.py", timeout=10) 
-
-        # # Read output in a non-blocking way
-        # stdout.channel.settimeout(2)
-        # stderr.channel.settimeout(2)
-
-        # try:
-        #     stdout_output = stdout.read()
-        #     stderr_output = stderr.read()
-        # except Exception as e:
-        #     print(f"Error reading output: {e}\n")
-        #     stdout_output = ""
-        #     stderr_output = ""
-
-        # if stderr_output:
-        #     print(stderr_output.decode())
-        # if stdout_output:
-        #     print(stdout_output.decode())
-
-        # print("Ryu-manager started\n")
-        #return client
+        print("Ryu-manager started\n")
 
     def open_terminal_with_vagrant_console():
 
