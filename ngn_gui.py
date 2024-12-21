@@ -36,12 +36,13 @@ class App(customtkinter.CTk):
         self.logo_label = customtkinter.CTkLabel(self.sidebar_framesx, text="Create a new network", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.topo_frame = customtkinter.CTkFrame(self.sidebar_framesx)
-        self.topo_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
-        self.sidebar_topo = customtkinter.CTkLabel(self.topo_frame, text="Topos:")
-        self.sidebar_topo.grid(row=0, column=0, padx=20, pady=(10,0))
-        self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"])
-        self.sidebar_entrytopo.grid(row=1, column=0, padx=20, pady=(10,10))
+        # *** Topologia Custom, da togliere le segeunti righe ***
+        # self.topo_frame = customtkinter.CTkFrame(self.sidebar_framesx)
+        # self.topo_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+        # self.sidebar_topo = customtkinter.CTkLabel(self.topo_frame, text="Topos:")
+        # self.sidebar_topo.grid(row=0, column=0, padx=20, pady=(10,0))
+        # self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"])
+        # self.sidebar_entrytopo.grid(row=1, column=0, padx=20, pady=(10,10))
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.host_frame.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
@@ -57,12 +58,17 @@ class App(customtkinter.CTk):
         self.sidebar_entrynumswitch = customtkinter.CTkEntry(master=self.switch_frame)
         self.sidebar_entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
-        self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+        # *** Topologia Custom, da togliere le segeunti righe  e la funzione associata create_button_event() sotto***
+        # self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
+        # self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
         self.statusbox = customtkinter.CTkTextbox(self, height=200)
         self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        # Imposta la textbox come sola lettura
+        self.statusbox.configure(state="normal")  # Cambia lo stato a 'normal'
+        self.statusbox.insert("end", "Questa status box ora è in modalità solo lettura")  # Inserisci il testo
+        self.statusbox.configure(state="disabled")  # Reimposta lo stato a 'disabled'
 
         #self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         #self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
