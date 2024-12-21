@@ -61,7 +61,7 @@ class myClass:
 
         print("Ryu-manager started\n")
 
-    def open_terminal_with_vagrant_console():
+    def windows_open_terminal_and_insert_password():
 
         echo_command = 'Write-Host Next Generation Networking Project\n\r'
         echo_command += 'Write-Host Password: vagrant'
@@ -89,7 +89,7 @@ class myClass:
 
       
     def open_terminal():
-      # if(self.string_attr == "topology"):
+
         match sys.platform:
             case "win32":
                 echo_command = 'Write-Host Next Generation Networking Project\n\r'
