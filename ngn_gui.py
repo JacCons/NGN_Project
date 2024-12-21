@@ -2,8 +2,8 @@ import tkinter
 import tkinter.messagebox
 import customtkinter
 import subprocess
-
 from openShellWithPy import myClass
+import sys
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -12,7 +12,11 @@ customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard),
 class App(customtkinter.CTk):
     
     myClass.start_controller()
-    myClass.open_terminal_with_vagrant_console()
+    match sys.platform:
+            case "win32":
+               myClass.open_terminal_with_vagrant_console()
+            case "darwin":
+                myClass.open_terminal()
 
     def __init__(self):
         super().__init__()
