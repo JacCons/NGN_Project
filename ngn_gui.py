@@ -4,6 +4,9 @@ import customtkinter
 import subprocess
 from openShellWithPy import myClass
 import sys
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.image as mpimg
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -75,8 +78,28 @@ class App(customtkinter.CTk):
 
 
         #Architettura di rete
-        self.networkarch = customtkinter.CTkLabel(self, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.networkarch.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nw")
+        self.center_frame = customtkinter.CTkFrame(self)
+        self.center_frame.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.networkarch = customtkinter.CTkLabel(self.center_frame, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nw")
+
+        #Creazione di una figura a partire dal file .png del grafo
+        image_path = "img/graph.png"
+        fig = Figure(dpi=100)
+        ax = fig.add_subplot(111)
+        img = mpimg.imread(image_path)
+        ax.imshow(img)
+        ax.axis('off')
+
+        #Visualizzazione dell'immagine all'interno dell'interfaccia grafica
+        canvas = FigureCanvasTkAgg(fig, master=self.center_frame)
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.grid(row=1, column=0, sticky="nsew")
+        canvas.draw()
+
+        # Regolazioni per adattare l'immagine al frame
+        self.center_frame.grid_rowconfigure(1, weight=1)
+        self.center_frame.grid_columnconfigure(0, weight=1)
 
         #Servizi
         self.sidebar_framedx = customtkinter.CTkFrame(self, width=140, corner_radius=0)
