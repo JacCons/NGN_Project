@@ -35,7 +35,7 @@ class myClass:
         # client.exec_command("sudo mn -c \n sudo su \n cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py", timeout=10)
         # print("Command executed")
 
-        # #! Provalo jacopo scommenta riga 35 36 e gaurda se copia il file nella cartella giusta e avvia il controller e funziona tutto...
+        # #! Provalo jacopo scommenta riga 39 40 e gaurda se copia il file nella cartella giusta e avvia il controller e funziona tutto...
         # client.exec_command("sudo mn -c \n sudo su \n cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=10)
         # print("Command executed")
 
