@@ -36,7 +36,7 @@ class MyTopo(Topo):
         self.addLink(s1, s2)
         self.addLink(s2, s3)
         self.addLink(s3, s4)
-        self.addLink(s4, s1)
+        # self.addLink(s4, s1)
 
         
         
@@ -53,8 +53,9 @@ def run_minimal_network():
     net.start()
     time.sleep(5)
     # (Optional) Verify connectivity between hosts
-    #print("Testing connectivity...")
-    #net.pingAll()
+    print("Testing connectivity...try:")
+    print("h1 ping -c 1 h2")
+    # net.pingAll()
 
     # Start the CLI for manual interaction
     CLI(net)

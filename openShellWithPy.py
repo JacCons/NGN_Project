@@ -28,8 +28,13 @@ class myClass:
             print(f"Error connecting to the server: {e}")
             return
         
-        client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10)
+        client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10)
         print("Command executed")
+
+        # client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_stp_13.py", timeout=10)
+        # print("Command executed")
+
+        
         # try:
         #     command = (
         #         "sudo mn -c \n"
