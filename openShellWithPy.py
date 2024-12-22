@@ -28,16 +28,21 @@ class myClass:
             print(f"Error connecting to the server: {e}")
             return
         
-        client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10)
+        stdin, stdout, stderr = client.exec_command("cd /media/sf_NGN_Project ; cp ./simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py ")
+        print("Output cp:", stdout.read().decode())
+        print("Errori cp:", stderr.read().decode())
+        client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=10)
         print("Command executed")
+        # client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_stp_13.py", timeout=10)
+        
 
         # #! Provalo jacopo scommenta riga 35 36 e gaurda se copia il file nella cartella giusta
-        # client.exec_command("sudo mn -c \n sudo su \n cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py", timeout=10)
-        # print("Command executed")
+        #client.exec_command("sudo mn -c \n sudo cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py", timeout=10)
+        #print("Command executed")
 
         # #! Provalo jacopo scommenta riga 39 40 e gaurda se copia il file nella cartella giusta e avvia il controller e funziona tutto...
-        # client.exec_command("sudo mn -c \n sudo su \n cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=10)
-        # print("Command executed")
+        #client.exec_command("sudo mn -c \n sudo su \n cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=10)
+        #print("Command executed")
 
         
         # try:
@@ -121,8 +126,7 @@ class myClass:
                 
                 print("Opening macOS Terminal for SSH interaction...\n")
                 command = f'ssh -X -p {port} {username}@{hostname}'
-                #change_dir = "cd /media/sf_NGN_Project \n ryu-manager simple_switch_13.py"
-                change_dir = "cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py"
+
                 # Usando AppleScript per eseguire il comando SSH in una nuova finestra
                 applescript = f'''                    
                     tell application "Terminal"
