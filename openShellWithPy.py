@@ -27,37 +27,47 @@ class myClass:
         except Exception as e:
             print(f"Error connecting to the server: {e}")
             return
-
-        try:
-            command = (
-                "sudo mn -c \n"
-                f"sudo cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/{simple_switch_custom_name} \n"
-                "cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n"
-            )
-            stdin, stdout, stderr = client.exec_command(command, timeout=20)
-
-            client.exec_command(f"ryu-manager {simple_switch_custom_name}", timeout=20)
-            print("Command executed")
-        except Exception as e:
-            print(f"Error executing command: {e}")
-            return
         
-        # Read output in a non-blocking way
-        stdout.channel.settimeout(2)
-        stderr.channel.settimeout(2)
+        client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10)
+        print("Command executed")
+        # try:
+        #     command = (
+        #         "sudo mn -c \n"
+        #         f"sudo cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/{simple_switch_custom_name} \n"
+        #         "cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n"
+        #         f"ryu-manager {simple_switch_custom_name}"
+        #     )
+        #     # stdin, stdout, stderr = client.exec_command(f"sudo mn -c \n sudo su \n sudo cp /media/sf_shared_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=20)
+        #     # stdin, stdout, stderr = client.exec_command(f"sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=20)
 
-        try:
-            stdout_output = stdout.read()
-            stderr_output = stderr.read()
-        except Exception as e:
-            print(f"Error reading output: {e}")
-            stdout_output = ""
-            stderr_output = ""
+        #     # client.exec_command(f"ryu-manager {simple_switch_custom_name}", timeout=20)
+        #     # client.exec_command(f"cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager {simple_switch_custom_name}", timeout=20)
 
-        if stderr_output:
-            print(f"\nstderr:\n{stderr_output.decode()}")
-        if stdout_output:
-            print(f"\nstdout:\n{stdout_output.decode()}")
+        #     # stdin, stdout, stderr = client.exec_command("sudo mn -c \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager simple_switch_13.py", timeout=10)
+
+            
+            
+        #     print("Command executed")
+        # except Exception as e:
+        #     print(f"Error executing command: {e}")
+        #     return
+        
+        # # Read output in a non-blocking way
+        # stdout.channel.settimeout(2)
+        # stderr.channel.settimeout(2)
+
+        # try:
+        #     stdout_output = stdout.read()
+        #     stderr_output = stderr.read()
+        # except Exception as e:
+        #     print(f"Error reading output: {e}")
+        #     stdout_output = ""
+        #     stderr_output = ""
+
+        # if stderr_output:
+        #     print(f"\nstderr:\n{stderr_output.decode()}")
+        # if stdout_output:
+        #     print(f"\nstdout:\n{stdout_output.decode()}")
 
         print("Ryu-manager started\n")
 
