@@ -28,7 +28,7 @@ class myClass:
             print(f"Error connecting to the server: {e}")
             return
         
-        stdin, stdout, stderr = client.exec_command("cd /media/sf_NGN_Project ; cp ./simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py ")
+        stdin, stdout, stderr = client.exec_command("cd /media/sf_NGN_Project \n cp ./simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py ")
         print("Output cp:", stdout.read().decode())
         print("Errori cp:", stderr.read().decode())
         client.exec_command("sudo mn -c \n sudo su \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app \n ryu-manager NGN_simple_switch_custom.py", timeout=10)
