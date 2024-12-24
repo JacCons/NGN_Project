@@ -5,6 +5,8 @@ from mininet.net import Mininet
 from mininet.topo import Topo
 from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
+import time
+
 
 # Imposta il backend di matplotlib su Agg
 plt.switch_backend('Agg')
@@ -24,10 +26,8 @@ class MyTopo (Topo):
         switch_NODES=[]
         switch_MN=[] #array of switches
         link_NODES = []
-        # Creazione del grafo
-        # G = nx.Graph()
 
-        # Aggiunta dei nodi host
+        # Adding hosts
         for i in range (n_host):
             hostname = f"h{i+1}"
             hosts_NODES.append(hostname)
@@ -50,7 +50,7 @@ class MyTopo (Topo):
         print (switch_NODES)
         print("\n")
 
-        # Connessioni casuali tra host e switch
+        # Assign hosts to switches
         for host in hosts_NODES:
             switch = random.choice(switch_NODES)
             self.addLink(host, switch) #add link host-switch
@@ -97,7 +97,7 @@ class MyTopo (Topo):
         print("\n")
             
 
-        # Disegno del grafo
+        # Create graph
         pos = nx.spring_layout(G, seed=42)  # Layout per una visualizzazione più chiara con seme fisso
         colors = ["red" if G.nodes[node]['type'] == "host" else "blue" for node in G.nodes]
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
@@ -164,6 +164,54 @@ class MyTopo (Topo):
         plt.close()  # Chiude la figura corrente
 
         return shortest_path
+    
+#FUNCTIONS
+def wait_for_stp_convergence(timeout=30):
+    """Waiting for STP to converge."""
+    print(f"Waiting for STP to converge ({timeout} seconds)...")
+    time.sleep(timeout)
+    print("STP convergence achieved...")
+
+def assign_services(net):
+    #Host client sarà poi rimosso perché i servizi saranno on demand
+    host_client = net.get('h1')
+    host_server1 = net.get('h3')
+    #host_server2 = net.get('h4')
+    #host_server3 = net.get('h6')
+    host_server4 = net.get('h7')
+    
+    # Attendi la convergenza di STP
+    wait_for_stp_convergence(timeout=30)
+    
+    
+    print("Testing connectivity between hosts...")
+    if net.ping([host_server1,host_client ]) > 0:
+        print("Ping failed after STP convergence. Exiting.")
+        net.stop()
+        return
+
+    # Avvia il server su h1
+    print(f"\nStarting Server 1 on host {host_server1}...")
+    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    print(f"Server IP: {host_server1.IP()}")
+    host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
+    # Waiting for the server to be ready
+    time.sleep(3)
+    print(f"Server 1 running...")
+
+    # Avvia il server su h7
+    print(f"\nStarting Server 4 on host {host_server4}...")
+    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    print(f"Server IP: {host_server4.IP()}")
+    host_server4.cmd('python3 server4first.py &')  # Avvia il server in background 
+    # Waiting for the server to be ready
+    time.sleep(3)
+    print(f"Server 4 running...")
+
+    # Avvia il client su h2 (da rimuovere successivamente!!!!!)
+    print("\nAvvio del client su h1...")
+    result_client = host_client.cmd(f'python3 client4.py {host_server4.IP()}')
+    print(f"Client output:\n{result_client}")
 
 
 def run_minimal_network():
@@ -176,24 +224,22 @@ def run_minimal_network():
 
     # Start the network
     net.start()
+    assign_services(net)
+    
 
-    # Get references to host objects (assuming they exist in the network)
-    h1 = net.get('h1')
-    h2 = net.get('h2')
-
-    # Check if hosts were found before proceeding
-    if h1 is None or h2 is None:
-        print("Error: Hosts h1 or h2 not found in the network.")
-        net.stop()
-        return
+    # # Check if hosts were found before proceeding
+    # if h1 is None or h2 is None:
+    #     print("Error: Hosts h1 or h2 not found in the network.")
+    #     net.stop()
+    #     return
 
     # (Optional) Verify connectivity between hosts
-    print("Testing connectivity...")
+    #print("Testing connectivity...")
     #net.pingAll()
 
     # Now that h1 and h2 are guaranteed to be valid objects, call get_shortest_path
-    shortest_path = MyTopo.get_shortest_path(net, h1, h2)
-    print(f"\nShortest path between h1 and h2: {shortest_path}\n")
+    #shortest_path = MyTopo.get_shortest_path(net, h1, h2)
+    #print(f"\nShortest path between h1 and h2: {shortest_path}\n")
 
     # Start the CLI for manual interaction
     CLI(net)
