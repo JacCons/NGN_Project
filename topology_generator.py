@@ -42,7 +42,7 @@ class MyTopo (Topo):
         for k in range (n_switch):
             switchname = f"s{k+1}"
             switch_NODES.append(switchname)
-            switch_MN.append(self.addSwitch(switchname,protocols='OpenFlow13'))
+            switch_MN.append(self.addSwitch(switchname,protocols='OpenFlow13',stp = True))
         G.add_nodes_from(switch_NODES, type="switch")
         
         #Print all switches
