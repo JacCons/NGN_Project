@@ -19,8 +19,19 @@ G = nx.Graph()
 class MyTopo (Topo):    
     def build(self):
         
-        n_host = 8
-        n_switch = 7
+        # n_host = 8
+        # n_switch = 7
+
+        try:
+            with open("topology_parameters.txt", "r") as f:
+                valori = f.readlines()
+                n_host = int(valori[0].strip())
+                n_switch = int(valori[1].strip())
+        except FileNotFoundError:
+            print("Errore: Il file non esiste")
+        except (IndexError, ValueError):
+            print("Errore: il file contiene dati non validi")
+        
         hosts_NODES=[]
         hosts_MN=[] #array of hosts
         switch_NODES=[]

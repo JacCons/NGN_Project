@@ -6,10 +6,20 @@ from openShellWithPy import myClass
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.image as mpimg
+import os
+import time
+import paramiko
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
 
+hostname = "localhost" 
+username = "vagrant" 
+password = "vagrant" 
+port = 2222
+
+numhost = 0
+numswitch = 0
 
 class App(customtkinter.CTk):
     
@@ -48,21 +58,21 @@ class App(customtkinter.CTk):
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.host_frame.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
-        self.sidebar_numhost = customtkinter.CTkLabel(master=self.host_frame, text="Number of hosts:")
-        self.sidebar_numhost.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
-        self.sidebar_entrynumhost = customtkinter.CTkEntry(master=self.host_frame)
-        self.sidebar_entrynumhost.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+        self.numhost = customtkinter.CTkLabel(master=self.host_frame, text="Number of hosts:")
+        self.numhost.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+        self.entrynumhost = customtkinter.CTkEntry(master=self.host_frame)
+        self.entrynumhost.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         self.switch_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.switch_frame.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
-        self.sidebar_numswitch = customtkinter.CTkLabel(master=self.switch_frame, text="Number of switches:")
-        self.sidebar_numswitch.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
-        self.sidebar_entrynumswitch = customtkinter.CTkEntry(master=self.switch_frame)
-        self.sidebar_entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+        self.numswitch = customtkinter.CTkLabel(master=self.switch_frame, text="Number of switches:")
+        self.numswitch.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+        self.entrynumswitch = customtkinter.CTkEntry(master=self.switch_frame)
+        self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        # *** Topologia Custom, da togliere le segeunti righe  e la funzione associata create_button_event() sotto***
-        # self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
-        # self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+        # Bottone per la creazione della rete
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
+        self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
         self.statusbox = customtkinter.CTkTextbox(self, height=200)
@@ -81,20 +91,6 @@ class App(customtkinter.CTk):
         self.center_frame.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.networkarch = customtkinter.CTkLabel(self.center_frame, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nw")
-
-        #Creazione di una figura a partire dal file .png del grafo
-        image_path = "img/graph.png"
-        fig = Figure(dpi=100)
-        ax = fig.add_subplot(111)
-        img = mpimg.imread(image_path)
-        ax.imshow(img)
-        ax.axis('off')
-
-        #Visualizzazione dell'immagine all'interno dell'interfaccia grafica
-        canvas = FigureCanvasTkAgg(fig, master=self.center_frame)
-        canvas_widget = canvas.get_tk_widget()
-        canvas_widget.grid(row=1, column=0, sticky="nsew")
-        canvas.draw()
 
         # Regolazioni per adattare l'immagine al frame
         self.center_frame.grid_rowconfigure(1, weight=1)
@@ -122,54 +118,60 @@ class App(customtkinter.CTk):
 
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
-       
-        #self.sidebar_button_3.configure(state="disabled", text="Disabled CTkButton")
-        # self.checkbox_3.configure(state="disabled")
-        # self.checkbox_1.select()
-        # self.scrollable_frame_switches[0].select()
-        # self.scrollable_frame_switches[4].select()
-        # self.radio_button_3.configure(state="disabled")
-        #self.appearance_mode_optionemenu.set("Dark")
-        #self.scaling_optionemenu.set("100%")
-        # self.optionmenu_1.set("CTkOptionmenu")
-        # self.combobox_1.set("CTkComboBox")
-        # self.slider_1.configure(command=self.progressbar_2.set)
-        # self.slider_2.configure(command=self.progressbar_3.set)
-        # self.progressbar_1.configure(mode="indeterminnate")
-        # self.progressbar_1.start()
-        self.statusbox.insert("0.0", "Status Box\n\n")
-        # self.seg_button_1.configure(values=["CTkSegmentedButton", "Value 2", "Value 3"])
-        # self.seg_button_1.set("Value 2")
-
-    def open_input_dialog_event(self):
-        dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
-        print("CTkInputDialog:", dialog.get_input())
-
-    def change_appearance_mode_event(self, new_appearance_mode: str):
-        customtkinter.set_appearance_mode(new_appearance_mode)
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
-    def sidebar_button_event(self):
-        print("sidebar_button click")
+    def create_button_event(self):
+        global numhost
+        global numswitch
 
-    # def create_button_event(self):
-    #     topo = self.sidebar_entrytopo.get()
-    #     flags = "--mac --switch=ovsk,protocols=OpenFlow13 --controller=remote"
-    #     match topo:
-    #         case "Single":
-    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
-    #         case "Linear":
-    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
-    #         #case "Reversed":
-    #             #print(f"sudo mn --topo {topo},{self.sidebar_entrynumhost.get()} {flags}")
-    #         case "Tree":
-    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
-    #         case "Torus":
-    #             print(f"sudo mn --topo {topo},{self.sidebar_entrynumswitch.get()},{self.sidebar_entrynumhost.get()} {flags}")
+        numhost = int(self.entrynumhost.get())
+        numswitch = int(self.entrynumswitch.get())
+
+        with open("topology_parameters.txt", "w") as f:
+            f.write(str(numhost))
+            f.write("\n")
+            f.write(str(numswitch))
+
+        print("\nExecution of topology_generator.py ...\n")
         
+        # Create an SSH client instance 
+        client = paramiko.SSHClient() 
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+        
+        # Connessione al server 
+        try:
+            client.connect(hostname, username=username, password=password, port=port)
+            print("Connected to the server")
+        except Exception as e:
+            print(f"Error connecting to the server: {e}")
+            return
+        
+        # Esecuzione del file topology_generator
+        client.exec_command("cd /media/sf_NGN_Project \n")
+        client.exec_command("python3 topology_generator.py \n")
+
+        time.sleep(10) # Utile per aspettare la creazione del file graph.png relativo all'esecuzione di topology_generator.py
+
+        #Creazione di una figura a partire dal file .png del grafo
+        image_path = "img/graph.png"
+
+        if os.path.exists(image_path):
+            print("L'immagine 'graph.png' esiste.")
+            fig = Figure(dpi=100)
+            ax = fig.add_subplot(111)
+            img = mpimg.imread(image_path)
+            ax.imshow(img)
+            ax.axis('off')
+
+            canvas = FigureCanvasTkAgg(fig, master=self.center_frame)
+            canvas_widget = canvas.get_tk_widget()
+            canvas_widget.grid(row=1, column=0, sticky="nsew")
+            canvas.draw()
+        else: 
+            print("L'immagine 'graph.png' non esiste.")
 
 if __name__ == "__main__":
     app = App()
