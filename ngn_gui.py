@@ -118,7 +118,7 @@ class App(customtkinter.CTk):
         self.services_label = customtkinter.CTkLabel(self.sidebar_framedx, text="Services", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
 
-        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="Data and Time", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
+        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="Date and Time", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.service1_button.configure(fg_color="#c74c3c")
 
@@ -158,46 +158,74 @@ class App(customtkinter.CTk):
         self.statusbox.delete("1.0", "end")
         self.statusbox.insert("end", f"{string} {button_name}\n")
 
-        if button_name == "Data and Time":
+        if button_name == "Date and Time":
             try:
-                with open("server1.txt", "w") as f:
-                    # f.write("python3 server1.py &")
-                    f.write("on")
+                with open("server1.txt", "r") as f:
+                    if f.read() == "on":                        
+                        with open("server1.txt", "w") as fi:                            
+                            fi.write("off")
+                            self.service1_button.configure(fg_color="#c74c3c")
+                        with open("server4.txt", "w") as fii:   
+                            fii.write("off")           
+                            self.service4_button.configure(state = "disabled")
+                            self.service4_button.configure(fg_color="#c74c3c")  
+                    else:
+                        with open("server1.txt", "w") as fi:
+                            fi.write("on")
+                            self.service1_button.configure(fg_color="#3f964b")
+                            self.service4_button.configure(state = "normal")
 
-                    self.service4_button.configure(state = "enabled")
-                    self.service1_button.configure(fg_color="#3f964b")                  
             except:
                 print("Error")
         if button_name == "Lucky Number":
             try:
-                with open("server2.txt", "w") as f:
-                    f.write("on")
-                    self.service2_button.configure(fg_color="#3f964b")
+                with open("server2.txt", "r") as f:
+                    if f.read() == "on":
+                        with open("server2.txt", "w") as fi:
+                            fi.write("off")
+                            self.service2_button.configure(fg_color="#c74c3c")
+                    else:
+                        with open("server2.txt", "w") as fi:
+                            fi.write("on")
+                            self.service2_button.configure(fg_color="#3f964b")
             except:
                 print("Error")
         if button_name == "Daily Quote":
             try:
-                with open("server3.txt", "w") as f:
-                    f.write("on")
-                    self.service3_button.configure(fg_color="#3f964b")
+
+                with open("server3.txt", "r") as f:
+                    if f.read() == "on":
+                        with open("server3.txt", "w") as fi:
+                            fi.write("off")
+                            self.service3_button.configure(fg_color="#c74c3c")
+                    else:
+                        with open("server3.txt", "w") as fi:
+                            fi.write("on")
+                            self.service3_button.configure(fg_color="#3f964b")
             except:
                 print("Error")   
         if button_name == "Random Service":
             try:
-                with open("server1.txt", "r") as fi:
-                    variable = fi.read()
-                    print(variable)
-                    with open("server4.txt", "w") as f:                    
-                        if(variable == "off"):
-                            f.write("off")    
-                            self.service4_button.configure(state = "disabled")        
-                        else:
-                            f.write("on")
-                            self.service4_button.configure(state = "enabled")
-                            self.service4_button.configure(fg_color="#3f964b")
-
-
-
+                with open("server1.txt", "r") as f:
+                    variable = f.read()
+                
+                if variable == "on":
+                    with open("server4.txt", "r") as fii:
+                        var = fii.read()
+                        print(var)
+                        if var == "on":
+                            with open("server4.txt", "w") as a:
+                                a.write("off")
+                                self.service4_button.configure(fg_color="#c74c3c")
+                        elif var == "off":
+                            with open("server4.txt", "w") as b:
+                                b.write("on")
+                                self.service4_button.configure(fg_color="#3f964b")
+                else:                    
+                    with open("server4.txt", "w") as fi: 
+                        fi.write("off")    
+                        self.service4_button.configure(state = "disabled")   
+                        self.service4_button.configure(fg_color="#c74c3c") 
             except:
                 print("Error")
         if button_name == "STOP ALL SERVICES":
