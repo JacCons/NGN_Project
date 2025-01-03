@@ -108,38 +108,53 @@ class App(customtkinter.CTk):
         self.services_label = customtkinter.CTkLabel(self.sidebar_framedx, text="Services", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
 
-        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="DATA E ORA", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="Data and Time", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text="NUMERO FORTUNATO", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text="Lucky Number", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service2_button, "Service selected:"))
         self.service2_button.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.service3_button = customtkinter.CTkButton(self.sidebar_framedx, text="FRASE DEL GIORNO", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.service3_button = customtkinter.CTkButton(self.sidebar_framedx, text="Daily Quote", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service3_button, "Service selected:"))
         self.service3_button.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.service4_button = customtkinter.CTkButton(self.sidebar_framedx, text="GIRA LA RUOTA!", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.service4_button = customtkinter.CTkButton(self.sidebar_framedx, text="Random Service", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service4_button, "Service selected:"))
         self.service4_button.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
 
-        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40)
+        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
 
+
+    def event_services(self, button, string):
+        button_name = button.cget("text")
+        self.statusbox.configure(state="normal")
+        self.statusbox.delete("1.0", "end")
+        self.statusbox.insert("end", f"{string} {button_name}\n")
+
     def create_button_event(self):
         global numhost
         global numswitch
 
-        numhost = int(self.entrynumhost.get())
-        numswitch = int(self.entrynumswitch.get())
+        try:
+            numhost = int(self.entrynumhost.get())
+            numswitch = int(self.entrynumswitch.get())
 
-        with open("topology_parameters.txt", "w") as f:
-            f.write(str(numhost))
-            f.write("\n")
-            f.write(str(numswitch))
+            with open("topology_parameters.txt", "w") as f:
+                f.write(str(numhost))
+                f.write("\n")
+                f.write(str(numswitch))
 
-        print("topology_parameters.txt created...")
+            print("topology_parameters.txt created...")
+            self.statusbox.configure(state="normal")
+            self.statusbox.delete("1.0", "end")
+            self.statusbox.insert("end", f"Number of hosts: {numhost}\nNumber of switches: {numswitch}\n")
+        except:
+            self.statusbox.configure(state="normal")
+            self.statusbox.delete("1.0", "end")
+            self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
 
 
     def display_button_event(self):

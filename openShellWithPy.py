@@ -114,5 +114,5 @@ class myClass:
             case "linux":
                 subprocess.Popen(["gnome-terminal"])
 
-myClass.start_controller()
-myClass.open_terminal()
+# myClass.start_controller()
+# myClass.open_terminal()

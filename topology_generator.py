@@ -15,6 +15,7 @@ plt.switch_backend('Agg')
 
 # Creazione del grafo
 G = nx.Graph()
+default_client = '10.0.0.1'
 
 class MyTopo (Topo):    
     def build(self):
@@ -115,6 +116,10 @@ class MyTopo (Topo):
         plt.savefig("img/graph.png")
         print("Graph saved as graph.png\n")
         plt.clf()  # Pulisce la figura corrente
+    
+    def print_shortest_path_to_GUI(net, dst_host):
+        shortest_path = MyTopo.get_shortest_path(net, default_client , dst_host)
+        print(f"\nShortest path between client and server: {shortest_path}")
         
 
     def get_shortest_path(net, src_host, dst_host):
@@ -157,7 +162,7 @@ class MyTopo (Topo):
 
         # Calculate shortest path using Dijkstra's algorithm
         shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch)
-        print(f"\nShortest path between h1 and h2 without weights: {shortest_path}")
+        print(f"\nShortest path between client and server without weights: {shortest_path}")
         # Calculate shortest path using Dijkstra's algorithm and weights
         shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch, weight='weight')
 
@@ -185,10 +190,15 @@ def wait_for_stp_convergence(timeout=30):
 
 def assign_services(net):
     #Host client sarà poi rimosso perché i servizi saranno on demand
+    global host_client
     host_client = net.get('h1')
+    global host_server1 
     host_server1 = net.get('h3')
-    #host_server2 = net.get('h4')
-    #host_server3 = net.get('h6')
+    #global host_server2
+    # host_server2 = net.get('h4')
+    #global host_server2
+    #host_server2 = net.get('h6')
+    global host_server4 
     host_server4 = net.get('h7')
     
     # Attendi la convergenza di STP
