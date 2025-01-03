@@ -202,16 +202,16 @@ def assign_services(net):
     host_server4 = net.get('h7')
     
     # Attendi la convergenza di STP
-    wait_for_stp_convergence(timeout=30)
+    #wait_for_stp_convergence(timeout=30)
     
     
-    print("Testing connectivity between hosts...")
-    if net.ping([host_server1,host_client ]) > 0:
-        print("Ping failed after STP convergence. Exiting.")
-        net.stop()
-        return
+    # print("Testing connectivity between hosts...")
+    # if net.ping([host_server1,host_client ]) > 0:
+    #     print("Ping failed after STP convergence. Exiting.")
+    #     net.stop()
+    #     return
 
-    # Avvia il server su h1
+    #Start server 1
     print(f"\nStarting Server 1 on host {host_server1}...")
     #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
     print(f"Server IP: {host_server1.IP()}")
@@ -220,19 +220,37 @@ def assign_services(net):
     time.sleep(3)
     print(f"Server 1 running...")
 
-    # Avvia il server su h7
+    #Start server 2
+    print(f"\nStarting Server 2 on host {host_server2}...")
+    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    print(f"Server IP: {host_server2.IP()}")
+    host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
+    # Waiting for the server to be ready
+    time.sleep(3)
+    print(f"Server 2 running...")
+
+    #Start server 3
+    print(f"\nStarting Server 3 on host {host_server3}...")
+    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    print(f"Server IP: {host_server3.IP()}")
+    host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
+    # Waiting for the server to be ready
+    time.sleep(3)
+    print(f"Server 3 running...")
+
+    #Start server 4
     print(f"\nStarting Server 4 on host {host_server4}...")
     #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
     print(f"Server IP: {host_server4.IP()}")
-    host_server4.cmd('python3 server4first.py &')  # Avvia il server in background 
+    host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
     # Waiting for the server to be ready
     time.sleep(3)
     print(f"Server 4 running...")
 
     # Avvia il client su h2 (da rimuovere successivamente!!!!!)
-    print("\nAvvio del client su h1...")
-    result_client = host_client.cmd(f'python3 client4.py {host_server4.IP()}')
-    print(f"Client output:\n{result_client}")
+    # print("\nAvvio del client su h1...")
+    # result_client = host_client.cmd(f'python3 client4.py {host_server4.IP()}')
+    # print(f"Client output:\n{result_client}")
 
 
 def run_minimal_network():

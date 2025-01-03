@@ -13,5 +13,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         conn, addr = server_socket.accept()
         with conn:
             print(f"Connessione da {addr}")
-            number = random(100)
+            number = "Lucky number: " + str(random.randint(0, 99))
             conn.sendall(number.encode())  
