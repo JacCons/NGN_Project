@@ -188,7 +188,7 @@ def wait_for_stp_convergence(timeout=30):
     time.sleep(timeout)
     print("STP convergence achieved...")
 
-def assign_services(net):
+def assign_services():
     #Host client sarà poi rimosso perché i servizi saranno on demand
     global host_client
     host_client = net.get('h1')
@@ -259,11 +259,12 @@ def run_minimal_network():
     c0 = RemoteController('c0', ip='127.0.0.1', port=6653)
     
     # Create the network using the custom topology and connect it to the Ryu controller
+    global net
     net = Mininet(topo=MyTopo(), switch=OVSSwitch, controller=c0)
 
     # Start the network
     net.start()
-    assign_services(net)
+    # assign_services()
     
 
     # # Check if hosts were found before proceeding

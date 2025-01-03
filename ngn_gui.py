@@ -10,6 +10,8 @@ import os
 import time
 import paramiko
 
+from topology_generator import assign_services
+
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
 
@@ -103,7 +105,7 @@ class App(customtkinter.CTk):
         #Servizi
         self.sidebar_framedx = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_framedx.grid(row=0, column=3, rowspan=4, sticky="nsew")
-        self.sidebar_framedx.grid_rowconfigure(6, weight=1)
+        self.sidebar_framedx.grid_rowconfigure(7, weight=1)
 
         self.services_label = customtkinter.CTkLabel(self.sidebar_framedx, text="Services", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
@@ -123,9 +125,20 @@ class App(customtkinter.CTk):
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
+        self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
+        self.start_server_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
+
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
+
+    def event_server_up(self, button, string):
+        button_name = button.cget("text")
+        self.statusbox.configure(state="normal")
+        self.statusbox.delete("1.0", "end")
+        self.statusbox.insert("end", f"{string} {button_name}\n")
+
+        assign_services()
 
 
     def event_services(self, button, string):
