@@ -163,8 +163,9 @@ class App(customtkinter.CTk):
                 with open("server1.txt", "w") as f:
                     # f.write("python3 server1.py &")
                     f.write("on")
+
                     self.service4_button.configure(state = "enabled")
-                    self.service1_button.configure(fg_color="#3f964b")
+                    self.service1_button.configure(fg_color="#3f964b")                  
             except:
                 print("Error")
         if button_name == "Lucky Number":
