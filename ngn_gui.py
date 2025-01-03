@@ -92,6 +92,10 @@ class App(customtkinter.CTk):
         self.networkarch = customtkinter.CTkLabel(self.center_frame, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nw")
 
+        # Bottone per la visualizzazione dell'immagine
+        self.display_button = customtkinter.CTkButton(self.center_frame, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.display_button_event)
+        self.display_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+
         # Regolazioni per adattare l'immagine al frame
         self.center_frame.grid_rowconfigure(1, weight=1)
         self.center_frame.grid_columnconfigure(0, weight=1)
@@ -135,27 +139,12 @@ class App(customtkinter.CTk):
             f.write("\n")
             f.write(str(numswitch))
 
-        print("\nExecution of topology_generator.py ...\n")
-        
-        # Create an SSH client instance 
-        client = paramiko.SSHClient() 
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
-        
-        # Connessione al server 
-        try:
-            client.connect(hostname, username=username, password=password, port=port)
-            print("Connected to the server")
-        except Exception as e:
-            print(f"Error connecting to the server: {e}")
-            return
-        
-        # Esecuzione del file topology_generator
-        client.exec_command("cd /media/sf_NGN_Project \n")
-        client.exec_command("python3 topology_generator.py \n")
+        print("topology_parameters.txt created...")
 
-        time.sleep(10) # Utile per aspettare la creazione del file graph.png relativo all'esecuzione di topology_generator.py
 
-        #Creazione di una figura a partire dal file .png del grafo
+    def display_button_event(self):
+        self.display_button.grid_forget()
+
         image_path = "img/graph.png"
 
         if os.path.exists(image_path):
@@ -172,6 +161,7 @@ class App(customtkinter.CTk):
             canvas.draw()
         else: 
             print("L'immagine 'graph.png' non esiste.")
+
 
 if __name__ == "__main__":
     app = App()
