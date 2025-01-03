@@ -29,6 +29,15 @@ class App(customtkinter.CTk):
 
     def __init__(self):
         super().__init__()
+
+        with open("server1.txt", "w") as f:
+            f.write("off")
+        with open("server2.txt", "w") as f: 
+            f.write("off")
+        with open("server3.txt", "w") as f:
+            f.write("off")
+        with open("server4.txt", "w") as f:  
+            f.write("off") 
     
         #Configurazione della finestra
         self.title("NGN Project")
@@ -72,7 +81,7 @@ class App(customtkinter.CTk):
         self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Bottone per la creazione della rete
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="UPDATE PARAMETERS", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
         self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
@@ -111,15 +120,20 @@ class App(customtkinter.CTk):
 
         self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="Data and Time", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+        self.service1_button.configure(fg_color="#c74c3c")
 
         self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text="Lucky Number", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service2_button, "Service selected:"))
         self.service2_button.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
+        self.service2_button.configure(fg_color="#c74c3c")
 
         self.service3_button = customtkinter.CTkButton(self.sidebar_framedx, text="Daily Quote", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service3_button, "Service selected:"))
         self.service3_button.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
+        self.service3_button.configure(fg_color="#c74c3c")        
 
         self.service4_button = customtkinter.CTkButton(self.sidebar_framedx, text="Random Service", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service4_button, "Service selected:"))
         self.service4_button.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
+        self.service4_button.configure(state = "disabled")
+        self.service4_button.configure(fg_color="#c74c3c")
 
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
@@ -149,36 +163,57 @@ class App(customtkinter.CTk):
                 with open("server1.txt", "w") as f:
                     # f.write("python3 server1.py &")
                     f.write("on")
+                    self.service4_button.configure(state = "enabled")
+                    self.service1_button.configure(fg_color="#3f964b")
             except:
                 print("Error")
         if button_name == "Lucky Number":
             try:
                 with open("server2.txt", "w") as f:
                     f.write("on")
+                    self.service2_button.configure(fg_color="#3f964b")
             except:
                 print("Error")
         if button_name == "Daily Quote":
             try:
                 with open("server3.txt", "w") as f:
                     f.write("on")
+                    self.service3_button.configure(fg_color="#3f964b")
             except:
                 print("Error")   
         if button_name == "Random Service":
             try:
-                with open("server4.txt", "w") as f:
-                    f.write("on")
+                with open("server1.txt", "r") as fi:
+                    variable = fi.read()
+                    print(variable)
+                    with open("server4.txt", "w") as f:                    
+                        if(variable == "off"):
+                            f.write("off")    
+                            self.service4_button.configure(state = "disabled")        
+                        else:
+                            f.write("on")
+                            self.service4_button.configure(state = "enabled")
+                            self.service4_button.configure(fg_color="#3f964b")
+
+
+
             except:
                 print("Error")
         if button_name == "STOP ALL SERVICES":
             try:
                 with open("server1.txt", "w") as f:
                     f.write("off")
+                    self.service1_button.configure(fg_color="#c74c3c")
                 with open("server2.txt", "w") as f:
                     f.write("off")
+                    self.service2_button.configure(fg_color="#c74c3c")
                 with open("server3.txt", "w") as f:
                     f.write("off")
+                    self.service3_button.configure(fg_color="#c74c3c")
                 with open("server4.txt", "w") as f:
                     f.write("off")
+                    self.service4_button.configure(fg_color="#c74c3c")
+                    self.service4_button.configure(state = "disabled")
             except:
                 print("Error")
              
