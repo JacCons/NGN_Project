@@ -149,6 +149,8 @@ class App(customtkinter.CTk):
                 with open("server1.txt", "w") as f:
                     # f.write("python3 server1.py &")
                     f.write("on")
+
+                    f.close()                  
             except:
                 print("Error")
         if button_name == "Lucky Number":

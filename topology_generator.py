@@ -6,6 +6,7 @@ from mininet.topo import Topo
 from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
 import time
+import threading
 
 
 # Imposta il backend di matplotlib su Agg
@@ -189,63 +190,137 @@ def wait_for_stp_convergence(timeout=30):
     print("STP convergence achieved...")
 
 def assign_services():
-    #Host client sarà poi rimosso perché i servizi saranno on demand
-    global host_client
-    host_client = net.get('h1')
-    global host_server1 
+    """Controlla il file per avviare o fermare il servizio."""
+    service_started1 = False 
+    service_started2 = False 
+    service_started3 = False
+    service_started4 = False
+    
     host_server1 = net.get('h3')
-    global host_server2
     host_server2 = net.get('h4')
-    global host_server3
     host_server3 = net.get('h6')
-    global host_server4 
     host_server4 = net.get('h7')
     
     # Attendi la convergenza di STP
-    wait_for_stp_convergence(timeout=30)
     
-    
-    # print("Testing connectivity between hosts...")
-    # if net.ping([host_server1,host_client ]) > 0:
-    #     print("Ping failed after STP convergence. Exiting.")
-    #     net.stop()
-    #     return
 
-    #Start server 1
-    print(f"\nStarting Server 1 on host {host_server1}...")
-    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    print(f"Server IP: {host_server1.IP()}")
-    host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
-    # Waiting for the server to be ready
-    time.sleep(3)
-    print(f"Server 1 running...")
+    # #Start server 1
+    # print(f"\nStarting Server 1 on host {host_server1}...")
+    # print(f"Server IP: {host_server1.IP()}")
+    # host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
+    # time.sleep(3)
+    # print(f"Server 1 running...")
 
-    #Start server 2
-    print(f"\nStarting Server 2 on host {host_server2}...")
-    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    print(f"Server IP: {host_server2.IP()}")
-    host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
-    # Waiting for the server to be ready
-    time.sleep(3)
-    print(f"Server 2 running...")
+    while True:
+        try:
+            with open("server1.txt", "r") as file:
+                stato = file.read().strip()  # Leggi il contenuto del file
+                if stato == "on" and not service_started1 :
+                    print(f"\nStarting Server 1 on host {host_server1}...")
+                    print(f"Server IP: {host_server1.IP()}")
+                    host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
+                    time.sleep(3)
+                    print(f"Server 1 running...")  # Avvia il server in background
+                    print("press Enter to continue...")
+                    service_started1 = True
+                elif stato == "off" and service_started1:
+                    print("Server1 stopped!")
+                    host_server1.cmd('pkill -f server1.py &')  # Ferma il server
+                    print("press Enter to continue...")
+                    service_started1 = False
+        except Exception as e:
+            print(f"Errore nel monitoraggio del file: {e}")
+        time.sleep(1)  # Controlla ogni secondo
+        
 
-    #Start server 3
-    print(f"\nStarting Server 3 on host {host_server3}...")
-    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    print(f"Server IP: {host_server3.IP()}")
-    host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
-    # Waiting for the server to be ready
-    time.sleep(3)
-    print(f"Server 3 running...")
+        try:
+            with open("server2.txt", "r") as file:
+                stato = file.read().strip()  # Leggi il contenuto del file
+                if stato == "on" and not service_started2 :
+                    print(f"\nStarting Server 2 on host {host_server2}...")
+                    print(f"Server IP: {host_server2.IP()}")
+                    host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
+                    time.sleep(3)
+                    print(f"Server 2 running...")  # Avvia il server in background
+                    print("press Enter to continue...")
+                    service_started2 = True
+                elif stato == "off" and service_started2:
+                    print("Server2 stopped!")
+                    host_server1.cmd('pkill -f server2.py &')  # Ferma il server
+                    print("press Enter to continue...")
+                    service_started2 = False
+        except Exception as e:
+            print(f"Errore nel monitoraggio del file: {e}")
+        time.sleep(1)  # Controlla ogni secondo
 
-    #Start server 4
-    print(f"\nStarting Server 4 on host {host_server4}...")
-    #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    print(f"Server IP: {host_server4.IP()}")
-    host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
-    # Waiting for the server to be ready
-    time.sleep(3)
-    print(f"Server 4 running...")
+
+        try:
+            with open("server3.txt", "r") as file:
+                stato = file.read().strip()  # Leggi il contenuto del file
+                if stato == "on" and not service_started3 :
+                    print(f"\nStarting Server 3 on host {host_server3}...")
+                    print(f"Server IP: {host_server3.IP()}")
+                    host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
+                    time.sleep(3)
+                    print(f"Server 3 running...")  # Avvia il server in background
+                    print("press Enter to continue...")
+                    service_started3 = True
+                elif stato == "off" and service_started3:
+                    print("Server3 stopped!")
+                    host_server3.cmd('pkill -f server3.py &')  # Ferma il server
+                    print("press Enter to continue...")
+                    service_started3 = False
+        except Exception as e:
+            print(f"Errore nel monitoraggio del file: {e}")
+        time.sleep(1)  # Controlla ogni secondo
+
+
+        try:
+            with open("server4.txt", "r") as file:
+                stato = file.read().strip()  # Leggi il contenuto del file
+                if stato == "on" and not service_started4 :
+                    print(f"\nStarting Server 4 on host {host_server4}...")
+                    print(f"Server IP: {host_server4.IP()}")
+                    host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
+                    time.sleep(3)
+                    print(f"Server 4 running...")  # Avvia il server in background
+                    print("press Enter to continue...")
+                    service_started4 = True
+                elif stato == "off" and service_started4:
+                    print("Server4 stopped!")
+                    host_server4.cmd('pkill -f server4.py &')  # Ferma il server
+                    print("press Enter to continue...")
+                    service_started4 = False
+        except Exception as e:
+            print(f"Errore nel monitoraggio del file: {e}")
+        time.sleep(1)  # Controlla ogni secondo
+
+    # #Start server 2
+    # print(f"\nStarting Server 2 on host {host_server2}...")
+    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    # print(f"Server IP: {host_server2.IP()}")
+    # host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
+    # # Waiting for the server to be ready
+    # time.sleep(3)
+    # print(f"Server 2 running...")
+
+    # #Start server 3
+    # print(f"\nStarting Server 3 on host {host_server3}...")
+    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    # print(f"Server IP: {host_server3.IP()}")
+    # host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
+    # # Waiting for the server to be ready
+    # time.sleep(3)
+    # print(f"Server 3 running...")
+
+    # #Start server 4
+    # print(f"\nStarting Server 4 on host {host_server4}...")
+    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
+    # print(f"Server IP: {host_server4.IP()}")
+    # host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
+    # # Waiting for the server to be ready
+    # time.sleep(3)
+    # print(f"Server 4 running...")
 
     # Avvia il client su h2 (da rimuovere successivamente!!!!!)
     # print("\nAvvio del client su h1...")
@@ -264,7 +339,8 @@ def run_minimal_network():
 
     # Start the network
     net.start()
-    # assign_services()
+    #assign_services()
+    wait_for_stp_convergence(timeout=3)
     
 
     # # Check if hosts were found before proceeding
@@ -282,12 +358,20 @@ def run_minimal_network():
     #print(f"\nShortest path between h1 and h2: {shortest_path}\n")
 
     # Start the CLI for manual interaction
+
+    # Avvia il monitoraggio del file in un thread separato
+    monitor_thread = threading.Thread(target=assign_services)
+    monitor_thread.daemon = True  # Questo farà terminare il thread quando il programma principale termina
+    monitor_thread.start()
+
     CLI(net)
 
     
 
     # Stop the network when exiting the CLI
     net.stop()
+
+
 
 if __name__ == '__main__': 
     run_minimal_network()
