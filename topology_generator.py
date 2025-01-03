@@ -202,7 +202,7 @@ def assign_services(net):
     host_server4 = net.get('h7')
     
     # Attendi la convergenza di STP
-    #wait_for_stp_convergence(timeout=30)
+    wait_for_stp_convergence(timeout=30)
     
     
     # print("Testing connectivity between hosts...")
