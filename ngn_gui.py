@@ -22,6 +22,11 @@ port = 2222
 numhost = 0
 numswitch = 0
 
+service_date_time = "Date and Time"
+lucky_number = "Lucky Number"
+daily_quote = "Daily Quote"
+two_steps_service = "2 Steps Service"
+
 class App(customtkinter.CTk):
     
     myClass.start_controller()
@@ -53,10 +58,10 @@ class App(customtkinter.CTk):
         #Barra laterale "Create a new network"
         self.sidebar_framesx = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_framesx.grid(row=0, column=0, rowspan=4, sticky="nsew")
-        self.sidebar_framesx.grid_rowconfigure(6, weight=1)
+        self.sidebar_framesx.grid_rowconfigure(7, weight=1)
 
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_framesx, text="Create a new network", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_framesx, text="Create network", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
 
         # *** Topologia Custom, da togliere le segeunti righe ***
         # self.topo_frame = customtkinter.CTkFrame(self.sidebar_framesx)
@@ -68,43 +73,45 @@ class App(customtkinter.CTk):
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.host_frame.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
-        self.numhost = customtkinter.CTkLabel(master=self.host_frame, text="Number of hosts:")
-        self.numhost.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+        self.numhost = customtkinter.CTkLabel(master=self.host_frame, text="Number of hosts:", font=customtkinter.CTkFont(size=15))
+        self.numhost.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         self.entrynumhost = customtkinter.CTkEntry(master=self.host_frame)
         self.entrynumhost.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         self.switch_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.switch_frame.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
-        self.numswitch = customtkinter.CTkLabel(master=self.switch_frame, text="Number of switches:")
+        self.numswitch = customtkinter.CTkLabel(master=self.switch_frame, text="Number of switches:", font=customtkinter.CTkFont(size=15))
         self.numswitch.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
         self.entrynumswitch = customtkinter.CTkEntry(master=self.switch_frame)
         self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
-        # Bottone per la creazione della rete
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="UPDATE PARAMETERS", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.create_button_event)
+        # Bottone per update dei parametri
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="UPDATE PARAMETERS", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
         self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
-        self.statusbox = customtkinter.CTkTextbox(self, height=200)
+        self.statusbox = customtkinter.CTkTextbox(self, height=65)
         self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
         # Imposta la textbox come sola lettura
         self.statusbox.configure(state="normal")  # Cambia lo stato a 'normal'
-        self.statusbox.insert("end", "Questa status box ora è in modalità solo lettura")  # Inserisci il testo
+        # self.statusbox.insert("end", "Questa status box ora è in modalità solo lettura")  # Inserisci il testo
         self.statusbox.configure(state="disabled")  # Reimposta lo stato a 'disabled'
 
         #self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         #self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
+        self.display_button = customtkinter.CTkButton(self.sidebar_framesx, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=self.display_button_event)
+        self.display_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
         #Architettura di rete
         self.center_frame = customtkinter.CTkFrame(self)
         self.center_frame.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.networkarch = customtkinter.CTkLabel(self.center_frame, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nw")
+        self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
         # Bottone per la visualizzazione dell'immagine
-        self.display_button = customtkinter.CTkButton(self.center_frame, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.display_button_event)
-        self.display_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
+        # self.display_button = customtkinter.CTkButton(self.center_frame, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), command = self.display_button_event)
+        # self.display_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Regolazioni per adattare l'immagine al frame
         self.center_frame.grid_rowconfigure(1, weight=1)
@@ -113,24 +120,24 @@ class App(customtkinter.CTk):
         #Servizi
         self.sidebar_framedx = customtkinter.CTkFrame(self, width=140, corner_radius=0)
         self.sidebar_framedx.grid(row=0, column=3, rowspan=4, sticky="nsew")
-        self.sidebar_framedx.grid_rowconfigure(7, weight=1)
+        self.sidebar_framedx.grid_rowconfigure(6, weight=1)
 
         self.services_label = customtkinter.CTkLabel(self.sidebar_framedx, text="Services", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
 
-        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text="Date and Time", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
+        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text=service_date_time, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.service1_button.configure(fg_color="#c74c3c")
 
-        self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text="Lucky Number", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service2_button, "Service selected:"))
+        self.service2_button = customtkinter.CTkButton(self.sidebar_framedx, text=lucky_number, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service2_button, "Service selected:"))
         self.service2_button.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
         self.service2_button.configure(fg_color="#c74c3c")
 
-        self.service3_button = customtkinter.CTkButton(self.sidebar_framedx, text="Daily Quote", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service3_button, "Service selected:"))
+        self.service3_button = customtkinter.CTkButton(self.sidebar_framedx, text= daily_quote, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service3_button, "Service selected:"))
         self.service3_button.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
         self.service3_button.configure(fg_color="#c74c3c")        
 
-        self.service4_button = customtkinter.CTkButton(self.sidebar_framedx, text="Random Service", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service4_button, "Service selected:"))
+        self.service4_button = customtkinter.CTkButton(self.sidebar_framedx, text= two_steps_service, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda:self.event_services(self.service4_button, "Service selected:"))
         self.service4_button.grid(row=4, column=0, padx=20, pady=10, sticky="nsew")
         self.service4_button.configure(state = "disabled")
         self.service4_button.configure(fg_color="#c74c3c")
@@ -138,8 +145,8 @@ class App(customtkinter.CTk):
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
-        self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers - non worka", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
-        self.start_server_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
+        # self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers - non worka", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
+        # self.start_server_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
@@ -158,7 +165,7 @@ class App(customtkinter.CTk):
         self.statusbox.delete("1.0", "end")
         self.statusbox.insert("end", f"{string} {button_name}\n")
 
-        if button_name == "Date and Time":
+        if button_name == service_date_time:
             try:
                 with open("server1.txt", "r") as f:
                     if f.read() == "on":                        
@@ -177,7 +184,7 @@ class App(customtkinter.CTk):
 
             except:
                 print("Error")
-        if button_name == "Lucky Number":
+        if button_name == lucky_number:
             try:
                 with open("server2.txt", "r") as f:
                     if f.read() == "on":
@@ -190,7 +197,7 @@ class App(customtkinter.CTk):
                             self.service2_button.configure(fg_color="#3f964b")
             except:
                 print("Error")
-        if button_name == "Daily Quote":
+        if button_name ==  daily_quote:
             try:
 
                 with open("server3.txt", "r") as f:
@@ -204,7 +211,7 @@ class App(customtkinter.CTk):
                             self.service3_button.configure(fg_color="#3f964b")
             except:
                 print("Error")   
-        if button_name == "Random Service":
+        if button_name ==  two_steps_service:
             try:
                 with open("server1.txt", "r") as f:
                     variable = f.read()
@@ -212,7 +219,6 @@ class App(customtkinter.CTk):
                 if variable == "on":
                     with open("server4.txt", "r") as fii:
                         var = fii.read()
-                        print(var)
                         if var == "on":
                             with open("server4.txt", "w") as a:
                                 a.write("off")
@@ -271,13 +277,13 @@ class App(customtkinter.CTk):
 
 
     def display_button_event(self):
-        self.display_button.grid_forget()
+        # self.display_button.grid_forget()
 
         image_path = "img/graph.png"
 
         if os.path.exists(image_path):
             print("L'immagine 'graph.png' esiste.")
-            fig = Figure(dpi=100)
+            fig = Figure(dpi=1000)
             ax = fig.add_subplot(111)
             img = mpimg.imread(image_path)
             ax.imshow(img)

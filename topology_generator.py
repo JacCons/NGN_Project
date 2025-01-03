@@ -111,8 +111,8 @@ class MyTopo (Topo):
             
 
         # Create graph
-        pos = nx.spring_layout(G, seed=42)  # Layout per una visualizzazione più chiara con seme fisso
-        colors = ["red" if G.nodes[node]['type'] == "host" else "blue" for node in G.nodes]
+        pos = nx.spring_layout(G, k=3.5 , iterations=500)  # Layout per una visualizzazione più chiara con seme fisso
+        colors = ["#c679d9" if G.nodes[node]['type'] == "host" else "#64c1d1" for node in G.nodes]
         nx.draw(G, pos, with_labels=True, node_color=colors, node_size=800, font_size=10)
         plt.savefig("img/graph.png")
         print("Graph saved as graph.png\n")
