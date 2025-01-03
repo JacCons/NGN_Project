@@ -27,4 +27,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         with conn:
             print(f"Connessione da {addr}")
             random_quote = random.choice(famous_quotes)
+            random_quote = "Daily quote: "+ random_quote
             conn.sendall(random_quote.encode())  

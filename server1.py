@@ -13,5 +13,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         conn, addr = server_socket.accept()
         with conn:
             print(f"Connessione da {addr}")
-            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            now = "Date and Time: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             conn.sendall(now.encode())  # Invia la data e ora
