@@ -10,7 +10,6 @@ import os
 import time
 import paramiko
 
-from topology_generator import assign_services
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -125,7 +124,7 @@ class App(customtkinter.CTk):
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
-        self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
+        self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers - non worka", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
         self.start_server_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
     def change_scaling_event(self, new_scaling: str):
@@ -138,14 +137,51 @@ class App(customtkinter.CTk):
         self.statusbox.delete("1.0", "end")
         self.statusbox.insert("end", f"{string} {button_name}\n")
 
-        assign_services()
-
 
     def event_services(self, button, string):
         button_name = button.cget("text")
         self.statusbox.configure(state="normal")
         self.statusbox.delete("1.0", "end")
         self.statusbox.insert("end", f"{string} {button_name}\n")
+
+        if button_name == "Data and Time":
+            try:
+                with open("server1.txt", "w") as f:
+                    # f.write("python3 server1.py &")
+                    f.write("on")
+            except:
+                print("Error")
+        if button_name == "Lucky Number":
+            try:
+                with open("server2.txt", "w") as f:
+                    f.write("on")
+            except:
+                print("Error")
+        if button_name == "Daily Quote":
+            try:
+                with open("server3.txt", "w") as f:
+                    f.write("on")
+            except:
+                print("Error")   
+        if button_name == "Random Service":
+            try:
+                with open("server4.txt", "w") as f:
+                    f.write("on")
+            except:
+                print("Error")
+        if button_name == "STOP ALL SERVICES":
+            try:
+                with open("server1.txt", "w") as f:
+                    f.write("off")
+                with open("server2.txt", "w") as f:
+                    f.write("off")
+                with open("server3.txt", "w") as f:
+                    f.write("off")
+                with open("server4.txt", "w") as f:
+                    f.write("off")
+            except:
+                print("Error")
+             
 
     def create_button_event(self):
         global numhost
