@@ -194,10 +194,10 @@ def assign_services(net):
     host_client = net.get('h1')
     global host_server1 
     host_server1 = net.get('h3')
-    #global host_server2
-    # host_server2 = net.get('h4')
-    #global host_server2
-    #host_server2 = net.get('h6')
+    global host_server2
+    host_server2 = net.get('h4')
+    global host_server3
+    host_server3 = net.get('h6')
     global host_server4 
     host_server4 = net.get('h7')
     
