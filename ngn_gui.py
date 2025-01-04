@@ -29,8 +29,7 @@ two_steps_service = "2 Steps Service"
 
 class App(customtkinter.CTk):
     
-    myClass.start_controller()
-    myClass.open_terminal()
+    myClass
 
     def __init__(self):
         super().__init__()
