@@ -34,8 +34,6 @@ class myClass:
  
                 print("Command executed")
 
-                
-
             case "darwin":
                 print("\nStarting ryu-manager for MacOS...\n")
                 

@@ -25,6 +25,29 @@ from ryu.lib.packet import ethernet
 from ryu.app import simple_switch_13
 
 
+# from ryu.ofproto import ofproto_v1_3
+
+# def install_path(self, path, src_host, dst_host):
+#     """
+#     Installa il percorso più breve tra i due host, utilizzando gli indirizzi IP.
+#     :param path: Lista di switch lungo il percorso
+#     :param src_host: Nome host di partenza
+#     :param dst_host: Nome host di destinazione
+#     """
+#     src_ip = self.get_ip_of_host(src_host)
+#     dst_ip = self.get_ip_of_host(dst_host)
+    
+#     for i in range(len(path) - 1):
+#         datapath = self.get_datapath(path[i])
+#         next_hop = path[i + 1]
+#         out_port = self.topology[path[i]][next_hop]
+
+#         # Installa il flusso
+#         self.update_flow(datapath, src_ip, dst_ip, out_port)
+
+
+
+
 class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
     _CONTEXTS = {'stplib': stplib.Stp}
@@ -43,6 +66,30 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                   dpid_lib.str_to_dpid('0000000000000003'):
                   {'bridge': {'priority': 0xa000}}}
         self.stp.set_config(config)
+
+    def add_default_drop_rule(datapath): #--> add_default_drop_rule(self, datapath)
+        ofproto = datapath.ofproto
+        parser = datapath.ofproto_parser
+
+        match = parser.OFPMatch()  # Match all packets
+        actions = []  # No actions means drop
+        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+
+        # Add the flow with a low priority
+        mod = parser.OFPFlowMod(
+            datapath=datapath,
+            priority=0,  # Lowest priority
+            match=match,
+            instructions=inst
+        )
+        datapath.send_msg(mod)
+
+    @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER) #--> configure the rule
+    def switch_features_handler(self, ev):
+        """Handle initial switch connection and install default drop rule."""
+        datapath = ev.msg.datapath
+        self.add_default_drop_rule(datapath)  # Add the default drop rule
+        self.logger.info("Default drop rule added for datapath: %s", datapath.id)
 
     def delete_flow(self, datapath):
         ofproto = datapath.ofproto

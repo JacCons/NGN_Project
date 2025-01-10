@@ -8,11 +8,8 @@ from mininet.node import OVSSwitch, RemoteController
 import time
 import threading
 
-
 # Imposta il backend di matplotlib su Agg
 plt.switch_backend('Agg')
-
-#ssh -X -p 2222 vagrant@localhost
 
 # Creazione del grafo
 G = nx.Graph()
@@ -20,9 +17,6 @@ default_client = '10.0.0.1'
 
 class MyTopo (Topo):    
     def build(self):
-        
-        # n_host = 8
-        # n_switch = 7
 
         try:
             with open("topology_parameters.txt", "r") as f:
@@ -109,7 +103,6 @@ class MyTopo (Topo):
         print(link_NODES)
         print("\n")
             
-
         # Create graph
         pos = nx.spring_layout(G, k=3.5 , iterations=500)  # Layout per una visualizzazione più chiara con seme fisso
         colors = ["#c679d9" if G.nodes[node]['type'] == "host" else "#64c1d1" for node in G.nodes]
@@ -202,8 +195,6 @@ def assign_services():
     host_server4 = net.get('h7')
     
     # Attendi la convergenza di STP
-    
-
     # #Start server 1
     # print(f"\nStarting Server 1 on host {host_server1}...")
     # print(f"Server IP: {host_server1.IP()}")
@@ -295,37 +286,6 @@ def assign_services():
             print(f"Errore nel monitoraggio del file: {e}")
         time.sleep(1)  # Controlla ogni secondo
 
-    # #Start server 2
-    # print(f"\nStarting Server 2 on host {host_server2}...")
-    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    # print(f"Server IP: {host_server2.IP()}")
-    # host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
-    # # Waiting for the server to be ready
-    # time.sleep(3)
-    # print(f"Server 2 running...")
-
-    # #Start server 3
-    # print(f"\nStarting Server 3 on host {host_server3}...")
-    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    # print(f"Server IP: {host_server3.IP()}")
-    # host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
-    # # Waiting for the server to be ready
-    # time.sleep(3)
-    # print(f"Server 3 running...")
-
-    # #Start server 4
-    # print(f"\nStarting Server 4 on host {host_server4}...")
-    # #server_ip = host_server1.IP()  # Ottieni l'indirizzo IP dinamico di h1
-    # print(f"Server IP: {host_server4.IP()}")
-    # host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
-    # # Waiting for the server to be ready
-    # time.sleep(3)
-    # print(f"Server 4 running...")
-
-    # Avvia il client su h2 (da rimuovere successivamente!!!!!)
-    # print("\nAvvio del client su h1...")
-    # result_client = host_client.cmd(f'python3 client4.py {host_server4.IP()}')
-    # print(f"Client output:\n{result_client}")
 
 
 def run_minimal_network():
@@ -354,7 +314,7 @@ def run_minimal_network():
     #net.pingAll()
 
     # Now that h1 and h2 are guaranteed to be valid objects, call get_shortest_path
-    #shortest_path = MyTopo.get_shortest_path(net, h1, h2)
+    #shortest_path_lucky = MyTopo.get_shortest_path(net, h1, h2)
     #print(f"\nShortest path between h1 and h2: {shortest_path}\n")
 
     # Start the CLI for manual interaction

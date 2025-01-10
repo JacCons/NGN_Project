@@ -1,11 +1,5 @@
 import socket
 import sys
-#from mininet.net import Mininet
-#run this command: h(x) python3 client1.py 
-#tradurre nome host con IP
-#host_name = sys.argv
-#host_ = net.get(hostname)
-#host_ip = host_.IP()
 
 Error = "Specify the Server's IP"
 if (sys.argv[1] == ''):

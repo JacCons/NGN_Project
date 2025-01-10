@@ -1,26 +1,14 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-import subprocess
 from openShellWithPy import myClass
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.image as mpimg
 import os
-import time
-import paramiko
-
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
-
-hostname = "localhost" 
-username = "vagrant" 
-password = "vagrant" 
-port = 2222
-
-numhost = 0
-numswitch = 0
 
 service_date_time = "Date and Time"
 lucky_number = "Lucky Number"
@@ -61,14 +49,6 @@ class App(customtkinter.CTk):
 
         self.logo_label = customtkinter.CTkLabel(self.sidebar_framesx, text="Create network", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
-
-        # *** Topologia Custom, da togliere le segeunti righe ***
-        # self.topo_frame = customtkinter.CTkFrame(self.sidebar_framesx)
-        # self.topo_frame.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
-        # self.sidebar_topo = customtkinter.CTkLabel(self.topo_frame, text="Topos:")
-        # self.sidebar_topo.grid(row=0, column=0, padx=20, pady=(10,0))
-        # self.sidebar_entrytopo = customtkinter.CTkOptionMenu(self.topo_frame, values=["Single", "Linear", "Tree", "Torus"])
-        # self.sidebar_entrytopo.grid(row=1, column=0, padx=20, pady=(10,10))
 
         self.host_frame = customtkinter.CTkFrame(self.sidebar_framesx)
         self.host_frame.grid(row=3, column=0, padx=20, pady=10, sticky="nsew")
@@ -144,8 +124,6 @@ class App(customtkinter.CTk):
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
-        # self.start_server_button = customtkinter.CTkButton(self.sidebar_framedx, text="Start Servers - non worka", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_server_up(self.start_server_button, "Button selected:"))
-        # self.start_server_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
@@ -277,7 +255,6 @@ class App(customtkinter.CTk):
 
     def display_button_event(self):
         # self.display_button.grid_forget()
-
         image_path = "img/graph.png"
 
         if os.path.exists(image_path):
