@@ -36,7 +36,7 @@ class myClass:
 
             case "darwin":
                 print("\nStarting ryu-manager for MacOS...\n")
-                
+                #prova
                 # Create an SSH client instance 
                 client = paramiko.SSHClient() 
                 client.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
