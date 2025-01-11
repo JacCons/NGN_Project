@@ -71,7 +71,7 @@ class MyTopo(Topo):
 #     service_started = False
 #     while True:
 #         try:
-#             with open("server1.txt", "r") as file:
+#             with open("./server/server1.txt", "r") as file:
 #                 stato = file.read().strip()  # Leggi il contenuto del file
 #                 if stato == "on" and not service_started :
 #                     print("Servizio avviato su h1!")

@@ -204,7 +204,7 @@ def assign_services():
 
     while True:
         try:
-            with open("server1.txt", "r") as file:
+            with open("./server/server1.txt", "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started1 :
                     print(f"\nStarting Server 1 on host {host_server1}...")
@@ -225,7 +225,7 @@ def assign_services():
         
 
         try:
-            with open("server2.txt", "r") as file:
+            with open("./server/server2.txt", "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started2 :
                     print(f"\nStarting Server 2 on host {host_server2}...")
@@ -246,7 +246,7 @@ def assign_services():
 
 
         try:
-            with open("server3.txt", "r") as file:
+            with open("./server/server3.txt", "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started3 :
                     print(f"\nStarting Server 3 on host {host_server3}...")
@@ -267,7 +267,7 @@ def assign_services():
 
 
         try:
-            with open("server4.txt", "r") as file:
+            with open("./server/server4.txt", "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started4 :
                     print(f"\nStarting Server 4 on host {host_server4}...")
