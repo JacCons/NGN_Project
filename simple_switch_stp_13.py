@@ -67,28 +67,28 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                   {'bridge': {'priority': 0xa000}}}
         self.stp.set_config(config)
 
-    def add_default_drop_rule(datapath): #--> add_default_drop_rule(self, datapath)
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
+    # def add_default_drop_rule(datapath): #--> add_default_drop_rule(self, datapath)
+    #     ofproto = datapath.ofproto
+    #     parser = datapath.ofproto_parser
 
-        match = parser.OFPMatch()  # Match all packets
-        actions = []  # No actions means drop
-        inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
+    #     match = parser.OFPMatch()  # Match all packets
+    #     actions = []  # No actions means drop
+    #     inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
 
-        # Add the flow with a low priority
-        mod = parser.OFPFlowMod(
-            datapath=datapath,
-            priority=0,  # Lowest priority
-            match=match,
-            instructions=inst
-        )
-        datapath.send_msg(mod)
+    #     # Add the flow with a low priority
+    #     mod = parser.OFPFlowMod(
+    #         datapath=datapath,
+    #         priority=0,  # Lowest priority
+    #         match=match,
+    #         instructions=inst
+    #     )
+    #     datapath.send_msg(mod)
 
-    @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER) #--> configure the rule
-    def switch_features_handler(self, ev):
-        """Handle initial switch connection and install default drop rule."""
-        datapath = ev.msg.datapath
-        self.add_default_drop_rule(datapath)  # Add the default drop rule
+    # @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER) #--> configure the rule
+    # def switch_features_handler(self, ev):
+    #     """Handle initial switch connection and install default drop rule."""
+    #     datapath = ev.msg.datapath
+    #     self.add_default_drop_rule(datapath)  # Add the default drop rule
         self.logger.info("Default drop rule added for datapath: %s", datapath.id)
 
     def delete_flow(self, datapath):
@@ -166,3 +166,43 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                     stplib.PORT_STATE_FORWARD: 'FORWARD'}
         self.logger.debug("[dpid=%s][port=%d] state=%s",
                           dpid_str, ev.port_no, of_state[ev.port_state])
+        
+    # def get_datapath(self, switch_id):
+    #         """Ottieni il datapath di uno switch dato il suo ID."""
+    #         return self.dpid_to_datapath.get(switch_id)
+
+    # def install_path(self, path, src_ip, dst_ip):
+    #     """
+    #     Installa le flow entries per il percorso specificato.
+    #     :param path: Lista di nodi (es. ['h1', 's1', 's3', 'h3'])
+    #     :param src_ip: Indirizzo IP sorgente
+    #     :param dst_ip: Indirizzo IP destinazione
+    #     """
+    #     for i in range(1, len(path) - 1):  # Escludi il primo e l'ultimo nodo (host)
+    #         current_switch = path[i]
+    #         next_hop = path[i + 1]
+
+    #         # Ottieni il datapath dello switch
+    #         datapath = self.get_datapath(current_switch)
+    #         if not datapath:
+    #             self.logger.error("Datapath not found for switch: %s", current_switch)
+    #             continue
+
+    #         # Trova la porta di uscita verso il prossimo hop
+    #         if current_switch in self.topology_graph and next_hop in self.topology_graph[current_switch]:
+    #             out_port = self.topology_graph[current_switch][next_hop]['port']
+    #         else:
+    #             self.logger.error("No port found between %s and %s", current_switch, next_hop)
+    #             continue
+
+    #         # Crea una flow entry per il traffico src_ip -> dst_ip
+    #         match = datapath.ofproto_parser.OFPMatch(
+    #             eth_type=0x0800,  # IPv4
+    #             ipv4_src=src_ip,
+    #             ipv4_dst=dst_ip
+    #         )
+    #         actions = [datapath.ofproto_parser.OFPActionOutput(out_port)]
+    #         self.add_flow(datapath, priority=1, match=match, actions=actions)
+
+    #         self.logger.info("Flow added: %s -> %s via %s (port %d)",
+    #                         current_switch, next_hop, src_ip, dst_ip, out_port)
