@@ -159,6 +159,8 @@ class App(customtkinter.CTk):
                             self.service1_button.configure(fg_color="#3f964b")
                             self.service4_button.configure(state = "normal")
 
+                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
+                    file.write("10.0.0.1")
             except:
                 print("Error")
         if button_name == lucky_number:
@@ -172,6 +174,9 @@ class App(customtkinter.CTk):
                         with open("server2.txt", "w") as fi:
                             fi.write("on")
                             self.service2_button.configure(fg_color="#3f964b")
+
+                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
+                    file.write("10.0.0.2")
             except:
                 print("Error")
         if button_name ==  daily_quote:
@@ -186,6 +191,9 @@ class App(customtkinter.CTk):
                         with open("server3.txt", "w") as fi:
                             fi.write("on")
                             self.service3_button.configure(fg_color="#3f964b")
+
+                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
+                    file.write("10.0.0.3")
             except:
                 print("Error")   
         if button_name ==  two_steps_service:
@@ -209,6 +217,9 @@ class App(customtkinter.CTk):
                         fi.write("off")    
                         self.service4_button.configure(state = "disabled")   
                         self.service4_button.configure(fg_color="#c74c3c") 
+                
+                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
+                    file.write("10.0.0.4")
             except:
                 print("Error")
         if button_name == "STOP ALL SERVICES":
@@ -226,6 +237,9 @@ class App(customtkinter.CTk):
                     f.write("off")
                     self.service4_button.configure(fg_color="#c74c3c")
                     self.service4_button.configure(state = "disabled")
+                
+                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
+                    file.write("")
             except:
                 print("Error")
              

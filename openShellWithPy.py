@@ -30,7 +30,9 @@ class myClass:
                     print(f"Error connecting to the server: {e}")
                     return
                 
-                stdin, stdout, stderr = client.exec_command(f"sudo mn -c \n sudo cp /media/sf_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/ \n sudo ryu-manager NGN_simple_switch_custom.py", timeout=20)
+                # stdin, stdout, stderr = client.exec_command(f"sudo mn -c \n sudo cp /media/sf_NGN_Project/simple_switch_stp_13.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/NGN_simple_switch_custom.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/ \n sudo ryu-manager NGN_simple_switch_custom.py", timeout=20)
+                stdin, stdout, stderr = client.exec_command(f"sudo mn -c \n sudo cp /media/sf_NGN_Project/Simple_Switch_stp_CRISTIANO.py /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/CRISTIANO.py \n cd /home/vagrant/comnetsemu_dependencies/ryu-v4.34/ryu/ryu/app/ \n sudo ryu-manager CRISTIANO.py", timeout=20)
+
                 print("Command executed")
 
             case "darwin":
