@@ -89,7 +89,7 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
     #     """Handle initial switch connection and install default drop rule."""
     #     datapath = ev.msg.datapath
     #     self.add_default_drop_rule(datapath)  # Add the default drop rule
-        self.logger.info("Default drop rule added for datapath: %s", datapath.id)
+        # self.logger.info("Default drop rule added for datapath: %s", datapath.id)
 
     def delete_flow(self, datapath):
         ofproto = datapath.ofproto
