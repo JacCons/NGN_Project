@@ -65,6 +65,7 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
             try:
                 with open(self.monitor_file_path, "r") as file:
                     server_ip = file.read().strip()
+                    print(f"Server IP: {server_ip}")
                     if server_ip != self.current_server_ip:
                         self.current_server_ip = server_ip
                         self.update_flows()

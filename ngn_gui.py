@@ -160,7 +160,7 @@ class App(customtkinter.CTk):
                             self.service4_button.configure(state = "normal")
 
                 with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
-                    file.write("10.0.0.1")
+                    file.write("10.0.0.3")
             except:
                 print("Error")
         if button_name == lucky_number:
@@ -176,7 +176,7 @@ class App(customtkinter.CTk):
                             self.service2_button.configure(fg_color="#3f964b")
 
                 with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
-                    file.write("10.0.0.2")
+                    file.write("10.0.0.4")
             except:
                 print("Error")
         if button_name ==  daily_quote:
@@ -193,7 +193,7 @@ class App(customtkinter.CTk):
                             self.service3_button.configure(fg_color="#3f964b")
 
                 with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
-                    file.write("10.0.0.3")
+                    file.write("10.0.0.6")
             except:
                 print("Error")   
         if button_name ==  two_steps_service:
@@ -219,7 +219,7 @@ class App(customtkinter.CTk):
                         self.service4_button.configure(fg_color="#c74c3c") 
                 
                 with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
-                    file.write("10.0.0.4")
+                    file.write("10.0.0.7")
             except:
                 print("Error")
         if button_name == "STOP ALL SERVICES":
