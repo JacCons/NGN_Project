@@ -112,9 +112,6 @@ Se appare sullo schermo un orologio, allora il forwarding funziona correttamente
 4. Infine, per eseguire tramite vagrant i file contenuti nella cartella condivisa, è necessario eseguire i seguenti codici:
 	
 ```bash
-cd ..
-cd ..
-cd media
 sudo usermod -aG vboxsf vagrant
 ```
 
