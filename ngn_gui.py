@@ -6,6 +6,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.image as mpimg
 import os
+import time
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -65,7 +66,7 @@ class App(customtkinter.CTk):
         self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Bottone per update dei parametri
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="UPDATE PARAMETERS", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
         self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
 
         #Status Box
@@ -79,8 +80,8 @@ class App(customtkinter.CTk):
         #self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         #self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        self.display_button = customtkinter.CTkButton(self.sidebar_framesx, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=self.display_button_event)
-        self.display_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
+        #self.display_button = customtkinter.CTkButton(self.sidebar_framesx, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=self.display_button_event)
+        #self.display_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
         #Architettura di rete
         self.center_frame = customtkinter.CTkFrame(self)
@@ -247,14 +248,14 @@ class App(customtkinter.CTk):
             self.statusbox.configure(state="normal")
             self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Number of hosts: {numhost}\nNumber of switches: {numswitch}\n")
-        except:
+            myClass.start_mininet()
+        except ValueError:
             self.statusbox.configure(state="normal")
             self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
+        
+        time.sleep(10)
 
-
-    def display_button_event(self):
-        # self.display_button.grid_forget()
         image_path = "img/graph.png"
 
         if os.path.exists(image_path):
@@ -271,6 +272,26 @@ class App(customtkinter.CTk):
             canvas.draw()
         else: 
             print("L'immagine 'graph.png' non esiste.")
+
+
+    # def display_button_event(self):
+    #     # self.display_button.grid_forget()
+    #     image_path = "img/graph.png"
+
+    #     if os.path.exists(image_path):
+    #         print("L'immagine 'graph.png' esiste.")
+    #         fig = Figure(dpi=1000)
+    #         ax = fig.add_subplot(111)
+    #         img = mpimg.imread(image_path)
+    #         ax.imshow(img)
+    #         ax.axis('off')
+
+    #         canvas = FigureCanvasTkAgg(fig, master=self.center_frame)
+    #         canvas_widget = canvas.get_tk_widget()
+    #         canvas_widget.grid(row=1, column=0, sticky="nsew")
+    #         canvas.draw()
+    #     else: 
+    #         print("L'immagine 'graph.png' non esiste.")
 
 
 if __name__ == "__main__":
