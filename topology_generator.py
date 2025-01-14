@@ -208,14 +208,14 @@ def assign_services():
                 if stato == "on" and not service_started1 :
                     print(f"\nStarting Server 1 on host {host_server1}...")
                     print(f"Server IP: {host_server1.IP()}")
-                    host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
+                    host_server1.cmd('python3 ./Servers/server1.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 1 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
                     print("Server1 stopped!")
-                    host_server1.cmd('pkill -f server1.py &')  # Ferma il server
+                    host_server1.cmd('pkill -f ./Servers/server1.py &')  # Ferma il server
                     print("press Enter to continue...")
                     service_started1 = False
         except Exception as e:
@@ -229,14 +229,14 @@ def assign_services():
                 if stato == "on" and not service_started2 :
                     print(f"\nStarting Server 2 on host {host_server2}...")
                     print(f"Server IP: {host_server2.IP()}")
-                    host_server2.cmd('python3 server2.py &')  # Avvia il server in background 
+                    host_server2.cmd('python3 ./Servers/server2.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 2 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
                     print("Server2 stopped!")
-                    host_server1.cmd('pkill -f server2.py &')  # Ferma il server
+                    host_server1.cmd('pkill -f ./Servers/server2.py &')  # Ferma il server
                     print("press Enter to continue...")
                     service_started2 = False
         except Exception as e:
@@ -250,14 +250,14 @@ def assign_services():
                 if stato == "on" and not service_started3 :
                     print(f"\nStarting Server 3 on host {host_server3}...")
                     print(f"Server IP: {host_server3.IP()}")
-                    host_server3.cmd('python3 server3.py &')  # Avvia il server in background 
+                    host_server3.cmd('python3 ./Servers/server3.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 3 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
                     print("Server3 stopped!")
-                    host_server3.cmd('pkill -f server3.py &')  # Ferma il server
+                    host_server3.cmd('pkill -f ./Servers/server3.py &')  # Ferma il server
                     print("press Enter to continue...")
                     service_started3 = False
         except Exception as e:
@@ -271,14 +271,14 @@ def assign_services():
                 if stato == "on" and not service_started4 :
                     print(f"\nStarting Server 4 on host {host_server4}...")
                     print(f"Server IP: {host_server4.IP()}")
-                    host_server4.cmd('python3 server4.py &')  # Avvia il server in background 
+                    host_server4.cmd('python3 ./Servers/server4.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 4 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
                     print("Server4 stopped!")
-                    host_server4.cmd('pkill -f server4.py &')  # Ferma il server
+                    host_server4.cmd('pkill -f ./Servers/server4.py &')  # Ferma il server
                     print("press Enter to continue...")
                     service_started4 = False
         except Exception as e:
