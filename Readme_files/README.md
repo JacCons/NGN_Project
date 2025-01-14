@@ -23,8 +23,6 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 - For Windows users: install mobaXterm and [enable forwarding](X11_setup.md)
 - Install [Python 3.7](Install_Python.md) version on the VIrtual Machine
 
-## FILES WITH DESCRIPTION
-
 ## HOW TO RUN THE APPLICATION
 
 1. Open VirtualBox and start Comnetsemu Virtual Machine
@@ -36,7 +34,7 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
     ```bash
       cd /media/sf_NGN_Project
     ```
-4. Run the GUI 
+4. 
 
 
 ```bash

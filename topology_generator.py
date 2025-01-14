@@ -8,6 +8,13 @@ from mininet.node import OVSSwitch, RemoteController
 import time
 import threading
 
+Directories = {
+    'serv1': './Servers/server1.txt',
+    'serv2': './Servers/server2.txt',
+    'serv3': './Servers/server3.txt',
+    'serv4': './Servers/server4.txt',
+}
+
 # Imposta il backend di matplotlib su Agg
 plt.switch_backend('Agg')
 
@@ -193,18 +200,10 @@ def assign_services():
     host_server2 = net.get('h4')
     host_server3 = net.get('h6')
     host_server4 = net.get('h7')
-    
-    # Attendi la convergenza di STP
-    # #Start server 1
-    # print(f"\nStarting Server 1 on host {host_server1}...")
-    # print(f"Server IP: {host_server1.IP()}")
-    # host_server1.cmd('python3 server1.py &')  # Avvia il server in background 
-    # time.sleep(3)
-    # print(f"Server 1 running...")
 
     while True:
         try:
-            with open("server1.txt", "r") as file:
+            with open(Directories["serv1"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started1 :
                     print(f"\nStarting Server 1 on host {host_server1}...")
@@ -225,7 +224,7 @@ def assign_services():
         
 
         try:
-            with open("server2.txt", "r") as file:
+            with open(Directories["serv2"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started2 :
                     print(f"\nStarting Server 2 on host {host_server2}...")
@@ -246,7 +245,7 @@ def assign_services():
 
 
         try:
-            with open("server3.txt", "r") as file:
+            with open(Directories["serv3"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started3 :
                     print(f"\nStarting Server 3 on host {host_server3}...")
@@ -267,7 +266,7 @@ def assign_services():
 
 
         try:
-            with open("server4.txt", "r") as file:
+            with open(Directories["serv4"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started4 :
                     print(f"\nStarting Server 4 on host {host_server4}...")
@@ -299,7 +298,7 @@ def run_minimal_network():
 
     # Start the network
     net.start()
-    #assign_services()
+
     wait_for_stp_convergence(timeout=3)
     
 
@@ -325,8 +324,6 @@ def run_minimal_network():
     monitor_thread.start()
 
     CLI(net)
-
-    
 
     # Stop the network when exiting the CLI
     net.stop()

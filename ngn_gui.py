@@ -16,6 +16,14 @@ lucky_number = "Lucky Number"
 daily_quote = "Daily Quote"
 two_steps_service = "2 Steps Service"
 
+Directories = {
+    'serv1': './Servers/server1.txt',
+    'serv2': './Servers/server2.txt',
+    'serv3': './Servers/server3.txt',
+    'serv4': './Servers/server4.txt',
+}
+
+
 class App(customtkinter.CTk):
     
     myClass
@@ -23,13 +31,13 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        with open("server1.txt", "w") as f:
+        with open(Directories["serv1"], "w") as f:
             f.write("off")
-        with open("server2.txt", "w") as f: 
+        with open(Directories["serv2"], "w") as f: 
             f.write("off")
-        with open("server3.txt", "w") as f:
+        with open(Directories["serv3"], "w") as f:
             f.write("off")
-        with open("server4.txt", "w") as f:  
+        with open(Directories["serv4"], "w") as f:  
             f.write("off") 
     
         #Configurazione della finestra
@@ -145,17 +153,17 @@ class App(customtkinter.CTk):
 
         if button_name == service_date_time:
             try:
-                with open("server1.txt", "r") as f:
+                with open(Directories["serv1"], "r") as f:
                     if f.read() == "on":                        
-                        with open("server1.txt", "w") as fi:                            
+                        with open(Directories["serv1"], "w") as fi:                            
                             fi.write("off")
                             self.service1_button.configure(fg_color="#c74c3c")
-                        with open("server4.txt", "w") as fii:   
+                        with open(Directories["serv4"], "w") as fii:   
                             fii.write("off")           
                             self.service4_button.configure(state = "disabled")
                             self.service4_button.configure(fg_color="#c74c3c")  
                     else:
-                        with open("server1.txt", "w") as fi:
+                        with open(Directories["serv1"], "w") as fi:
                             fi.write("on")
                             self.service1_button.configure(fg_color="#3f964b")
                             self.service4_button.configure(state = "normal")
@@ -164,13 +172,13 @@ class App(customtkinter.CTk):
                 print("Error")
         if button_name == lucky_number:
             try:
-                with open("server2.txt", "r") as f:
+                with open(Directories["serv2"], "r") as f:
                     if f.read() == "on":
-                        with open("server2.txt", "w") as fi:
+                        with open(Directories["serv2"], "w") as fi:
                             fi.write("off")
                             self.service2_button.configure(fg_color="#c74c3c")
                     else:
-                        with open("server2.txt", "w") as fi:
+                        with open(Directories["serv2"], "w") as fi:
                             fi.write("on")
                             self.service2_button.configure(fg_color="#3f964b")
             except:
@@ -178,35 +186,35 @@ class App(customtkinter.CTk):
         if button_name ==  daily_quote:
             try:
 
-                with open("server3.txt", "r") as f:
+                with open(Directories["serv3"], "r") as f:
                     if f.read() == "on":
-                        with open("server3.txt", "w") as fi:
+                        with open(Directories["serv3"], "w") as fi:
                             fi.write("off")
                             self.service3_button.configure(fg_color="#c74c3c")
                     else:
-                        with open("server3.txt", "w") as fi:
+                        with open(Directories["serv3"], "w") as fi:
                             fi.write("on")
                             self.service3_button.configure(fg_color="#3f964b")
             except:
                 print("Error")   
         if button_name ==  two_steps_service:
             try:
-                with open("server1.txt", "r") as f:
+                with open(Directories["serv1"], "r") as f:
                     variable = f.read()
                 
                 if variable == "on":
-                    with open("server4.txt", "r") as fii:
+                    with open(Directories["serv4"], "r") as fii:
                         var = fii.read()
                         if var == "on":
-                            with open("server4.txt", "w") as a:
+                            with open(Directories["serv4"], "w") as a:
                                 a.write("off")
                                 self.service4_button.configure(fg_color="#c74c3c")
                         elif var == "off":
-                            with open("server4.txt", "w") as b:
+                            with open(Directories["serv4"], "w") as b:
                                 b.write("on")
                                 self.service4_button.configure(fg_color="#3f964b")
                 else:                    
-                    with open("server4.txt", "w") as fi: 
+                    with open(Directories["serv4"], "w") as fi: 
                         fi.write("off")    
                         self.service4_button.configure(state = "disabled")   
                         self.service4_button.configure(fg_color="#c74c3c") 
@@ -214,16 +222,16 @@ class App(customtkinter.CTk):
                 print("Error")
         if button_name == "STOP ALL SERVICES":
             try:
-                with open("server1.txt", "w") as f:
+                with open(Directories["serv1"], "w") as f:
                     f.write("off")
                     self.service1_button.configure(fg_color="#c74c3c")
-                with open("server2.txt", "w") as f:
+                with open(Directories["serv2"], "w") as f:
                     f.write("off")
                     self.service2_button.configure(fg_color="#c74c3c")
-                with open("server3.txt", "w") as f:
+                with open(Directories["serv3"], "w") as f:
                     f.write("off")
                     self.service3_button.configure(fg_color="#c74c3c")
-                with open("server4.txt", "w") as f:
+                with open(Directories["serv4"], "w") as f:
                     f.write("off")
                     self.service4_button.configure(fg_color="#c74c3c")
                     self.service4_button.configure(state = "disabled")
