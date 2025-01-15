@@ -23,12 +23,14 @@ from ryu.lib import stplib
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.app import simple_switch_13
+import  socket
+import json 
 
 
 # from ryu.ofproto import ofproto_v1_3
 
 # def install_path(self, path, src_host, dst_host):
-#     """
+#     """   
 #     Installa il percorso più breve tra i due host, utilizzando gli indirizzi IP.
 #     :param path: Lista di switch lungo il percorso
 #     :param src_host: Nome host di partenza
@@ -46,6 +48,23 @@ from ryu.app import simple_switch_13
 #         self.update_flow(datapath, src_ip, dst_ip, out_port)
 
 
+# #Set up the server
+# HOST = '127.0.0.1'  # Localhost
+# PORT = 10000        # Port to listen on
+
+# with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+#     server_socket.bind((HOST, PORT))
+#     server_socket.listen()
+#     print(f"Server listening on {HOST}:{PORT}")
+    
+#     conn, addr = server_socket.accept()
+#     with conn:
+#         # print(f"Connected by {addr}")
+#         # Receive data
+#         data = conn.recv(1024)  # Buffer size
+#         if data:
+#             Date_time_path = json.loads(data.decode('utf-8'))
+#             print(f"Received variable: {Date_time_path}")
 
 
 class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
@@ -67,30 +86,6 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                   {'bridge': {'priority': 0xa000}}}
         self.stp.set_config(config)
 
-    # def add_default_drop_rule(datapath): #--> add_default_drop_rule(self, datapath)
-    #     ofproto = datapath.ofproto
-    #     parser = datapath.ofproto_parser
-
-    #     match = parser.OFPMatch()  # Match all packets
-    #     actions = []  # No actions means drop
-    #     inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS, actions)]
-
-    #     # Add the flow with a low priority
-    #     mod = parser.OFPFlowMod(
-    #         datapath=datapath,
-    #         priority=0,  # Lowest priority
-    #         match=match,
-    #         instructions=inst
-    #     )
-    #     datapath.send_msg(mod)
-
-    # @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER) #--> configure the rule
-    # def switch_features_handler(self, ev):
-    #     """Handle initial switch connection and install default drop rule."""
-    #     datapath = ev.msg.datapath
-    #     self.add_default_drop_rule(datapath)  # Add the default drop rule
-    #     self.logger.info("Default drop rule added for datapath: %s", datapath.id)
-
     def delete_flow(self, datapath):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -105,37 +100,43 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
 
     @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
-        msg = ev.msg
-        datapath = msg.datapath
-        ofproto = datapath.ofproto
-        parser = datapath.ofproto_parser
-        in_port = msg.match['in_port']
+        msg = ev.msg #contains the packet that was sent to the controller and details
+        datapath = msg.datapath #contains the switch that sent the packet
+        ofproto = datapath.ofproto #contains the OpenFlow protocol version used by the switch
+        parser = datapath.ofproto_parser #contains the OpenFlow protocol parser
 
-        pkt = packet.Packet(msg.data)
-        eth = pkt.get_protocols(ethernet.ethernet)[0]
+        in_port = msg.match['in_port'] #contains the switch port number that the packet was received on
 
-        dst = eth.dst
-        src = eth.src
+        pkt = packet.Packet(msg.data) #extracts the content of the packet
+        eth = pkt.get_protocols(ethernet.ethernet)[0] #extracts the Ethernet header from the packet
 
-        dpid = datapath.id
-        self.mac_to_port.setdefault(dpid, {})
+        dst = eth.dst #contains the destination MAC address of the packet
+        src = eth.src #contains the source MAC address of the packet
+
+        dpid = datapath.id #contains the datapath ID of the switch that sent the packet
+        self.mac_to_port.setdefault(dpid, {}) #creates a dictionary for the switch if it does not exist
 
         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
         # learn a mac address to avoid FLOOD next time.
-        self.mac_to_port[dpid][src] = in_port
+        self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
 
-        if dst in self.mac_to_port[dpid]:
-            out_port = self.mac_to_port[dpid][dst]
-        else:
-            out_port = ofproto.OFPP_FLOOD
+        
 
-        actions = [parser.OFPActionOutput(out_port)]
 
-        # install a flow to avoid packet_in next time
-        if out_port != ofproto.OFPP_FLOOD:
-            match = parser.OFPMatch(in_port=in_port, eth_dst=dst)
-            self.add_flow(datapath, 1, match, actions)
+    #We commented this part to avoid switches from communicating when starting the controller
+        # if dst in self.mac_to_port[dpid]:
+        #     out_port = self.mac_to_port[dpid][dst]
+        # else:
+        #     out_port = ofproto.OFPP_FLOOD
+
+        # actions = [parser.OFPActionOutput(out_port)]#contains the action to be performed on the packet
+        # #in this case forward packet to out port
+
+        # # install a flow to avoid packet_in next time
+        # if out_port != ofproto.OFPP_FLOOD:
+        #     match = parser.OFPMatch(in_port=in_port, eth_dst=dst)#creates a match rule 
+        #     self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
 
         data = None
         if msg.buffer_id == ofproto.OFP_NO_BUFFER:

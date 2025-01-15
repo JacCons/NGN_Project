@@ -36,7 +36,7 @@ class myClass:
         try:
             # Comando da eseguire in un nuovo terminale
             command = (
-                "sudo python3 /media/sf_NGN_Project/topology_generator.py"
+                "sudo python3 /media/sf_NGN_Project/topology_generator.py "
             )
             
             # Apri un nuovo terminale ed esegui il comando

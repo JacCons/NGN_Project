@@ -262,7 +262,7 @@ class App(customtkinter.CTk):
             self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
         
-        time.sleep(10)
+        time.sleep(4)
 
         image_path = "img/graph.png"
 
