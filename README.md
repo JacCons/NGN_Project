@@ -65,10 +65,10 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 
    ```bash
    production:
-   python3 ngn_gui.py #  open the GUI and start controller and mininet
+   python3.7 ngn_gui.py #  open the GUI and start controller and mininet
 
    dev:
-   python3 openShellWithPy.py # open terminal and start controller and mininet
+   python3.7 openShellWithPy.py # open terminal and start controller and mininet
    ```
 
 
