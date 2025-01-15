@@ -221,6 +221,7 @@ def assign_services():
                 if stato == "on" and not service_started1 :
                     print(f"\nStarting Server 1 on host {host_server1}...")
                     print(f"Server IP: {host_server1.IP()}")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 1 running...")  # Avvia il server in background
@@ -241,6 +242,7 @@ def assign_services():
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started2 :
                     print(f"\nStarting Server 2 on host {host_server2}...")
+                    print(f"To get the service: h1 python3 client.py {host_server2.IP()}\n")
                     print(f"Server IP: {host_server2.IP()}")
                     host_server2.cmd('python3 ./Servers/server2.py &')  # Avvia il server in background 
                     time.sleep(3)
@@ -263,6 +265,7 @@ def assign_services():
                 if stato == "on" and not service_started3 :
                     print(f"\nStarting Server 3 on host {host_server3}...")
                     print(f"Server IP: {host_server3.IP()}")
+                    print(f"To get the service: h1 python3 client.py {host_server3.IP()}\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 3 running...")  # Avvia il server in background
@@ -284,6 +287,7 @@ def assign_services():
                 if stato == "on" and not service_started4 :
                     print(f"\nStarting Server 4 on host {host_server4}...")
                     print(f"Server IP: {host_server4.IP()}")
+                    print(f"To get the service: h1 python3 client.py {host_server4.IP()}\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # Avvia il server in background 
                     time.sleep(3)
                     print(f"Server 4 running...")  # Avvia il server in background
