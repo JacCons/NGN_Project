@@ -13,18 +13,18 @@ The objective is to run the GUI with python 3.7, while all other scripts have to
 2. Upgrade/Install pip: #************************** not clear
 
     ```bash	
-        python3.7 -m ensurepip —upgrade (di solito non funziona)
-        python3.7 .m pip install —upgrade pip
+        python3.7 -m ensurepip --upgrade (di solito non funziona)
+        python3.7 -m pip install --upgrade pip
     ```
 
 3. Ensure Python3.7 and pip are correctly installed:
 	
     ```bash
-        python3.7 —version
+        python3.7 --version
     ```
 
     ```bash
-        python3.7 -m pip —version
+        python3.7 -m pip --version
     ```
 Output should be something like: pip X.X.X from /usr/lib/python3.7/site-packages (python 3.7)
 
