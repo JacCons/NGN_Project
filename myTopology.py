@@ -32,36 +32,38 @@ class MyTopo(Topo):
         self.addLink(s3, s4)
         self.addLink(s4, s1)
 
-
-def wait_for_stp_convergence(timeout=30):
-    """Aspetta che STP converga."""
-    print(f"Attesa per la convergenza di STP (fino a {timeout} secondi)...")
-    time.sleep(timeout)
-    print("Convergenza STP completata o timeout raggiunto.")
+        
 
 
-def monitor_file_for_service(h1):
-    """Controlla il file per avviare o fermare il servizio."""
-    service_started = False
-    while True:
-        try:
-            with open("server1.txt", "r") as file:
-                stato = file.read().strip()  # Leggi il contenuto del file
-                if stato == "on" and not service_started :
-                    print("Servizio avviato su h1!")
-                    h1.cmd('nohup python3 server1.py > /dev/null 2>&1 & ')  # Avvia il server in background
-                    print("press Enter to continue...")
-                    time.sleep(3)  # Attendi che il server sia pronto
-                    service_started = True
-                elif stato == "off" and service_started:
-                    print("Servizio fermato su h1!")
-                    h1.cmd('nohup pkill -f server1.py > /dev/null 2>&1 &')  # Ferma il server
-                    print("press Enter to continue...")
-                    service_started = False
+# def wait_for_stp_convergence(timeout=30):
+#     """Aspetta che STP converga."""
+#     print(f"Attesa per la convergenza di STP (fino a {timeout} secondi)...")
+#     time.sleep(timeout)
+#     print("Convergenza STP completata o timeout raggiunto.")
+
+
+# def monitor_file_for_service(h1):
+#     """Controlla il file per avviare o fermare il servizio."""
+#     service_started = False
+#     while True:
+#         try:
+#             with open("server1.txt", "r") as file:
+#                 stato = file.read().strip()  # Leggi il contenuto del file
+#                 if stato == "on" and not service_started :
+#                     print("Servizio avviato su h1!")
+#                     h1.cmd('nohup python3 server1.py > /dev/null 2>&1 & ')  # Avvia il server in background
+#                     print("press Enter to continue...")
+#                     time.sleep(3)  # Attendi che il server sia pronto
+#                     service_started = True
+#                 elif stato == "off" and service_started:
+#                     print("Servizio fermato su h1!")
+#                     h1.cmd('nohup pkill -f server1.py > /dev/null 2>&1 &')  # Ferma il server
+#                     print("press Enter to continue...")
+#                     service_started = False
                     
-        except Exception as e:
-            print(f"Errore nel monitoraggio del file: {e}")
-        time.sleep(1)  # Controlla ogni secondo
+#         except Exception as e:
+#             print(f"Errore nel monitoraggio del file: {e}")
+#         time.sleep(1)  # Controlla ogni secondo
 
 
 def run_minimal_network():
@@ -76,7 +78,7 @@ def run_minimal_network():
     print("Rete avviata.")
     
     # Attendi la convergenza di STP
-    wait_for_stp_convergence(timeout=3)
+    #wait_for_stp_convergence(timeout=3)
 
     # Recupera gli host dalla rete
     h1 = net.get('h1')  # Ottieni oggetto host h1
@@ -89,10 +91,23 @@ def run_minimal_network():
     #     net.stop()
     #     return
 
+    switch = net.get('s1')
+    first_intf = list(switch.intfs.values())[0]
+    MAC = first_intf.MAC()
+    print(MAC)
+    # Ottieni la prima interfaccia disponibile dello switch
+
+
+    # Ottieni la prima interfaccia dello switch (eth0, eth1, ecc.)
+    #switch_intf = switch.  # Prima interfaccia (può essere eth0, eth1, ecc.)
+
+    # Ottieni il MAC address dell'interfaccia
+    #mac_address = switch_intf.MAC()
+
     # Avvia il monitoraggio del file in un thread separato
-    monitor_thread = threading.Thread(target=monitor_file_for_service, args=(h1,))
-    monitor_thread.daemon = True  # Questo farà terminare il thread quando il programma principale termina
-    monitor_thread.start()
+    # monitor_thread = threading.Thread(target=monitor_file_for_service, args=(h1,))
+    # monitor_thread.daemon = True  # Questo farà terminare il thread quando il programma principale termina
+    # monitor_thread.start()
 
     # Avvia il client su h2
     # print("Avvio del client su h2...")
@@ -104,12 +119,12 @@ def run_minimal_network():
     
     # Ferma la rete quando esci dalla CLI
     net.stop()
-    try:
-        with open("server1.txt", "r") as file:
-            file.write('off')                  
-    except Exception as e:
-        print(f"Errore nel monitoraggio del file: {e}")
-        time.sleep(1)  # Controlla ogni sec
+    # try:
+    #     with open("server1.txt", "r") as file:
+    #         file.write('off')                  
+    # except Exception as e:
+    #     print(f"Errore nel monitoraggio del file: {e}")
+    #     time.sleep(1)  # Controlla ogni sec
 
 
 if __name__ == '__main__':

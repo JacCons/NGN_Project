@@ -16,10 +16,10 @@ Directories = {
     'serv2': './Servers/server2.txt',
     'serv3': './Servers/server3.txt',
     'serv4': './Servers/server4.txt',
-    'serv1_path': './Servers/server1_path.txt',
-    'serv2_path': './Servers/server2_path.txt',
-    'serv3_path': './Servers/server3_path.txt',
-    'serv4_path': './Servers/server4_path.txt'
+    'serv1_path': './Servers/server1_path.csv',
+    'serv2_path': './Servers/server2_path.csv',
+    'serv3_path': './Servers/server3_path.csv',
+    'serv4_path': './Servers/server4_path.csv'
 }
 
 
@@ -136,7 +136,7 @@ class MyTopo (Topo):
         print(f"\nShortest path between client and server: {shortest_path}")
         
 
-    def get_shortest_path(net, src_host, dst_host):
+    def get_shortest_path(src_host, dst_host):
         """
         Calculates the shortest path between two hosts in the Mininet network.
 
@@ -303,6 +303,10 @@ def write_csv_net():
         writer = csv.writer(file)
         # Scrivi l'intestazione del CSV
         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort"])
+
+        switch = net.get('s1')
+        first_intf = list(switch.intfs.values())[0]
+        MAC = first_intf.MAC()
         
         for node in net.values():
             for intf in node.intfList():
@@ -312,6 +316,32 @@ def write_csv_net():
                     intf_name = intf.name.split('-')[-1]
                     peer_intf_name = peer_intf.name.split('-')[-1]
                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name])
+
+def write_csv_net_a():
+    with open("net.csv", mode='w', newline='') as file:
+        writer = csv.writer(file)
+        # Scrivi l'intestazione del CSV
+        writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
+
+        # Itera attraverso tutti i nodi (switch e host)
+        for node in net.values():
+            for intf in node.intfList():
+                if intf.link:  # Controlla se c'è un link associato
+                    # Ottieni il peer e la sua interfaccia
+                    peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
+                    intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
+                    peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
+                    
+                    # Ottieni il MAC address per le interfacce
+                    src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
+                    dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
+                    
+                    # Scrivi la riga nel file CSV
+                    writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
+
+# Crea una rete Mininet e chiamala come necessario (es. net)
+# net = Mininet()  # Oppure usa la tua rete esistente
+
 
 # def send_socket_data():
 #     # Set up the client
@@ -332,9 +362,9 @@ def write_csv_path(shortest_path_date, file_name):
     with open(file_name, mode='w', newline='') as file:
         writer = csv.writer(file)
         # Scrivi l'intestazione del CSV
-        writer.writerow(["Source", "Dest."])
+        writer.writerow(["Source","Dest."])
         
-        for i in range(len(shortest_path_date) - 1):
+        for i in range(1, len(shortest_path_date) - 2):
             writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
 
 
@@ -352,15 +382,14 @@ def run_minimal_network():
 
     #wait_for_stp_convergence(timeout=3)
     
-    write_csv_net()
+    write_csv_net_a()
 
     client = net.get('h1')
     server1 = net.get('h3')
-    shortest_path_date = MyTopo.get_shortest_path(net, client, server1)
+    shortest_path_date = MyTopo.get_shortest_path(client, server1)
     print(f"\nShortest path between h1 and h2: {shortest_path_date}\n")
 
     write_csv_path(shortest_path_date, Directories["serv1_path"])
-
 
 
     # send_socket_data()

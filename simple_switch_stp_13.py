@@ -23,8 +23,9 @@ from ryu.lib import stplib
 from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.app import simple_switch_13
-import  socket
-import json 
+#import  socket
+#import json 
+import csv
 
 
 # from ryu.ofproto import ofproto_v1_3
@@ -98,6 +99,19 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                 priority=1, match=match)
             datapath.send_msg(mod)
 
+    def load_links(self, filename):
+        """Carica i collegamenti da un file CSV in un dizionario."""
+        link_ports = {}
+        with open(filename, 'r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                src = row['Source']
+                dst = row['Destination']
+                src_port = int(row['SrcPort'].replace('eth', ''))  # Rimuove "eth" se necessario
+                dst_port = int(row['DstPort'].replace('eth', ''))
+                link_ports[(src, dst)] = (src_port, dst_port)
+        return link_ports
+
     @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
         msg = ev.msg #contains the packet that was sent to the controller and details
@@ -119,9 +133,65 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
         # learn a mac address to avoid FLOOD next time.
-        self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
+        #self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
+        # with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
+        #     for row in file_path:
+        #         src_switch = row['Source']
+        #         dst_switch = row['Destination']
+        #         src_MAC = row['SrcMAC']
+        #         dst_MAC = row['DstMAC']
+        #         with open ('/media/sf_NGN_Project/net.csv', 'r') as file_net:
+        #             for row in file_net:
+        #                 if row['Source'] == src_switch and row['Dest.'] == dst_switch:
+        #             # Se la riga corrisponde, otteniamo src_port e dst_port
+        #                     src_port = int(row['SrcPort'].replace('eth', ''))
+        #                     dst_port = int(row['DstPort'].replace('eth', ''))
+        #                     actions = [parser.OFPActionOutput(dst_port)]
+        #                     #actions = [parser.OFPActionOutput(dst_port)]#contains the action to be performed on the packet
+        #                     # match = parser.OFPMatch(in_port=in_port, eth_dst=dst)#creates a match rule 
+        #                     # self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
+        #                     # self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
+        #                     match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
 
-        
+        #                     # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
+        #                     actions = [parser.OFPActionOutput(dst_port)]
+
+        #                     # Aggiungi il flusso allo switch
+        #                     self.add_flow(datapath, 1, match, actions)
+    # Apri il file server1_path.csv e leggi i dati
+        with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
+            reader = csv.DictReader(file_path)  # Usa DictReader per leggere il CSV come dizionario
+
+            # Itera sulle righe del file server1_path.csv
+            for row in reader:
+                src_switch = row['Source']
+                dst_switch = row['Dest.']
+
+                # Ora apri net.csv e leggi i dati
+                with open('/media/sf_NGN_Project/net.csv', 'r') as file_net:
+                    net_reader = csv.DictReader(file_net)
+
+                    # Itera sulle righe del file net.csv
+                    for net_row in net_reader:
+                        # Verifica se la riga corrisponde tra source e destination
+                        if net_row['Source'] == src_switch and net_row['Dest.'] == dst_switch:
+                            # Ottieni le porte sorgente e destinazione
+                            src_MAC = row['SrcMAC']
+                            dst_MAC = row['DstMAC']
+                            src_port = int(net_row['SrcPort'].replace('eth', ''))  # Converte la porta in un numero
+                            dst_port = int(net_row['DstPort'].replace('eth', ''))  # Converte la porta in un numero
+                            
+                            # Crea un match basato sul MAC address e sulla porta di ingresso
+                            match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
+
+                            # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
+                            actions = [parser.OFPActionOutput(dst_port)]
+
+                            # Aggiungi il flusso allo switch
+                            self.add_flow(datapath, 1, match, actions)
+
+
+
 
 
     #We commented this part to avoid switches from communicating when starting the controller
