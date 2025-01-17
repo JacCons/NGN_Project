@@ -69,6 +69,7 @@ import csv
 
 
 class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
+    
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
     _CONTEXTS = {'stplib': stplib.Stp}
 
@@ -87,6 +88,13 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                   {'bridge': {'priority': 0xa000}}}
         self.stp.set_config(config)
 
+    @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
+    def switch_features_handler(self, ev):
+        datapath = ev.msg.datapath
+        dpid = datapath.id
+        self.datapaths[dpid] = datapath
+        self.logger.info(f"Switch connected: dpid={dpid}")
+
     def delete_flow(self, datapath):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
@@ -99,69 +107,35 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                 priority=1, match=match)
             datapath.send_msg(mod)
 
-    def load_links(self, filename):
-        """Carica i collegamenti da un file CSV in un dizionario."""
-        link_ports = {}
-        with open(filename, 'r') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                src = row['Source']
-                dst = row['Destination']
-                src_port = int(row['SrcPort'].replace('eth', ''))  # Rimuove "eth" se necessario
-                dst_port = int(row['DstPort'].replace('eth', ''))
-                link_ports[(src, dst)] = (src_port, dst_port)
-        return link_ports
 
     @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
-        msg = ev.msg #contains the packet that was sent to the controller and details
-        datapath = msg.datapath #contains the switch that sent the packet
-        ofproto = datapath.ofproto #contains the OpenFlow protocol version used by the switch
-        parser = datapath.ofproto_parser #contains the OpenFlow protocol parser
+        src_port= 1
+        temp =1
+        # msg = ev.msg #contains the packet that was sent to the controller and details
+        # datapath = msg.datapath #contains the switch that sent the packet
+        # ofproto = datapath.ofproto #contains the OpenFlow protocol version used by the switch
+        # parser = datapath.ofproto_parser #contains the OpenFlow protocol parser
 
-        in_port = msg.match['in_port'] #contains the switch port number that the packet was received on
+        # in_port = msg.match['in_port'] #contains the switch port number that the packet was received on
 
-        pkt = packet.Packet(msg.data) #extracts the content of the packet
-        eth = pkt.get_protocols(ethernet.ethernet)[0] #extracts the Ethernet header from the packet
+        # pkt = packet.Packet(msg.data) #extracts the content of the packet
+        # eth = pkt.get_protocols(ethernet.ethernet)[0] #extracts the Ethernet header from the packet
 
-        dst = eth.dst #contains the destination MAC address of the packet
-        src = eth.src #contains the source MAC address of the packet
+        # dst = eth.dst #contains the destination MAC address of the packet
+        # src = eth.src #contains the source MAC address of the packet
 
-        dpid = datapath.id #contains the datapath ID of the switch that sent the packet
-        self.mac_to_port.setdefault(dpid, {}) #creates a dictionary for the switch if it does not exist
+        # dpid = datapath.id #contains the datapath ID of the switch that sent the packet
+        # self.mac_to_port.setdefault(dpid, {}) #creates a dictionary for the switch if it does not exist
 
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        # self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
         # learn a mac address to avoid FLOOD next time.
         #self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
-        # with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
-        #     for row in file_path:
-        #         src_switch = row['Source']
-        #         dst_switch = row['Destination']
-        #         src_MAC = row['SrcMAC']
-        #         dst_MAC = row['DstMAC']
-        #         with open ('/media/sf_NGN_Project/net.csv', 'r') as file_net:
-        #             for row in file_net:
-        #                 if row['Source'] == src_switch and row['Dest.'] == dst_switch:
-        #             # Se la riga corrisponde, otteniamo src_port e dst_port
-        #                     src_port = int(row['SrcPort'].replace('eth', ''))
-        #                     dst_port = int(row['DstPort'].replace('eth', ''))
-        #                     actions = [parser.OFPActionOutput(dst_port)]
-        #                     #actions = [parser.OFPActionOutput(dst_port)]#contains the action to be performed on the packet
-        #                     # match = parser.OFPMatch(in_port=in_port, eth_dst=dst)#creates a match rule 
-        #                     # self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
-        #                     # self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
-        #                     match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
-
-        #                     # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
-        #                     actions = [parser.OFPActionOutput(dst_port)]
-
-        #                     # Aggiungi il flusso allo switch
-        #                     self.add_flow(datapath, 1, match, actions)
-    # Apri il file server1_path.csv e leggi i dati
+        
+    #Apri il file server1_path.csv e leggi i dati
         with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
-            reader = csv.DictReader(file_path)  # Usa DictReader per leggere il CSV come dizionario
-
+            reader=csv.DictReader(file_path)
             # Itera sulle righe del file server1_path.csv
             for row in reader:
                 src_switch = row['Source']
@@ -169,29 +143,37 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
 
                 # Ora apri net.csv e leggi i dati
                 with open('/media/sf_NGN_Project/net.csv', 'r') as file_net:
-                    net_reader = csv.DictReader(file_net)
-
+                    reader1 = csv.DictReader(file_net)
                     # Itera sulle righe del file net.csv
-                    for net_row in net_reader:
+                    for row1 in reader1:
                         # Verifica se la riga corrisponde tra source e destination
-                        if net_row['Source'] == src_switch and net_row['Dest.'] == dst_switch:
+                        if row1['Source'] == str(src_switch) and row1['Dest.'] == str(dst_switch):
                             # Ottieni le porte sorgente e destinazione
-                            src_MAC = row['SrcMAC']
-                            dst_MAC = row['DstMAC']
-                            src_port = int(net_row['SrcPort'].replace('eth', ''))  # Converte la porta in un numero
-                            dst_port = int(net_row['DstPort'].replace('eth', ''))  # Converte la porta in un numero
+                            src_MAC = row1['SrcMAC']
+                            print(f"\nsource mac: {src_MAC}")
                             
-                            # Crea un match basato sul MAC address e sulla porta di ingresso
-                            match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
+                            dst_MAC = row1['DstMAC']
+                            print(f"\ndestination mac: {dst_MAC}")
 
+                            dst_port = int(row1['SrcPort'].replace('eth', ''))  
+                            print ("\ndestination port: ", dst_port)
+
+                            src_port = temp  
+                            print ("\nsource port: ", src_port)
+
+                            temp = int(row1['DstPort'].replace('eth', ''))
+
+                            src_dpid = int(src_switch.replace('s', ''))  # Assumendo che gli switch siano nominati "s1", "s2", ecc.
+                            datapath = self.datapaths.get(src_dpid)
+
+                            # Crea un match basato sul MAC address e sulla porta di ingresso
+                            #match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
+                            match = parser.OFPMatch(in_port=src_port, eth_dst=src_MAC, eth_src=dst_MAC)
                             # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
                             actions = [parser.OFPActionOutput(dst_port)]
 
                             # Aggiungi il flusso allo switch
                             self.add_flow(datapath, 1, match, actions)
-
-
-
 
 
     #We commented this part to avoid switches from communicating when starting the controller
@@ -208,13 +190,14 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
         #     match = parser.OFPMatch(in_port=in_port, eth_dst=dst)#creates a match rule 
         #     self.add_flow(datapath, 1, match, actions) #adds the flow to the switch
 
-        data = None
-        if msg.buffer_id == ofproto.OFP_NO_BUFFER:
-            data = msg.data
+        # data = None
+        # if msg.buffer_id == ofproto.OFP_NO_BUFFER:
+        #     data = msg.data
 
-        out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
-                                  in_port=in_port, actions=actions, data=data)
-        datapath.send_msg(out)
+        # out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
+        #                           in_port=in_port, actions=actions, data=data)
+        # datapath.send_msg(out)
+
 
     @set_ev_cls(stplib.EventTopologyChange, MAIN_DISPATCHER)
     def _topology_change_handler(self, ev):

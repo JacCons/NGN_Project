@@ -80,7 +80,10 @@ class MyTopo (Topo):
         # Assign hosts to switches
         for host in hosts_NODES:
             switch = random.choice(switch_NODES)
-            self.addLink(host, switch) #add link host-switch
+            if(host == 'h1'):
+                self.addLink(host, switch,intfName2=f'{switch}-eth1') #forzo lo switch 1 ad essere collegato ad eth1 dello switch
+            else:
+                self.addLink(host, switch)
             link_NODES.append (f"({host},{switch})") #to print when starting the mininet
             G.add_edge(host, switch)
         
@@ -88,7 +91,7 @@ class MyTopo (Topo):
         for i in range (n_switch-1):
             switch1 = switch_NODES[i]
             switch2 = switch_NODES[i+1]
-            self.addLink(switch1, switch2)
+            self.addLink(switch1, switch2) 
             link_NODES.append (f"({switch1},{switch2})") #to print when starting the mininet
             G.add_edge(switch1, switch2)
         
@@ -343,6 +346,9 @@ def write_csv_net_a():
                     # Scrivi la riga nel file CSV
                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
 
+
+
+
 # Crea una rete Mininet e chiamala come necessario (es. net)
 # net = Mininet()  # Oppure usa la tua rete esistente
 
@@ -368,7 +374,7 @@ def write_csv_path(shortest_path_date, file_name):
         # Scrivi l'intestazione del CSV
         writer.writerow(["Source","Dest."])
         
-        for i in range(1, len(shortest_path_date) - 2):
+        for i in range(1, len(shortest_path_date) - 1):
             writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
 
 
@@ -380,6 +386,7 @@ def run_minimal_network():
     # Create the network using the custom topology and connect it to the Ryu controller
     global net
     net = Mininet(topo=MyTopo(), switch=OVSSwitch, controller=c0, autoSetMacs=True)
+    net.staticArp()
 
     # Start the network
     net.start()

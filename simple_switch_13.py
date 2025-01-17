@@ -22,6 +22,7 @@ from ryu.lib.packet import packet
 from ryu.lib.packet import ethernet
 from ryu.lib.packet import ether_types
 from ryu.lib.packet import ipv4
+import csv
 
 
 class SimpleSwitch13(app_manager.RyuApp):
@@ -67,6 +68,8 @@ class SimpleSwitch13(app_manager.RyuApp):
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
+        src_port= 1
+        temp =1
         # If you hit this you might want to increase
         # the "miss_send_length" of your switch
         if ev.msg.msg_len < ev.msg.total_len:
@@ -78,62 +81,94 @@ class SimpleSwitch13(app_manager.RyuApp):
         parser = datapath.ofproto_parser
         in_port = msg.match['in_port']
 
+        
 
         pkt = packet.Packet(msg.data)
         eth = pkt.get_protocols(ethernet.ethernet)[0]
 
-        #! block packets
-        ips = pkt.get_protocols(ipv4.ipv4)
-        if len(ips) > 0:
-            ip = ips[0]
-            self.logger.info("packet in ipv4 src=%s dst=%s", ip.src, ip.dst)
-            if (ip.src == "10.0.0.1" and ip.dst == "10.0.0.2") or \
-               (ip.src == "10.0.0.2" and ip.dst == "10.0.0.1") or \
-               (ip.src == "10.0.0.3" and ip.dst == "10.0.0.4"):
-                self.logger.info("dropping packet!")
-                return
-
-
-        if eth.ethertype == ether_types.ETH_TYPE_LLDP:
-            # ignore lldp packet
-            return
         dst = eth.dst
         src = eth.src
+        #Apri il file server1_path.csv e leggi i dati
+        with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
+            reader=csv.DictReader(file_path)
+            # Itera sulle righe del file server1_path.csv
+            for row in reader:
+                src_switch = row['Source']
+                dst_switch = row['Dest.']
 
-        dpid = format(datapath.id, "d").zfill(16)
-        self.mac_to_port.setdefault(dpid, {})
+                # Ora apri net.csv e leggi i dati
+                with open('/media/sf_NGN_Project/net.csv', 'r') as file_net:
+                    reader1 = csv.DictReader(file_net)
+                    # Itera sulle righe del file net.csv
+                    for row1 in reader1:
+                        # Verifica se la riga corrisponde tra source e destination
+                        if row1['Source'] == str(src_switch) and row1['Dest.'] == str(dst_switch):
+                            # Ottieni le porte sorgente e destinazione
+                            src_MAC = row1['SrcMAC']
+                            print(f"\nswitch source out mac: {src_MAC}")
+                            
+                            dst_MAC = row1['DstMAC']
+                            print(f"\nswitch destination in mac : {dst_MAC}")
 
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+                            dst_port = int(row1['SrcPort'].replace('eth', ''))  # Converte la porta in un numero
+                            print ("\ndestination port: ", dst_port)
 
-        # learn a mac address to avoid FLOOD next time.
-        self.mac_to_port[dpid][src] = in_port
+                            src_port = temp  # Converte la porta in un numero
+                            print ("\nsource port: ", src_port)
 
-        if dst in self.mac_to_port[dpid]:
-            out_port = self.mac_to_port[dpid][dst]
-            self.logger.info("output port for %s is known: %d", dst, out_port)
+                            temp = int(row1['DstPort'].replace('eth', ''))
 
-        else:
-            out_port = ofproto.OFPP_FLOOD
-            self.logger.info("output port for %s is unknown: FLOODING", dst)
+                            # Crea un match basato sul MAC address e sulla porta di ingresso
+                            #match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
+                            
 
-        actions = [parser.OFPActionOutput(out_port)]
+                            # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
+                            actions = [parser.OFPActionOutput(dst_port)]
+                            match = parser.OFPMatch(in_port=src_port, eth_dst=dst, eth_src=src)
 
-        # install a flow to avoid packet_in next time
-        if out_port != ofproto.OFPP_FLOOD:
-            match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
-            # verify if we have a valid buffer_id, if yes avoid to send both
-            # flow_mod & packet_out
-            if msg.buffer_id != ofproto.OFP_NO_BUFFER:
-                self.add_flow(datapath, 1, match, actions, msg.buffer_id)
-                return
-            else:
-                self.add_flow(datapath, 1, match, actions)
-        data = None
-        if msg.buffer_id == ofproto.OFP_NO_BUFFER:
-            data = msg.data
+                            # Aggiungi il flusso allo switch
+                            self.add_flow(datapath, 1, match, actions)
 
-        out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
-                                  in_port=in_port, actions=actions, data=data)
-        datapath.send_msg(out)
+
+        # if eth.ethertype == ether_types.ETH_TYPE_LLDP:
+        #     # ignore lldp packet
+        #     return
+        
+
+        # dpid = format(datapath.id, "d").zfill(16)
+        # self.mac_to_port.setdefault(dpid, {})
+
+        # self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+        # # learn a mac address to avoid FLOOD next time.
+        # self.mac_to_port[dpid][src] = in_port
+
+        # if dst in self.mac_to_port[dpid]:
+        #     out_port = self.mac_to_port[dpid][dst]
+        #     self.logger.info("output port for %s is known: %d", dst, out_port)
+
+        # else:
+        #     out_port = ofproto.OFPP_FLOOD
+        #     self.logger.info("output port for %s is unknown: FLOODING", dst)
+
+        # actions = [parser.OFPActionOutput(out_port)]
+
+        # # install a flow to avoid packet_in next time
+        # if out_port != ofproto.OFPP_FLOOD:
+        #     match = parser.OFPMatch(in_port=in_port, eth_dst=dst, eth_src=src)
+        #     # verify if we have a valid buffer_id, if yes avoid to send both
+        #     # flow_mod & packet_out
+        #     if msg.buffer_id != ofproto.OFP_NO_BUFFER:
+        #         self.add_flow(datapath, 1, match, actions, msg.buffer_id)
+        #         return
+        #     else:
+        #         self.add_flow(datapath, 1, match, actions)
+        # data = None
+        # if msg.buffer_id == ofproto.OFP_NO_BUFFER:
+        #     data = msg.data
+
+        # out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
+        #                           in_port=in_port, actions=actions, data=data)
+        # datapath.send_msg(out)
 
 
