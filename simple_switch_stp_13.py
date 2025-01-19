@@ -88,12 +88,12 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                   {'bridge': {'priority': 0xa000}}}
         self.stp.set_config(config)
 
-    @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
-    def switch_features_handler(self, ev):
-        datapath = ev.msg.datapath
-        dpid = datapath.id
-        self.datapaths[dpid] = datapath
-        self.logger.info(f"Switch connected: dpid={dpid}")
+    # @set_ev_cls(ofp_event.EventOFPSwitchFeatures, CONFIG_DISPATCHER)
+    # def switch_features_handler(self, ev):
+    #     datapath = ev.msg.datapath
+    #     dpid = datapath.id
+    #     self.datapaths[dpid] = datapath
+    #     self.logger.info(f"Switch connected: dpid={dpid}")
 
     def delete_flow(self, datapath):
         ofproto = datapath.ofproto
@@ -108,72 +108,118 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
             datapath.send_msg(mod)
 
 
-    @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
-    def _packet_in_handler(self, ev):
-        src_port= 1
-        temp =1
-        # msg = ev.msg #contains the packet that was sent to the controller and details
-        # datapath = msg.datapath #contains the switch that sent the packet
-        # ofproto = datapath.ofproto #contains the OpenFlow protocol version used by the switch
-        # parser = datapath.ofproto_parser #contains the OpenFlow protocol parser
+    # @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
+    # def _packet_in_handler(self, ev):
+    #     src_port= 1
+    #     temp =1
+    #     msg = ev.msg #contains the packet that was sent to the controller and details
+    #     datapath = msg.datapath #contains the switch that sent the packet
+    #     ofproto = datapath.ofproto #contains the OpenFlow protocol version used by the switch
+    #     parser = datapath.ofproto_parser #contains the OpenFlow protocol parser
 
-        # in_port = msg.match['in_port'] #contains the switch port number that the packet was received on
+    #     in_port = msg.match['in_port'] #contains the switch port number that the packet was received on
 
-        # pkt = packet.Packet(msg.data) #extracts the content of the packet
-        # eth = pkt.get_protocols(ethernet.ethernet)[0] #extracts the Ethernet header from the packet
+    #     pkt = packet.Packet(msg.data) #extracts the content of the packet
+    #     eth = pkt.get_protocols(ethernet.ethernet)[0] #extracts the Ethernet header from the packet
 
-        # dst = eth.dst #contains the destination MAC address of the packet
-        # src = eth.src #contains the source MAC address of the packet
+    #     dst = eth.dst #contains the destination MAC address of the packet
+    #     src = eth.src #contains the source MAC address of the packet
 
-        # dpid = datapath.id #contains the datapath ID of the switch that sent the packet
-        # self.mac_to_port.setdefault(dpid, {}) #creates a dictionary for the switch if it does not exist
+    #     dpid = datapath.id #contains the datapath ID of the switch that sent the packet
+    #     self.mac_to_port.setdefault(dpid, {}) #creates a dictionary for the switch if it does not exist
 
-        # self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+    #     self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
 
-        # learn a mac address to avoid FLOOD next time.
-        #self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
+    #     # #learn a mac address to avoid FLOOD next time.
+    #     # self.mac_to_port[dpid][src] = in_port #stores the source MAC address and the port number that the packet was received on
         
-    #Apri il file server1_path.csv e leggi i dati
-        with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
-            reader=csv.DictReader(file_path)
-            # Itera sulle righe del file server1_path.csv
-            for row in reader:
-                src_switch = row['Source']
-                dst_switch = row['Dest.']
+    # #Apri il file server1_path.csv e leggi i dati
+    #     with open('/media/sf_NGN_Project/Servers/server1_path.csv', 'r') as file_path:
+    #         reader=csv.DictReader(file_path)
+    #         # Itera sulle righe del file server1_path.csv
+    #         for row in reader:
+    #             src_switch = row['Source']
+    #             dst_switch = row['Dest.']
 
-                # Ora apri net.csv e leggi i dati
-                with open('/media/sf_NGN_Project/net.csv', 'r') as file_net:
-                    reader1 = csv.DictReader(file_net)
-                    # Itera sulle righe del file net.csv
-                    for row1 in reader1:
-                        # Verifica se la riga corrisponde tra source e destination
-                        if row1['Source'] == str(src_switch) and row1['Dest.'] == str(dst_switch):
-                            # Ottieni le porte sorgente e destinazione
-                            src_MAC = row1['SrcMAC']
-                            print(f"\nsource mac: {src_MAC}")
+    #             # Ora apri net.csv e leggi i dati
+    #             with open('/media/sf_NGN_Project/net.csv', 'r') as file_net:
+    #                 reader1 = csv.DictReader(file_net)
+    #                 # Itera sulle righe del file net.csv
+    #                 for row1 in reader1:
+    #                     # Verifica se la riga corrisponde tra source e destination
+    #                     if row1['Source'] == str(src_switch) and row1['Dest.'] == str(dst_switch):
+    #                         # Ottieni le porte sorgente e destinazione
+    #                         src_MAC = row1['SrcMAC']
+    #                         print(f"\nsource mac: {src_MAC}")
                             
-                            dst_MAC = row1['DstMAC']
-                            print(f"\ndestination mac: {dst_MAC}")
+    #                         dst_MAC = row1['DstMAC']
+    #                         print(f"\ndestination mac: {dst_MAC}")
 
-                            dst_port = int(row1['SrcPort'].replace('eth', ''))  
-                            print ("\ndestination port: ", dst_port)
+    #                         dst_port = int(row1['SrcPort'].replace('eth', ''))  
+    #                         print ("\ndestination port: ", dst_port)
 
-                            src_port = temp  
-                            print ("\nsource port: ", src_port)
+    #                         src_port = temp  
+    #                         print ("\nsource port: ", src_port)
 
-                            temp = int(row1['DstPort'].replace('eth', ''))
+    #                         temp = int(row1['DstPort'].replace('eth', ''))
 
-                            src_dpid = int(src_switch.replace('s', ''))  # Assumendo che gli switch siano nominati "s1", "s2", ecc.
-                            datapath = self.datapaths.get(src_dpid)
+    #                         src_dpid = int(src_switch.replace('s', ''))  # Assumendo che gli switch siano nominati "s1", "s2", ecc.
+    #                         datapath = self.datapaths.get(src_dpid)
 
-                            # Crea un match basato sul MAC address e sulla porta di ingresso
-                            #match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
-                            match = parser.OFPMatch(in_port=src_port, eth_dst=src_MAC, eth_src=dst_MAC)
-                            # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
-                            actions = [parser.OFPActionOutput(dst_port)]
+    #                         # Crea un match basato sul MAC address e sulla porta di ingresso
+    #                         #match = parser.OFPMatch(in_port=src_port, eth_dst=dst_MAC)
+    #                         match = parser.OFPMatch(in_port=src_port, eth_dst=src_MAC, eth_src=dst_MAC)
+    #                         # Aggiungi l'azione per inoltrare il pacchetto sulla porta di destinazione
+    #                         actions = [parser.OFPActionOutput(dst_port)]
 
-                            # Aggiungi il flusso allo switch
-                            self.add_flow(datapath, 1, match, actions)
+    #                         # Aggiungi il flusso allo switch
+    #                         self.add_flow(datapath, 1, match, actions)
+
+    @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
+    def _packet_in_handler(self, ev):
+        msg = ev.msg
+        datapath = msg.datapath
+        ofproto = datapath.ofproto
+        parser = datapath.ofproto_parser
+        in_port = msg.match['in_port']
+
+        pkt = packet.Packet(msg.data)
+        eth = pkt.get_protocols(ethernet.ethernet)[0]
+        src = eth.src
+        dst = eth.dst
+
+        dpid = datapath.id
+        self.mac_to_port.setdefault(dpid, {})
+
+        # Indirizzi MAC di h1 e h3 (sostituisci con gli indirizzi corretti)
+        h1_mac = '00:00:00:00:00:01'  # MAC di h1
+        h3_mac = '00:00:00:00:00:03'  # MAC di h3
+
+        # Log del pacchetto ricevuto
+        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+        # Se il pacchetto è tra h1 e h3, aggiungi un flusso specifico
+        if (src == h1_mac and dst == h3_mac) or (src == h3_mac and dst == h1_mac):
+            self.logger.info("Adding flow for h1 and h3 communication")
+
+            # Creazione del match per il traffico tra h1 e h3
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+            # Trova la porta corretta da usare
+            out_port = self.mac_to_port[dpid].get(dst)  # Ottieni la porta di uscita per il destinatario
+
+            if out_port is not None:
+                # Azione: invia il pacchetto alla porta specifica
+                actions = [parser.OFPActionOutput(out_port)]
+                self.add_flow(datapath, 1, match, actions)
+            else:
+                # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+                actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+                self.add_flow(datapath, 1, match, actions)
+
+        else:
+            self.logger.info("Dropping packet not between h1 and h3")
+
 
 
     #We commented this part to avoid switches from communicating when starting the controller

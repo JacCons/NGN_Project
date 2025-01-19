@@ -386,10 +386,10 @@ def run_minimal_network():
     # Create the network using the custom topology and connect it to the Ryu controller
     global net
     net = Mininet(topo=MyTopo(), switch=OVSSwitch, controller=c0, autoSetMacs=True)
-    net.staticArp()
 
     # Start the network
     net.start()
+    net.staticArp()
 
     #wait_for_stp_convergence(timeout=3)
     
@@ -398,7 +398,7 @@ def run_minimal_network():
     client = net.get('h1')
     server1 = net.get('h3')
     shortest_path_date = MyTopo.get_shortest_path(client, server1)
-    print(f"\nShortest path between h1 and h2: {shortest_path_date}\n")
+    print(f"\nShortest path between h1 and h3: {shortest_path_date}\n")
 
     write_csv_path(shortest_path_date, Directories["serv1_path"])
 
