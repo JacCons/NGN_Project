@@ -17,11 +17,19 @@ daily_quote = "Daily Quote"
 two_steps_service = "2 Steps Service"
 
 Directories = {
-    'serv1': './Servers/server1.txt',
-    'serv2': './Servers/server2.txt',
-    'serv3': './Servers/server3.txt',
-    'serv4': './Servers/server4.txt',
+    'serv1': 'Servers/server1.txt',
+    'serv2': 'Servers/server2.txt',
+    'serv3': 'Servers/server3.txt',
+    'serv4': 'Servers/server4.txt',
 }
+
+# * funzionava a Jacopo, a cri no. 
+# Directories = {
+#     'serv1': './Servers/server1.txt',
+#     'serv2': './Servers/server2.txt',
+#     'serv3': './Servers/server3.txt',
+#     'serv4': './Servers/server4.txt',
+# }
 
 
 class App(customtkinter.CTk):
@@ -76,6 +84,7 @@ class App(customtkinter.CTk):
         # Bottone per update dei parametri
         self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
         self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+        self.create_button.focus_set()
 
         #Status Box
         self.statusbox = customtkinter.CTkTextbox(self, height=65)
@@ -132,6 +141,13 @@ class App(customtkinter.CTk):
 
         self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
+
+        self.service1_button.configure(state = "disabled")
+        self.service2_button.configure(state = "disabled")
+        self.service3_button.configure(state = "disabled")
+        self.stopall_button.configure(state = "disabled")
+        
+        
 
 
     def change_scaling_event(self, new_scaling: str):
@@ -245,12 +261,22 @@ class App(customtkinter.CTk):
 
         try:
             numhost = int(self.entrynumhost.get())
+
+            if(numhost < 7):
+                tkinter.messagebox.showinfo("Error", "Number of hosts must be at least 7")
+                return
+
             numswitch = int(self.entrynumswitch.get())
 
             with open("topology_parameters.txt", "w") as f:
                 f.write(str(numhost))
                 f.write("\n")
                 f.write(str(numswitch))
+            
+            self.service1_button.configure(state = "normal")
+            self.service2_button.configure(state = "normal")
+            self.service3_button.configure(state = "normal")
+            self.stopall_button.configure(state = "normal")
 
             print("topology_parameters.txt created...")
             self.statusbox.configure(state="normal")

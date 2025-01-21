@@ -22,7 +22,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         conn, addr = server_socket.accept()
         with conn:
             print(f"Connessione da {addr}")
-            conn.sendall(data)  # Invia i dati ricevuti dal server remoto
+            data = data.decode()  # Decodifica i dati ricevuti dal server remoto
+            data = data + " altro server !"
+            conn.sendall(data.encode())  # Invia i dati ricevuti dal server remoto
 
 
 

@@ -194,12 +194,16 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
         # Indirizzi MAC di h1 e h3 (sostituisci con gli indirizzi corretti)
         h1_mac = '00:00:00:00:00:01'  # MAC di h1
         h3_mac = '00:00:00:00:00:03'  # MAC di h3
+        h4_mac = '00:00:00:00:00:04'  # MAC di h4
+        h6_mac = '00:00:00:00:00:06'  # MAC di h6
+        h7_mac = '00:00:00:00:00:07'  # MAC di h7
 
         # Log del pacchetto ricevuto
-        self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+       
 
         # Se il pacchetto è tra h1 e h3, aggiungi un flusso specifico
-        if (src == h1_mac and dst == h3_mac) or (src == h3_mac and dst == h1_mac):
+        if (src == h1_mac and dst == h3_mac) or (src == h3_mac and dst == h1_mac): 
+            self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
             self.logger.info("Adding flow for h1 and h3 communication")
 
             # Creazione del match per il traffico tra h1 e h3
@@ -217,8 +221,211 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                 actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
                 self.add_flow(datapath, 1, match, actions)
 
-        else:
-            self.logger.info("Dropping packet not between h1 and h3")
+        if (src == h1_mac and dst == h4_mac) or (src == h4_mac and dst == h1_mac):
+            self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+            self.logger.info("Adding flow for h1 and h4 communication")
+
+            # Creazione del match per il traffico tra h1 e h4
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+            # Trova la porta corretta da usare
+            out_port = self.mac_to_port[dpid].get(dst)
+
+            if out_port is not None:
+                # Azione: invia il pacchetto alla porta specifica
+                actions = [parser.OFPActionOutput(out_port)]
+                self.add_flow(datapath, 1, match, actions)
+            else:
+                # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+                actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+                self.add_flow(datapath, 1, match, actions)
+
+        if (src == h1_mac and dst == h6_mac) or (src == h6_mac and dst == h1_mac):
+            self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+            self.logger.info("Adding flow for h1 and h6 communication")
+
+            # Creazione del match per il traffico tra h1 e h6
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+            # Trova la porta corretta da usare
+            out_port = self.mac_to_port[dpid].get(dst)
+
+            if out_port is not None:
+                # Azione: invia il pacchetto alla porta specifica
+                actions = [parser.OFPActionOutput(out_port)]
+                self.add_flow(datapath, 1, match, actions)
+            else:
+                # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+                actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+                self.add_flow(datapath, 1, match, actions)
+
+
+        if (src == h1_mac and dst == h7_mac) or (src == h7_mac and dst == h1_mac):
+            self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+            self.logger.info("Adding flow for h1 and h7 communication")
+
+            # Creazione del match per il traffico tra h1 e h7
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+            # Trova la porta corretta da usare
+            out_port = self.mac_to_port[dpid].get(dst)
+
+            if out_port is not None:
+                # Azione: invia il pacchetto alla porta specifica
+                actions = [parser.OFPActionOutput(out_port)]
+                self.add_flow(datapath, 1, match, actions)
+            else:
+                # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+                actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+                self.add_flow(datapath, 1, match, actions)
+        
+        if (src == h3_mac and dst == h7_mac) or ( src == h7_mac and dst == h3_mac):
+            self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+            self.logger.info("Adding flow for h3 and h7 communication")
+
+            # Creazione del match per il traffico tra h3 e h7
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+            # Trova la porta corretta da usare
+            out_port = self.mac_to_port[dpid].get(dst)
+
+            if out_port is not None:
+                # Azione: invia il pacchetto alla porta specifica
+                actions = [parser.OFPActionOutput(out_port)]
+                self.add_flow(datapath, 1, match, actions)
+            else:
+                # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+                actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+                self.add_flow(datapath, 1, match, actions)
+                
+        # if(src == h3_mac and dst == h7_mac) or (src == h7_mac and dst == h3_mac):
+        #     self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+
+        #     self.logger.info("Adding flow for h3 and h7 communication")
+
+        #     # Creazione del match per il traffico tra h3 e h7
+        #     match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+        #     # Trova la porta corretta da usare
+        #     out_port = self.mac_to_port[dpid].get(dst)
+
+        #     if out_port is not None:
+        #         # Azione: invia il pacchetto alla porta specifica
+        #         actions = [parser.OFPActionOutput(out_port)]
+        #         self.add_flow(datapath, 1, match, actions)
+        #     else:
+        #         # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+        #         actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+        #         self.add_flow(datapath, 1, match, actions)
+
+
+        # if (src == h1_mac and dst == h7_mac) or (src == h7_mac and dst == h1_mac) or (src == h3_mac and dst == h7_mac) or (src == h7_mac and dst == h3_mac):
+
+        #     match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+
+        #     if(src == h1_mac):
+        #         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #         self.logger.info("Adding flow for h1 and h3 communication")
+
+        #         # Creazione del match per il traffico tra h1 e h3
+        #         match = parser.OFPMatch(in_port=in_port, eth_src=h1_mac, eth_dst=h3_mac)
+        #         out_port = self.mac_to_port[dpid].get(dst)  # Ottieni la porta di uscita per il destinatario
+
+        #         if out_port is not None:
+        #             # Azione: invia il pacchetto alla porta specifica
+        #             actions = [parser.OFPActionOutput(out_port)]
+        #             self.add_flow(datapath, 1, match, actions)
+        #         else:
+        #             # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+        #             actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+        #             self.add_flow(datapath, 1, match, actions)
+
+        #     if(src == h3_mac):
+        #         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #         self.logger.info("Adding flow for h3 and h7 communication")
+
+        #         # Creazione del match per il traffico tra h1 e h3
+        #         match = parser.OFPMatch(in_port=in_port, eth_src=h3_mac, eth_dst=h7_mac)
+        #         out_port = self.mac_to_port[dpid].get(dst)  # Ottieni la porta di uscita per il destinatario
+
+        #         if out_port is not None:
+        #             # Azione: invia il pacchetto alla porta specifica
+        #             actions = [parser.OFPActionOutput(out_port)]
+        #             self.add_flow(datapath, 1, match, actions)
+        #         else:
+        #             # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+        #             actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+        #             self.add_flow(datapath, 1, match, actions)
+            
+        #     if( src == h1_mac and dst == h7_mac ):
+        #         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #         self.logger.info("Adding flow for h1 and h3 communication - src h1 and dst h7")
+
+        #         # Creazione del match per il traffico tra h1 e h3
+        #         match = parser.OFPMatch(in_port=in_port, eth_src=h1_mac, eth_dst=h3_mac)
+        #         # Trova la porta corretta da usare
+        #         out_port = self.mac_to_port[dpid].get(dst)
+
+        #         if out_port is not None:
+        #             # Azione: invia il pacchetto alla porta specifica
+        #             actions = [parser.OFPActionOutput(out_port)]
+        #             self.add_flow(datapath, 1, match, actions)
+        #         else:
+        #             # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+        #             actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+        #             self.add_flow(datapath, 1, match, actions)
+
+        #     if( src == h7_mac and dst == h1_mac ):
+        #         self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+        #         self.logger.info("Adding flow for h1 and h7 communication")
+
+        #         # Creazione del match per il traffico tra h1 e h3
+        #         match = parser.OFPMatch(in_port=in_port, eth_src=h7_mac, eth_dst=h1_mac)
+        #         out_port = self.mac_to_port[dpid].get(dst)  # Ottieni la porta di uscita per il destinatario
+
+        #         if out_port is not None:
+        #             # Azione: invia il pacchetto alla porta specifica
+        #             actions = [parser.OFPActionOutput(out_port)]
+        #             self.add_flow(datapath, 1, match, actions)
+        #         else:
+        #             # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+        #             actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+        #             self.add_flow(datapath, 1, match, actions)
+
+            # if (src == h7_mac):
+            #     self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+            #     self.logger.info("Adding flow for h7 and h1 communication")
+
+            #     # Creazione del match per il traffico tra h1 e h3
+            #     match = parser.OFPMatch(in_port=in_port, eth_src=h7_mac, eth_dst=h3_mac)
+
+            # if (src == h3_mac):
+            #     self.logger.info("packet in %s %s %s %s", dpid, src, dst, in_port)
+            #     self.logger.info("Adding flow for h7 and h1 communication")
+
+            #     # Creazione del match per il traffico tra h1 e h3
+            #     match = parser.OFPMatch(in_port=in_port, eth_src=h3_mac, eth_dst=h1_mac)
+
+                
+            # Trova la porta corretta da usare            
+            # out_port = self.mac_to_port[dpid].get(dst)  # Ottieni la porta di uscita per il destinatario
+
+            # if out_port is not None:
+            #     # Azione: invia il pacchetto alla porta specifica
+            #     actions = [parser.OFPActionOutput(out_port)]
+            #     self.add_flow(datapath, 1, match, actions)
+            # else:
+            #     # Se non c'è una porta per il destinatario, può essere un pacchetto "not recognized" (flooding)
+            #     actions = [parser.OFPActionOutput(ofproto.OFPP_FLOOD)]
+            #     self.add_flow(datapath, 1, match, actions)
+        # else:
+        #     self.logger.info(f"Dropping packet not between src: {src} and dst: {dst}")
+
+                           
 
 
 
