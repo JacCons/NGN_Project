@@ -26,6 +26,8 @@ from ryu.app import simple_switch_13
 #import  socket
 #import json 
 import csv
+from ryu.app.wsgi import ControllerBase, WSGIApplication, route
+from webob import Response
 
 
 # from ryu.ofproto import ofproto_v1_3
@@ -71,12 +73,15 @@ import csv
 class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
     
     OFP_VERSIONS = [ofproto_v1_3.OFP_VERSION]
-    _CONTEXTS = {'stplib': stplib.Stp}
+    _CONTEXTS = {'stplib': stplib.Stp, 'wsgi': WSGIApplication}
 
     def __init__(self, *args, **kwargs):
         super(SimpleSwitch13, self).__init__(*args, **kwargs)
         self.mac_to_port = {}
         self.stp = kwargs['stplib']
+        self.datapaths = {}  # Add this line to store datapaths
+        self.wsgi = kwargs['wsgi']
+        self.wsgi.register(SimpleSwitch13Controller, {'simple_switch_app': self})
 
         # Sample of stplib config.
         #  please refer to stplib.Stp.set_config() for details.
@@ -106,6 +111,30 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                 out_port=ofproto.OFPP_ANY, out_group=ofproto.OFPG_ANY,
                 priority=1, match=match)
             datapath.send_msg(mod)
+
+    def delete_all_flows(self):
+        print("\nDeleting all flows\n")
+
+        for dp in self.datapaths.values():
+            print(f"Deleting flows from switch {dp.id}\n")
+            ofproto = dp.ofproto
+            parser = dp.ofproto_parser
+
+            # Delete all existing flows
+            match = parser.OFPMatch()  # Match all packets
+            mod = parser.OFPFlowMod(
+                datapath=dp,
+                command=ofproto.OFPFC_DELETE,
+                out_port=ofproto.OFPP_ANY,
+                out_group=ofproto.OFPG_ANY,
+                priority=0,
+                match=match
+            )
+            dp.send_msg(mod)
+
+        print("\nAll flows deleted\n")
+
+
 
 
     # @set_ev_cls(stplib.EventPacketIn, MAIN_DISPATCHER)
@@ -179,6 +208,7 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
     def _packet_in_handler(self, ev):
         msg = ev.msg
         datapath = msg.datapath
+        self.datapaths[datapath.id] = datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
         in_port = msg.match['in_port']
@@ -473,3 +503,14 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
                     stplib.PORT_STATE_FORWARD: 'FORWARD'}
         self.logger.debug("[dpid=%s][port=%d] state=%s",
                           dpid_str, ev.port_no, of_state[ev.port_state])
+
+# Classe che estende il controllore e attraverso REST API comunica quando eliminare i flows
+class SimpleSwitch13Controller(ControllerBase):
+    def __init__(self, req, link, data, **config):
+        super(SimpleSwitch13Controller, self).__init__(req, link, data, **config)
+        self.simple_switch_app = data['simple_switch_app']
+
+    @route('simple_switch', '/simpleswitch/delete_flows', methods=['POST'])
+    def delete_flows(self, req, **kwargs):
+        self.simple_switch_app.delete_all_flows()
+        return Response(status=200, body="All flows deleted")

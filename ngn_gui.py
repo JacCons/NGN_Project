@@ -8,6 +8,8 @@ import matplotlib.image as mpimg
 import os
 import time
 
+import requests
+
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
 
@@ -139,7 +141,7 @@ class App(customtkinter.CTk):
         self.service4_button.configure(state = "disabled")
         self.service4_button.configure(fg_color="#c74c3c")
 
-        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
+        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="REMOVE all flows", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
         self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
         self.service1_button.configure(state = "disabled")
@@ -147,7 +149,16 @@ class App(customtkinter.CTk):
         self.service3_button.configure(state = "disabled")
         self.stopall_button.configure(state = "disabled")
         
-        
+
+    def delete_all_flows(self):
+        try:
+            response = requests.post('http://127.0.0.1:8080/simpleswitch/delete_flows')
+            if response.status_code == 200:
+                tkinter.messagebox.showinfo("Success", "All flows deleted successfully")
+            else:
+                tkinter.messagebox.showerror("Error", "Failed to delete flows")
+        except Exception as e:
+            tkinter.messagebox.showerror("Error", f"Failed to delete flows: {e}")
 
 
     def change_scaling_event(self, new_scaling: str):
@@ -253,6 +264,8 @@ class App(customtkinter.CTk):
                     self.service4_button.configure(state = "disabled")
             except:
                 print("Error")
+            
+            self.delete_all_flows()
              
 
     def create_button_event(self):
