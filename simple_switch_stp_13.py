@@ -134,6 +134,44 @@ class SimpleSwitch13(simple_switch_13.SimpleSwitch13):
 
         print("\nAll flows deleted\n")
 
+    def delete_flood_flows(self):
+        print("\nRequesting flow stats to delete flood flows\n")
+
+        for dp in self.datapaths.values():
+            print(f"Requesting flow stats from switch {dp.id}\n")
+            ofproto = dp.ofproto
+            parser = dp.ofproto_parser
+
+            # Request flow stats
+            req = parser.OFPFlowStatsRequest(datapath=dp)
+            dp.send_msg(req)
+
+    @set_ev_cls(ofp_event.EventOFPFlowStatsReply, MAIN_DISPATCHER)
+    def flow_stats_reply_handler(self, ev):
+        body = ev.msg.body
+        dp = ev.msg.datapath
+        ofproto = dp.ofproto
+        parser = dp.ofproto_parser
+
+        for stat in body:
+            for instruction in stat.instructions:
+                if isinstance(instruction, parser.OFPInstructionActions):
+                    if any(isinstance(action, parser.OFPActionOutput) and action.port == ofproto.OFPP_FLOOD for action in instruction.actions):
+                        print(f"Deleting flow with FLOOD action from switch {dp.id}\n")
+                        # Delete the flow
+                        match = stat.match
+                        mod = parser.OFPFlowMod(
+                            datapath=dp,
+                            command=ofproto.OFPFC_DELETE,
+                            out_port=ofproto.OFPP_ANY,
+                            out_group=ofproto.OFPG_ANY,
+                            priority=0,
+                            match=match
+                        )
+                        dp.send_msg(mod)
+
+        print("\nAll flood flows deleted\n")
+
 
 
 
@@ -513,4 +551,9 @@ class SimpleSwitch13Controller(ControllerBase):
     @route('simple_switch', '/simpleswitch/delete_flows', methods=['POST'])
     def delete_flows(self, req, **kwargs):
         self.simple_switch_app.delete_all_flows()
+        return Response(status=200, body="All flows deleted")
+    
+    @route('simple_switch', '/simpleswitch/delete_flood_flows', methods=['POST'])
+    def delete_flows(self, req, **kwargs):
+        self.simple_switch_app.delete_flood_flows()
         return Response(status=200, body="All flows deleted")

@@ -152,7 +152,7 @@ class App(customtkinter.CTk):
 
     def delete_all_flows(self):
         try:
-            response = requests.post('http://127.0.0.1:8080/simpleswitch/delete_flows')
+            response = requests.post('http://127.0.0.1:8080/simpleswitch/delete_flood_flows')
             if response.status_code == 200:
                 tkinter.messagebox.showinfo("Success", "All flows deleted successfully")
             else:
@@ -247,23 +247,23 @@ class App(customtkinter.CTk):
                         self.service4_button.configure(fg_color="#c74c3c") 
             except:
                 print("Error")
-        if button_name == "STOP ALL SERVICES":
-            try:
-                with open(Directories["serv1"], "w") as f:
-                    f.write("off")
-                    self.service1_button.configure(fg_color="#c74c3c")
-                with open(Directories["serv2"], "w") as f:
-                    f.write("off")
-                    self.service2_button.configure(fg_color="#c74c3c")
-                with open(Directories["serv3"], "w") as f:
-                    f.write("off")
-                    self.service3_button.configure(fg_color="#c74c3c")
-                with open(Directories["serv4"], "w") as f:
-                    f.write("off")
-                    self.service4_button.configure(fg_color="#c74c3c")
-                    self.service4_button.configure(state = "disabled")
-            except:
-                print("Error")
+        if button_name == "REMOVE all flows":
+            # try:
+            #     with open(Directories["serv1"], "w") as f:
+            #         f.write("off")
+            #         self.service1_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv2"], "w") as f:
+            #         f.write("off")
+            #         self.service2_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv3"], "w") as f:
+            #         f.write("off")
+            #         self.service3_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv4"], "w") as f:
+            #         f.write("off")
+            #         self.service4_button.configure(fg_color="#c74c3c")
+            #         self.service4_button.configure(state = "disabled")
+            # except:
+            #     print("Error")
             
             self.delete_all_flows()
              
