@@ -38,6 +38,16 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 - For Windows users: install [_mobaXterm_](https://mobaxterm.mobatek.net/download.html) and [enable forwarding](/Readme_files/X11_setup.md)
 - Install [Python 3.7](/Readme_files/Install_Python.md) version on the VIrtual Machine
 
+## FILES WITH DESCRIPTION
+1. ngn_gui.py: graphical user interface
+2. topology_generator.py: generates the topology and assign services to servers
+3. topology_parameters.txt: contains user-input parameters to create the topology
+4. simple_switch_stp_13.py: contains the ryu controller configuration
+5. 
+6. Servers folder: contains configuration files for servers and server's status files, that tell if they are on/off
+7. client.py: slient configuration file
+8. img Folder: contains images
+
 ## HOW TO RUN THE APPLICATION
 
 1. Open VirtualBox and start Comnetsemu Virtual Machine (comnetsemu)
@@ -53,28 +63,42 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
      cd /media/sf_NGN_Project
    ```
 
-3.1. If some permission issues arise, then use the superuser command:
+    3.1. If some permission issues arise, then use the superuser command:
 
-  ```bash
-  sudo su
-  ```
+    ```bash
+      sudo su
+    ```
 
-  and then repeat the previous command.
+      and then repeat the previous command.
 
-1. Run the GUI
+4. Run the ngn_gui.py program
 
-   ```bash
-   production:
-   python3.7 ngn_gui.py #  open the GUI and start controller and mininet
+    ```bash    
+      python3.7 ngn_gui.py #  open the GUI and start controller and mininet
+    ```
 
-   dev:
-   python3.7 openShellWithPy.py # open terminal and start controller and mininet
-   ```
+    The program will open the Graphical User Interface and the RYU controller will be turned-on. You should see the following:
+
+    <img src="img/gui.png" alt="Controller" width="500">
+    <img src="img/controller.png" alt="Controller" width="400">
+
+5. Use the textboxes to set the number of hosts and switches. Then press the button "CREATE TOPOLOGY" to generete the Mininet. Wait for the topology image to display
+  
+    <img src="img/Topology.png" alt="Controller" width="500">
+    <img src="img/Mininet.png" alt="Controller" width="500">
+
+6. Use the right-side buttons to turn on the servers. Once you have turned on the servers, use the mininet command line to request a service by running the client.py program on host1 (h1) specifying the server's IP you want to connect to. The ryu controller will automatically instantiate the required flow between the client and the server.
+
+    <img src="img/Service_request.png" alt="Controller" width="500">
+
+7. To delete all flows press the REMOVE all flows button. This will automatically update the flow tables and delete previously added entries.
+
+   
 
 
 
 
-## FILES WITH DESCRIPTION
+
 
 ## Roadmap
 

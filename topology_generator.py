@@ -395,12 +395,12 @@ def run_minimal_network():
     
     write_csv_net_a()
 
-    client = net.get('h1')
-    server1 = net.get('h3')
-    shortest_path_date = MyTopo.get_shortest_path(client, server1)
-    print(f"\nShortest path between h1 and h3: {shortest_path_date}\n")
+    # client = net.get('h1')
+    # server1 = net.get('h3')
+    # shortest_path_date = MyTopo.get_shortest_path(client, server1)
+    # print(f"\nShortest path between h1 and h3: {shortest_path_date}\n")
 
-    write_csv_path(shortest_path_date, Directories["serv1_path"])
+    # write_csv_path(shortest_path_date, Directories["serv1_path"])
 
 
     # send_socket_data()
