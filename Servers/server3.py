@@ -18,14 +18,15 @@ famous_quotes = [
 ]
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     server_socket.bind((HOST, PORT))
     server_socket.listen()
-    print(f"Server in ascolto sulla porta {PORT}...")
+    print(f"Server listening on port {PORT}...")
 
     while True:
         conn, addr = server_socket.accept()
         with conn:
-            print(f"Connessione da {addr}")
+            print(f"Connection from {addr}")
             random_quote = random.choice(famous_quotes)
             random_quote = "Daily quote: "+ random_quote
             conn.sendall(random_quote.encode())  
