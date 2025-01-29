@@ -85,7 +85,7 @@ class App(customtkinter.CTk):
 
         # Bottone per update dei parametri
         self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE topology", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
-        self.create_button.grid(row=6, column=0, padx=20, pady=10, sticky="s")
+        self.create_button.grid(row=7, column=0, padx=20, pady=20, sticky="sew")
         self.create_button.focus_set()
 
         #Status Box
