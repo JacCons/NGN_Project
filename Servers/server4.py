@@ -54,7 +54,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket: #create
 
                 # Modifica i dati e invia al client locale
                 if data:
-                    data = data.decode() + " altro server !"
+                    data = data.decode() + " 2 steps service!"
                     conn.sendall(data.encode())
             
 

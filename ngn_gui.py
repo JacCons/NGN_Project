@@ -84,8 +84,8 @@ class App(customtkinter.CTk):
         self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Bottone per update dei parametri
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
-        self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE topology", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
+        self.create_button.grid(row=6, column=0, padx=20, pady=10, sticky="s")
         self.create_button.focus_set()
 
         #Status Box
@@ -141,13 +141,13 @@ class App(customtkinter.CTk):
         self.service4_button.configure(state = "disabled")
         self.service4_button.configure(fg_color="#c74c3c")
 
-        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="REMOVE all flows", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
-        self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
+        self.remove_all_flows = customtkinter.CTkButton(self.sidebar_framedx, text="REMOVE all flows", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.remove_all_flows, "Button selected:"))
+        self.remove_all_flows.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
 
         self.service1_button.configure(state = "disabled")
         self.service2_button.configure(state = "disabled")
         self.service3_button.configure(state = "disabled")
-        self.stopall_button.configure(state = "disabled")
+        self.remove_all_flows.configure(state = "disabled")
         
 
     def delete_all_flows(self):
@@ -289,7 +289,7 @@ class App(customtkinter.CTk):
             self.service1_button.configure(state = "normal")
             self.service2_button.configure(state = "normal")
             self.service3_button.configure(state = "normal")
-            self.stopall_button.configure(state = "normal")
+            self.remove_all_flows.configure(state = "normal")
 
             print("topology_parameters.txt created...")
             self.statusbox.configure(state="normal")
