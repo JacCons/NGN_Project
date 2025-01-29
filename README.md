@@ -39,19 +39,18 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 - Install [Python 3.7](/Readme_files/Install_Python.md) version on the VIrtual Machine
 
 ## FILES WITH DESCRIPTION
-1. ngn_gui.py: graphical user interface
-2. topology_generator.py: generates the topology and assign services to servers
-3. topology_parameters.txt: contains user-input parameters to create the topology
-4. simple_switch_stp_13.py: contains the ryu controller configuration
-5. 
-6. Servers folder: contains configuration files for servers and server's status files, that tell if they are on/off
-7. client.py: slient configuration file
-8. img Folder: contains images
+1. **ngn_gui.py**: graphical user interface
+2. **topology_generator.py**: generates the topology and assign services to servers
+3. **topology_parameters.txt**: contains user-input parameters to create the topology
+4. **simple_switch_stp_13.py**: contains the ryu controller configuration
+5. **Servers folder**: contains configuration files for servers and server's status files, that tell if they are on/off
+6. **client.py**: slient configuration file
+7. **img Folder**: contains images
 
 ## HOW TO RUN THE APPLICATION
 
 1. Open VirtualBox and start Comnetsemu Virtual Machine (comnetsemu)
-2. After logging-in, for a better “manageability”, instead of running commands directly into the VM it might be worth to use your own terminal and ssh into the VM. To do so, run:
+2. After logging-in, for a better “manageability”, instead of running commands directly into the VM it might be worth to use your own terminal (or MobaXterm for Windows machine) and ssh into the VM. To do so, run (***password: vagrant***): 
 
    ```bash
      ssh -X -p 2222 vagrant@localhost
@@ -93,25 +92,13 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 
 7. To delete all flows press the REMOVE all flows button. This will automatically update the flow tables and delete previously added entries.
 
-   
-
-
-
-
-
-
-## Roadmap
-
-1. Isolate traffic between host and server
-2. Fixing and improving
-
 ## Requirements
 
 - [x] Creare una repository su GitHub
 - [x] Create an SDN network in mininet with multiple switches
 - [x] Create a software that is capable of deploying services in the network
   - Services are composed of multiple applications that communicate together to deliver the service (e.g., web server and database)
-- [ ] Create a GUI (python recommended) capable of:
+- [X] Create a GUI (python recommended) capable of:
   - Deploying service in the network (i.e., starting required applications on existing hosts)
     - Basic idea: choose host depending on usage (e.g., max 2 applications per host)
   - Choose communication requirements for applications
