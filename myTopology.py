@@ -97,27 +97,27 @@ def write_csv_path(shortest_path_date, file_name):
         for i in range(1, len(shortest_path_date) - 1):
             writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
 
-def write_csv_net_a():
-    with open("net.csv", mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Scrivi l'intestazione del CSV
-        writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
+# def write_csv_net_a():
+#     with open("net.csv", mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         # Scrivi l'intestazione del CSV
+#         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
 
-        # Itera attraverso tutti i nodi (switch e host)
-        for node in net.values():
-            for intf in node.intfList():
-                if intf.link:  # Controlla se c'è un link associato
-                    # Ottieni il peer e la sua interfaccia
-                    peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
-                    intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
-                    peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
+#         # Itera attraverso tutti i nodi (switch e host)
+#         for node in net.values():
+#             for intf in node.intfList():
+#                 if intf.link:  # Controlla se c'è un link associato
+#                     # Ottieni il peer e la sua interfaccia
+#                     peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
+#                     intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
+#                     peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
                     
-                    # Ottieni il MAC address per le interfacce
-                    src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
-                    dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
+#                     # Ottieni il MAC address per le interfacce
+#                     src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
+#                     dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
                     
-                    # Scrivi la riga nel file CSV
-                    writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
+#                     # Scrivi la riga nel file CSV
+#                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
 
 
 def run_minimal_network():
@@ -136,7 +136,7 @@ def run_minimal_network():
     #Attendi la convergenza di STP
     #wait_for_stp_convergence(timeout=3)
 
-    write_csv_net_a()
+    # write_csv_net_a()
     
     client = net.get('h1')
     server1 = net.get('h3')

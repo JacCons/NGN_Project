@@ -222,12 +222,11 @@ def assign_services():
             with open(Directories["serv1"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started1 :
-                    print(f"\nStarting Server 1 on host {host_server1}...")
-                    print(f"Server IP: {host_server1.IP()}")
+                    print(f"\n\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  # Avvia il server in background 
-                    time.sleep(3)
-                    print(f"Server 1 running...")  # Avvia il server in background
+                    # time.sleep(3)
+                    # print(f"Server 1 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
@@ -237,19 +236,18 @@ def assign_services():
                     service_started1 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        time.sleep(1)  # Controlla ogni secondo
+        # time.sleep(1)  # Controlla ogni secondo
         
 
         try:
             with open(Directories["serv2"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started2 :
-                    print(f"\nStarting Server 2 on host {host_server2}...")
-                    print(f"To get the service: h1 python3 client.py {host_server2.IP()}\n")
-                    print(f"Server IP: {host_server2.IP()}")
+                    print(f"\n\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server2.IP()}\n")
                     host_server2.cmd('python3 ./Servers/server2.py &')  # Avvia il server in background 
-                    time.sleep(3)
-                    print(f"Server 2 running...")  # Avvia il server in background
+                    # time.sleep(3)
+                    # print(f"Server 2 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
@@ -259,19 +257,18 @@ def assign_services():
                     service_started2 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        time.sleep(1)  # Controlla ogni secondo
+        # time.sleep(1)  # Controlla ogni secondo
 
 
         try:
             with open(Directories["serv3"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started3 :
-                    print(f"\nStarting Server 3 on host {host_server3}...")
-                    print(f"Server IP: {host_server3.IP()}")
-                    print(f"To get the service: h1 python3 client.py {host_server3.IP()}\n")
+                    print(f"\n\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server3.IP()}\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  # Avvia il server in background 
-                    time.sleep(3)
-                    print(f"Server 3 running...")  # Avvia il server in background
+                    # time.sleep(3)
+                    # print(f"Server 3 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
@@ -281,19 +278,18 @@ def assign_services():
                     service_started3 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        time.sleep(1)  # Controlla ogni secondo
+        # time.sleep(1)  # Controlla ogni secondo
 
 
         try:
             with open(Directories["serv4"], "r") as file:
                 stato = file.read().strip()  # Leggi il contenuto del file
                 if stato == "on" and not service_started4 :
-                    print(f"\nStarting Server 4 on host {host_server4}...")
-                    print(f"Server IP: {host_server4.IP()}")
-                    print(f"To get the service: h1 python3 client.py {host_server4.IP()}\n")
+                    print(f"\n\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server4.IP()}\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # Avvia il server in background 
-                    time.sleep(3)
-                    print(f"Server 4 running...")  # Avvia il server in background
+                    # time.sleep(3)
+                    # print(f"Server 4 running...")  # Avvia il server in background
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
@@ -303,48 +299,49 @@ def assign_services():
                     service_started4 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
+        
         time.sleep(1)  # Controlla ogni secondo
 
-def write_csv_net():
-    with open("net.csv", mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Scrivi l'intestazione del CSV
-        writer.writerow(["Source", "SrcPort", "Dest.", "DstPort"])
+# def write_csv_net():
+#     with open("net.csv", mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         # Scrivi l'intestazione del CSV
+#         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort"])
 
-        switch = net.get('s1')
-        first_intf = list(switch.intfs.values())[0]
-        MAC = first_intf.MAC()
+#         switch = net.get('s1')
+#         first_intf = list(switch.intfs.values())[0]
+#         MAC = first_intf.MAC()
         
-        for node in net.values():
-            for intf in node.intfList():
-                if intf.link:  # Controlla se c'è un link associato
-                    # Ottieni il peer e la sua interfaccia
-                    peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
-                    intf_name = intf.name.split('-')[-1]
-                    peer_intf_name = peer_intf.name.split('-')[-1]
-                    writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name])
+#         for node in net.values():
+#             for intf in node.intfList():
+#                 if intf.link:  # Controlla se c'è un link associato
+#                     # Ottieni il peer e la sua interfaccia
+#                     peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
+#                     intf_name = intf.name.split('-')[-1]
+#                     peer_intf_name = peer_intf.name.split('-')[-1]
+#                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name])
 
-def write_csv_net_a():
-    with open("net.csv", mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Scrivi l'intestazione del CSV
-        writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
+# def write_csv_net_a():
+#     with open("net.csv", mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         # Scrivi l'intestazione del CSV
+#         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
 
-        # Itera attraverso tutti i nodi (switch e host)
-        for node in net.values():
-            for intf in node.intfList():
-                if intf.link:  # Controlla se c'è un link associato
-                    # Ottieni il peer e la sua interfaccia
-                    peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
-                    intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
-                    peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
+#         # Itera attraverso tutti i nodi (switch e host)
+#         for node in net.values():
+#             for intf in node.intfList():
+#                 if intf.link:  # Controlla se c'è un link associato
+#                     # Ottieni il peer e la sua interfaccia
+#                     peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
+#                     intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
+#                     peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
                     
-                    # Ottieni il MAC address per le interfacce
-                    src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
-                    dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
+#                     # Ottieni il MAC address per le interfacce
+#                     src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
+#                     dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
                     
-                    # Scrivi la riga nel file CSV
-                    writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
+#                     # Scrivi la riga nel file CSV
+#                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
 
 
 
@@ -368,14 +365,14 @@ def write_csv_net_a():
 #         client_socket.sendall(data_to_send)
 #         print(f"Sent variable: {shortest_path_date}")
 
-def write_csv_path(shortest_path_date, file_name):
-    with open(file_name, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        # Scrivi l'intestazione del CSV
-        writer.writerow(["Source","Dest."])
+# def write_csv_path(shortest_path_date, file_name):
+#     with open(file_name, mode='w', newline='') as file:
+#         writer = csv.writer(file)
+#         # Scrivi l'intestazione del CSV
+#         writer.writerow(["Source","Dest."])
         
-        for i in range(1, len(shortest_path_date) - 1):
-            writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
+#         for i in range(1, len(shortest_path_date) - 1):
+#             writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
 
 
 def run_minimal_network():
@@ -393,7 +390,7 @@ def run_minimal_network():
 
     #wait_for_stp_convergence(timeout=3)
     
-    write_csv_net_a()
+    # write_csv_net_a()
 
     # client = net.get('h1')
     # server1 = net.get('h3')
