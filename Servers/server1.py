@@ -14,5 +14,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         conn, addr = server_socket.accept()
         with conn:
             print(f"Connection from {addr}")
-            now = "Date and Time: " + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            conn.sendall(now.encode())  # Invia la data e ora
+            now = "Date: " + datetime.now().date().strftime("%Y-%m-%d") # date() to request only the date
+            conn.sendall(now.encode())  # Send the date to the client

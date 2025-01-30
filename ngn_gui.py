@@ -13,6 +13,7 @@ customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark",
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 # Titles of services buttons
+service_date = "Date"
 service_date_time = "Date and Time"
 lucky_number = "Lucky Number"
 daily_quote = "Daily Quote"
@@ -110,7 +111,7 @@ class App(customtkinter.CTk):
         self.services_label.grid(row=0, column=0, padx=20, pady=(20, 10), sticky="n")
         
         # Buttons for the services
-        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text=service_date_time, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
+        self.service1_button = customtkinter.CTkButton(self.sidebar_framedx, text=service_date, font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.service1_button, "Service selected:"))
         self.service1_button.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
         self.service1_button.configure(fg_color="#c74c3c")
 
@@ -157,13 +158,13 @@ class App(customtkinter.CTk):
         self.statusbox.delete("1.0", "end")
         self.statusbox.insert("end", f"{string} {button_name}\n")
 
-        if button_name == service_date_time: # Selected service: Date and Time
+        if button_name == service_date: # Selected service: Date
             try:
                 with open(Directories["serv1"], "r") as f:
                     if f.read() == "on":                        
                         with open(Directories["serv1"], "w") as fi:                            
                             fi.write("off")
-                            self.service1_button.configure(fg_color="#c74c3c")
+                            self.service1_button.configure(text=service_date, fg_color="#c74c3c")
                         with open(Directories["serv4"], "w") as fii:   
                             fii.write("off")           
                             self.service4_button.configure(state = "disabled")
@@ -202,7 +203,7 @@ class App(customtkinter.CTk):
                             self.service3_button.configure(fg_color="#3f964b")
             except:
                 print("Error")   
-        if button_name ==  two_steps_service: # Selected service: 2 Steps Service
+        if button_name ==  two_steps_service: # Selected service: 2 Steps Service -> Date and Time
             try:
                 with open(Directories["serv1"], "r") as f:
                     variable = f.read()
@@ -214,10 +215,12 @@ class App(customtkinter.CTk):
                             with open(Directories["serv4"], "w") as a:
                                 a.write("off")
                                 self.service4_button.configure(fg_color="#c74c3c")
+                                self.service1_button.configure(text=service_date)
                         elif var == "off":
                             with open(Directories["serv4"], "w") as b:
                                 b.write("on")
                                 self.service4_button.configure(fg_color="#3f964b")
+                                self.service1_button.configure(text=service_date_time)
                 else:                    
                     with open(Directories["serv4"], "w") as fi: 
                         fi.write("off")    

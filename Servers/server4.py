@@ -1,4 +1,5 @@
 import socket
+from datetime import datetime
 
 # Configurazione
 LISTEN_HOST = '' # Listen on all interfaces
@@ -26,7 +27,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket: #create
 
                 #Modify the data and send it to the local client
                 if data:
-                    data = data.decode() + " 2 steps service!"
+                    data = data.decode() + ", Time: " + datetime.now().time().strftime("%H:%M:%S") + " GMT"
                     conn.sendall(data.encode())
             
 
