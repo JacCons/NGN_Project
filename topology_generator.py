@@ -213,6 +213,7 @@ def assign_services():
     service_started3 = False
     service_started4 = False
     
+    host_client = net.get('h1')
     host_server1 = net.get('h3')
     host_server2 = net.get('h4')
     host_server3 = net.get('h6')
@@ -226,6 +227,9 @@ def assign_services():
                     print(f"\n\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  #start the server
+                    time.sleep(3)
+                    result = host_client.cmd("python3 client.py " + str(host_server1.IP()))
+                    print(result)
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
@@ -244,6 +248,9 @@ def assign_services():
                     print(f"\n\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server2.IP()}\n")
                     host_server2.cmd('python3 ./Servers/server2.py &')  #start the server
+                    time.sleep(3)
+                    result = host_client.cmd("python3 client.py " + str(host_server2.IP()))
+                    print(result)
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
@@ -263,6 +270,9 @@ def assign_services():
                     print(f"\n\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server3.IP()}\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  #start the server
+                    time.sleep(3)
+                    result = host_client.cmd("python3 client.py " + str(host_server3.IP()))
+                    print(result)
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
@@ -282,6 +292,9 @@ def assign_services():
                     print(f"\n\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server4.IP()}\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # english: start the server
+                    time.sleep(3)
+                    result = host_client.cmd("python3 client.py " + str(host_server4.IP()))
+                    print(result)
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
