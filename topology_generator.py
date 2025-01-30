@@ -7,9 +7,7 @@ from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
 import time
 import threading
-import csv
-import socket
-import json
+
 
 Directories = {
     'serv1': './Servers/server1.txt',
@@ -26,18 +24,19 @@ Directories = {
 shortest_path_date =[]
 
 
-
-
-# Imposta il backend di matplotlib su Agg
+# Set the matplotlib backend to Agg
 plt.switch_backend('Agg')
 
-# Creazione del grafo
+# Create the graph
 G = nx.Graph()
+
+# Set the default client IP address
 default_client = '10.0.0.1'
 
 class MyTopo (Topo):    
     def build(self):
-
+        
+        # Read the number of hosts and switches from the file
         try:
             with open("topology_parameters.txt", "r") as f:
                 valori = f.readlines()
@@ -49,9 +48,9 @@ class MyTopo (Topo):
             print("Errore: il file contiene dati non validi")
         
         hosts_NODES=[]
-        hosts_MN=[] #array of hosts
+        hosts_MN=[] #array of hosts mininet objects
         switch_NODES=[]
-        switch_MN=[] #array of switches
+        switch_MN=[] #array of switches mininet objects
         link_NODES = []
 
         # Adding hosts
@@ -66,6 +65,7 @@ class MyTopo (Topo):
         print (hosts_NODES)
         print("\n")
 
+        # Adding switches
         for k in range (n_switch):
             switchname = f"s{k+1}"
             switch_NODES.append(switchname)
@@ -86,7 +86,8 @@ class MyTopo (Topo):
                 self.addLink(host, switch)
             link_NODES.append (f"({host},{switch})") #to print when starting the mininet
             G.add_edge(host, switch)
-        
+
+            
         random.shuffle(switch_NODES)
         for i in range (n_switch-1):
             switch1 = switch_NODES[i]
@@ -151,27 +152,27 @@ class MyTopo (Topo):
         Returns:
             A list of switches representing the shortest path between the hosts.
         """
-        # Get switch connections from Mininet network
-        # switch_connections = {}
-        # for switch in net.switches:
-        #     switch_connections[switch.name] = {}
-        #     for link in net.links:
-        #         if link.intf1.node.name == switch.name:
-        #             neighbor_switch = link.intf2.node.name
-        #         elif link.intf2.node.name == switch.name:
-        #             neighbor_switch = link.intf1.node.name
-        #         else:
-        #             continue
-        #         # Assign a random weight to each link
-        #         weight = random.randint(1, 10)
-        #         switch_connections[switch.name][neighbor_switch] = weight
-        #         G.add_edge(switch.name, neighbor_switch, weight=weight)  # Aggiorna il grafo G con il peso
+        #Get switch connections from Mininet network
+        switch_connections = {}
+        for switch in net.switches:
+            switch_connections[switch.name] = {}
+            for link in net.links:
+                if link.intf1.node.name == switch.name:
+                    neighbor_switch = link.intf2.node.name
+                elif link.intf2.node.name == switch.name:
+                    neighbor_switch = link.intf1.node.name
+                else:
+                    continue
+                # Assign a random weight to each link
+                weight = random.randint(1, 10)
+                switch_connections[switch.name][neighbor_switch] = weight
+                G.add_edge(switch.name, neighbor_switch, weight=weight) # Update graph G with weight
         
-       # Stampa i collegamenti e i loro pesi
-        # for switch, connections in switch_connections.items():
-        #     print(f"Switch {switch} connections:")
-        #     for neighbor, weight in connections:
-        #         print(f"  -> {neighbor} with weight {weight}")
+        #Print connections and their weights
+        for switch, connections in switch_connections.items():
+            print(f"Switch {switch} connections:")
+            for neighbor, weight in connections:
+                print(f"  -> {neighbor} with weight {weight}")
 
         # Get source and destination switch names
         src_switch = src_host.defaultIntf().node.name  # Access switch through default interface
@@ -181,20 +182,20 @@ class MyTopo (Topo):
         shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch)
         print(f"\nShortest path between client and server without weights: {shortest_path}")
         # Calculate shortest path using Dijkstra's algorithm and weights
-        # shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch, weight='weight')
+        shortest_path = nx.shortest_path(G, source=src_switch, target=dst_switch, weight='weight')
 
         # Draw the graph with weights
 
-        # Usa lo stesso seme per una disposizione coerente
-        # Aumenta il valore di k per più spazio
-        # pos = nx.spring_layout(G, k=3)   
-        # edge_labels = nx.get_edge_attributes(G, 'weight')
-        # node_colors = ["red" if G.nodes[node].get('type') == "host" else "blue" for node in G.nodes]
-        # nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=1000, font_size=11)
-        # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-        # plt.savefig("img/graph_with_weights.png")
-        # print("\nGraph with weights saved as graph_with_weights.png")
-        # plt.close()  # Chiude la figura corrente
+        # Use the same seed for consistent layout
+        # Increase k value for more space
+        pos = nx.spring_layout(G, k=3)   
+        edge_labels = nx.get_edge_attributes(G, 'weight')
+        node_colors = ["red" if G.nodes[node].get('type') == "host" else "blue" for node in G.nodes]
+        nx.draw(G, pos, with_labels=True, node_color=node_colors, node_size=1000, font_size=11)
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        plt.savefig("img/graph_with_weights.png")
+        print("\nGraph with weights saved as graph_with_weights.png")
+        plt.close()
 
         return shortest_path
     
@@ -220,160 +221,78 @@ def assign_services():
     while True:
         try:
             with open(Directories["serv1"], "r") as file:
-                stato = file.read().strip()  # Leggi il contenuto del file
+                stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started1 :
                     print(f"\n\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
-                    host_server1.cmd('python3 ./Servers/server1.py &')  # Avvia il server in background 
-                    # time.sleep(3)
-                    # print(f"Server 1 running...")  # Avvia il server in background
+                    host_server1.cmd('python3 ./Servers/server1.py &')  #start the server
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
                     print("Server1 stopped!")
-                    host_server1.cmd('pkill -f ./Servers/server1.py &')  # Ferma il server
+                    host_server1.cmd('pkill -f ./Servers/server1.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started1 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        # time.sleep(1)  # Controlla ogni secondo
         
 
         try:
             with open(Directories["serv2"], "r") as file:
-                stato = file.read().strip()  # Leggi il contenuto del file
+                stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started2 :
                     print(f"\n\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server2.IP()}\n")
-                    host_server2.cmd('python3 ./Servers/server2.py &')  # Avvia il server in background 
-                    # time.sleep(3)
-                    # print(f"Server 2 running...")  # Avvia il server in background
+                    host_server2.cmd('python3 ./Servers/server2.py &')  #start the server
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
                     print("Server2 stopped!")
-                    host_server1.cmd('pkill -f ./Servers/server2.py &')  # Ferma il server
+                    host_server1.cmd('pkill -f ./Servers/server2.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started2 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        # time.sleep(1)  # Controlla ogni secondo
+       
 
 
         try:
             with open(Directories["serv3"], "r") as file:
-                stato = file.read().strip()  # Leggi il contenuto del file
+                stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started3 :
                     print(f"\n\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server3.IP()}\n")
-                    host_server3.cmd('python3 ./Servers/server3.py &')  # Avvia il server in background 
-                    # time.sleep(3)
-                    # print(f"Server 3 running...")  # Avvia il server in background
+                    host_server3.cmd('python3 ./Servers/server3.py &')  #start the server
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
                     print("Server3 stopped!")
-                    host_server3.cmd('pkill -f ./Servers/server3.py &')  # Ferma il server
+                    host_server3.cmd('pkill -f ./Servers/server3.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started3 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
-        # time.sleep(1)  # Controlla ogni secondo
+       
 
 
         try:
             with open(Directories["serv4"], "r") as file:
-                stato = file.read().strip()  # Leggi il contenuto del file
+                stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started4 :
                     print(f"\n\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
                     print(f"\nTo get the service: h1 python3 client.py {host_server4.IP()}\n")
-                    host_server4.cmd('python3 ./Servers/server4.py &')  # Avvia il server in background 
-                    # time.sleep(3)
-                    # print(f"Server 4 running...")  # Avvia il server in background
+                    host_server4.cmd('python3 ./Servers/server4.py &')  # english: start the server
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
                     print("Server4 stopped!")
-                    host_server4.cmd('pkill -f ./Servers/server4.py &')  # Ferma il server
+                    host_server4.cmd('pkill -f ./Servers/server4.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started4 = False
         except Exception as e:
             print(f"Errore nel monitoraggio del file: {e}")
         
-        time.sleep(1)  # Controlla ogni secondo
-
-# def write_csv_net():
-#     with open("net.csv", mode='w', newline='') as file:
-#         writer = csv.writer(file)
-#         # Scrivi l'intestazione del CSV
-#         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort"])
-
-#         switch = net.get('s1')
-#         first_intf = list(switch.intfs.values())[0]
-#         MAC = first_intf.MAC()
-        
-#         for node in net.values():
-#             for intf in node.intfList():
-#                 if intf.link:  # Controlla se c'è un link associato
-#                     # Ottieni il peer e la sua interfaccia
-#                     peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
-#                     intf_name = intf.name.split('-')[-1]
-#                     peer_intf_name = peer_intf.name.split('-')[-1]
-#                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name])
-
-# def write_csv_net_a():
-#     with open("net.csv", mode='w', newline='') as file:
-#         writer = csv.writer(file)
-#         # Scrivi l'intestazione del CSV
-#         writer.writerow(["Source", "SrcPort", "Dest.", "DstPort", "SrcMAC", "DstMAC"])
-
-#         # Itera attraverso tutti i nodi (switch e host)
-#         for node in net.values():
-#             for intf in node.intfList():
-#                 if intf.link:  # Controlla se c'è un link associato
-#                     # Ottieni il peer e la sua interfaccia
-#                     peer_intf = intf.link.intf2 if intf.link.intf1 == intf else intf.link.intf1
-#                     intf_name = intf.name.split('-')[-1]  # Nome della porta della sorgente
-#                     peer_intf_name = peer_intf.name.split('-')[-1]  # Nome della porta di destinazione
-                    
-#                     # Ottieni il MAC address per le interfacce
-#                     src_mac = intf.MAC()  # MAC address per l'interfaccia sorgente
-#                     dst_mac = peer_intf.MAC()  # MAC address per l'interfaccia di destinazione
-                    
-#                     # Scrivi la riga nel file CSV
-#                     writer.writerow([node.name, intf_name, peer_intf.node.name, peer_intf_name, src_mac, dst_mac])
-
-
-
-
-# Crea una rete Mininet e chiamala come necessario (es. net)
-# net = Mininet()  # Oppure usa la tua rete esistente
-
-
-# def send_socket_data():
-#     # Set up the client
-#     HOST = '127.0.0.1'  # Server's IP address
-#     PORT = 10000       # Server's port
-
-#     variable_to_send = "Hello, Server!"  # Variable to send
-
-#     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-#         client_socket.connect((HOST, PORT))
-#         # Send data
-        
-#         data_to_send = json.dumps(shortest_path_date).encode('utf-8')
-#         client_socket.sendall(data_to_send)
-#         print(f"Sent variable: {shortest_path_date}")
-
-# def write_csv_path(shortest_path_date, file_name):
-#     with open(file_name, mode='w', newline='') as file:
-#         writer = csv.writer(file)
-#         # Scrivi l'intestazione del CSV
-#         writer.writerow(["Source","Dest."])
-        
-#         for i in range(1, len(shortest_path_date) - 1):
-#             writer.writerow([shortest_path_date[i], shortest_path_date[i+1]])
-
+        time.sleep(1)  #check every second
 
 def run_minimal_network():
     
@@ -388,38 +307,9 @@ def run_minimal_network():
     net.start()
     net.staticArp()
 
-    #wait_for_stp_convergence(timeout=3)
-    
-    # write_csv_net_a()
-
-    # client = net.get('h1')
-    # server1 = net.get('h3')
-    # shortest_path_date = MyTopo.get_shortest_path(client, server1)
-    # print(f"\nShortest path between h1 and h3: {shortest_path_date}\n")
-
-    # write_csv_path(shortest_path_date, Directories["serv1_path"])
-
-
-    # send_socket_data()
-
-    # # Check if hosts were found before proceeding
-    # if h1 is None or h2 is None:
-    #     print("Error: Hosts h1 or h2 not found in the network.")
-    #     net.stop()
-    #     return
-
-    # (Optional) Verify connectivity between hosts
-    #print("Testing connectivity...")
-    #net.pingAll()
-
-    # Now that h1 and h2 are guaranteed to be valid objects, call get_shortest_path
- 
-
-    # Start the CLI for manual interaction
-
-    # Avvia il monitoraggio del file in un thread separato
+    # Start monitoring the file in a separate thread
     monitor_thread = threading.Thread(target=assign_services)
-    monitor_thread.daemon = True  # Questo farà terminare il thread quando il programma principale termina
+    monitor_thread.daemon = True # This will make the thread terminate when the main program terminates
     monitor_thread.start()
 
     CLI(net)

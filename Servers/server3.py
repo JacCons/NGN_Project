@@ -1,8 +1,8 @@
 import socket
 import random
 
-HOST = ''  # Ascolta su tutte le interfacce
-PORT = 12345  # Porta di ascolto
+HOST = ''  # Listen on all interfaces
+PORT = 12345 # Listening port
 
 famous_quotes = [
     "To be, or not to be, that is the question. - William Shakespeare",

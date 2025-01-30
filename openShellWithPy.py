@@ -1,6 +1,5 @@
 import subprocess 
 import time
-import os
 
 # localhost credentials: vagrant@localhost:2222
 hostname = "localhost" 

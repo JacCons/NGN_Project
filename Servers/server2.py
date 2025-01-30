@@ -1,8 +1,8 @@
 import socket
 import random
 
-HOST = ''  # Ascolta su tutte le interfacce
-PORT = 12345  # Porta di ascolto
+HOST = ''  # Listen on all interfaces
+PORT = 12345  # Listening port
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
