@@ -6,6 +6,9 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.image as mpimg
 import os
+import time
+
+import requests
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue" !!!
@@ -15,6 +18,22 @@ lucky_number = "Lucky Number"
 daily_quote = "Daily Quote"
 two_steps_service = "2 Steps Service"
 
+Directories = {
+    'serv1': 'Servers/server1.txt',
+    'serv2': 'Servers/server2.txt',
+    'serv3': 'Servers/server3.txt',
+    'serv4': 'Servers/server4.txt',
+}
+
+# * funzionava a Jacopo, a cri no. 
+# Directories = {
+#     'serv1': './Servers/server1.txt',
+#     'serv2': './Servers/server2.txt',
+#     'serv3': './Servers/server3.txt',
+#     'serv4': './Servers/server4.txt',
+# }
+
+
 class App(customtkinter.CTk):
     
     myClass
@@ -22,13 +41,13 @@ class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
 
-        with open("./server/server1.txt", "w") as f:
+        with open(Directories["serv1"], "w") as f:
             f.write("off")
-        with open("./server/server2.txt", "w") as f: 
+        with open(Directories["serv2"], "w") as f: 
             f.write("off")
-        with open("./server/server3.txt", "w") as f:
+        with open(Directories["serv3"], "w") as f:
             f.write("off")
-        with open("./server/server4.txt", "w") as f:  
+        with open(Directories["serv4"], "w") as f:  
             f.write("off") 
     
         #Configurazione della finestra
@@ -65,8 +84,9 @@ class App(customtkinter.CTk):
         self.entrynumswitch.grid(row=1, column=0, padx=20, pady=10, sticky="nsew")
 
         # Bottone per update dei parametri
-        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="UPDATE PARAMETERS", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
-        self.create_button.grid(row=5, column=0, padx=20, pady=10, sticky="nsew")
+        self.create_button = customtkinter.CTkButton(self.sidebar_framesx, text="CREATE topology", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command = self.create_button_event)
+        self.create_button.grid(row=7, column=0, padx=20, pady=20, sticky="sew")
+        self.create_button.focus_set()
 
         #Status Box
         self.statusbox = customtkinter.CTkTextbox(self, height=65)
@@ -79,8 +99,8 @@ class App(customtkinter.CTk):
         #self.main_button_1 = customtkinter.CTkButton(master=self, fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         #self.main_button_1.grid(row=3, column=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
-        self.display_button = customtkinter.CTkButton(self.sidebar_framesx, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=self.display_button_event)
-        self.display_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
+        #self.display_button = customtkinter.CTkButton(self.sidebar_framesx, text="DISPLAY TOPOLOGY", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=self.display_button_event)
+        #self.display_button.grid(row=7, column=0, padx=20, pady=(20, 20), sticky="s")
 
         #Architettura di rete
         self.center_frame = customtkinter.CTkFrame(self)
@@ -121,8 +141,24 @@ class App(customtkinter.CTk):
         self.service4_button.configure(state = "disabled")
         self.service4_button.configure(fg_color="#c74c3c")
 
-        self.stopall_button = customtkinter.CTkButton(self.sidebar_framedx, text="STOP ALL SERVICES", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.stopall_button, "Button selected:"))
-        self.stopall_button.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
+        self.remove_all_flows = customtkinter.CTkButton(self.sidebar_framedx, text="REMOVE all flows", font=customtkinter.CTkFont(size=15, weight="bold"), height=40 , command=lambda: self.event_services(self.remove_all_flows, "Button selected:"))
+        self.remove_all_flows.grid(row=6, column=0, padx=20, pady=(20, 20), sticky="s")
+
+        self.service1_button.configure(state = "disabled")
+        self.service2_button.configure(state = "disabled")
+        self.service3_button.configure(state = "disabled")
+        self.remove_all_flows.configure(state = "disabled")
+        
+
+    def delete_all_flows(self):
+        try:
+            response = requests.post('http://127.0.0.1:8080/simpleswitch/delete_flood_flows')
+            if response.status_code == 200:
+                tkinter.messagebox.showinfo("Success", "All flows deleted successfully")
+            else:
+                tkinter.messagebox.showerror("Error", "Failed to delete flows")
+        except Exception as e:
+            tkinter.messagebox.showerror("Error", f"Failed to delete flows: {e}")
 
 
     def change_scaling_event(self, new_scaling: str):
@@ -144,17 +180,17 @@ class App(customtkinter.CTk):
 
         if button_name == service_date_time:
             try:
-                with open("./server/server1.txt", "r") as f:
+                with open(Directories["serv1"], "r") as f:
                     if f.read() == "on":                        
-                        with open("./server/server1.txt", "w") as fi:                            
+                        with open(Directories["serv1"], "w") as fi:                            
                             fi.write("off")
                             self.service1_button.configure(fg_color="#c74c3c")
-                        with open("./server/server4.txt", "w") as fii:   
+                        with open(Directories["serv4"], "w") as fii:   
                             fii.write("off")           
                             self.service4_button.configure(state = "disabled")
                             self.service4_button.configure(fg_color="#c74c3c")  
                     else:
-                        with open("./server/server1.txt", "w") as fi:
+                        with open(Directories["serv1"], "w") as fi:
                             fi.write("on")
                             self.service1_button.configure(fg_color="#3f964b")
                             self.service4_button.configure(state = "normal")
@@ -165,13 +201,13 @@ class App(customtkinter.CTk):
                 print("Error")
         if button_name == lucky_number:
             try:
-                with open("./server/server2.txt", "r") as f:
+                with open(Directories["serv2"], "r") as f:
                     if f.read() == "on":
-                        with open("./server/server2.txt", "w") as fi:
+                        with open(Directories["serv2"], "w") as fi:
                             fi.write("off")
                             self.service2_button.configure(fg_color="#c74c3c")
                     else:
-                        with open("./server/server2.txt", "w") as fi:
+                        with open(Directories["serv2"], "w") as fi:
                             fi.write("on")
                             self.service2_button.configure(fg_color="#3f964b")
 
@@ -182,13 +218,13 @@ class App(customtkinter.CTk):
         if button_name ==  daily_quote:
             try:
 
-                with open("./server/server3.txt", "r") as f:
+                with open(Directories["serv3"], "r") as f:
                     if f.read() == "on":
-                        with open("./server/server3.txt", "w") as fi:
+                        with open(Directories["serv3"], "w") as fi:
                             fi.write("off")
                             self.service3_button.configure(fg_color="#c74c3c")
                     else:
-                        with open("./server/server3.txt", "w") as fi:
+                        with open(Directories["serv3"], "w") as fi:
                             fi.write("on")
                             self.service3_button.configure(fg_color="#3f964b")
 
@@ -198,22 +234,22 @@ class App(customtkinter.CTk):
                 print("Error")   
         if button_name ==  two_steps_service:
             try:
-                with open("./server/server1.txt", "r") as f:
+                with open(Directories["serv1"], "r") as f:
                     variable = f.read()
                 
                 if variable == "on":
-                    with open("./server/server4.txt", "r") as fii:
+                    with open(Directories["serv4"], "r") as fii:
                         var = fii.read()
                         if var == "on":
-                            with open("./server/server4.txt", "w") as a:
+                            with open(Directories["serv4"], "w") as a:
                                 a.write("off")
                                 self.service4_button.configure(fg_color="#c74c3c")
                         elif var == "off":
-                            with open("./server/server4.txt", "w") as b:
+                            with open(Directories["serv4"], "w") as b:
                                 b.write("on")
                                 self.service4_button.configure(fg_color="#3f964b")
                 else:                    
-                    with open("./server/server4.txt", "w") as fi: 
+                    with open(Directories["serv4"], "w") as fi: 
                         fi.write("off")    
                         self.service4_button.configure(state = "disabled")   
                         self.service4_button.configure(fg_color="#c74c3c") 
@@ -222,26 +258,25 @@ class App(customtkinter.CTk):
                     file.write("10.0.0.7")
             except:
                 print("Error")
-        if button_name == "STOP ALL SERVICES":
-            try:
-                with open("./server/server1.txt", "w") as f:
-                    f.write("off")
-                    self.service1_button.configure(fg_color="#c74c3c")
-                with open("./server/server2.txt", "w") as f:
-                    f.write("off")
-                    self.service2_button.configure(fg_color="#c74c3c")
-                with open("./server/server3.txt", "w") as f:
-                    f.write("off")
-                    self.service3_button.configure(fg_color="#c74c3c")
-                with open("./server/server4.txt", "w") as f:
-                    f.write("off")
-                    self.service4_button.configure(fg_color="#c74c3c")
-                    self.service4_button.configure(state = "disabled")
-                
-                with open("Simple_Switch_stp_CRISTIANO.txt", "w") as file:
-                    file.write("")
-            except:
-                print("Error")
+        if button_name == "REMOVE all flows":
+            # try:
+            #     with open(Directories["serv1"], "w") as f:
+            #         f.write("off")
+            #         self.service1_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv2"], "w") as f:
+            #         f.write("off")
+            #         self.service2_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv3"], "w") as f:
+            #         f.write("off")
+            #         self.service3_button.configure(fg_color="#c74c3c")
+            #     with open(Directories["serv4"], "w") as f:
+            #         f.write("off")
+            #         self.service4_button.configure(fg_color="#c74c3c")
+            #         self.service4_button.configure(state = "disabled")
+            # except:
+            #     print("Error")
+            
+            self.delete_all_flows()
              
 
     def create_button_event(self):
@@ -250,30 +285,40 @@ class App(customtkinter.CTk):
 
         try:
             numhost = int(self.entrynumhost.get())
+
+            if(numhost < 7):
+                tkinter.messagebox.showinfo("Error", "Number of hosts must be at least 7")
+                return
+
             numswitch = int(self.entrynumswitch.get())
 
             with open("topology_parameters.txt", "w") as f:
                 f.write(str(numhost))
                 f.write("\n")
                 f.write(str(numswitch))
+            
+            self.service1_button.configure(state = "normal")
+            self.service2_button.configure(state = "normal")
+            self.service3_button.configure(state = "normal")
+            self.remove_all_flows.configure(state = "normal")
 
             print("topology_parameters.txt created...")
             self.statusbox.configure(state="normal")
             self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Number of hosts: {numhost}\nNumber of switches: {numswitch}\n")
-        except:
+            myClass.start_mininet()
+        except ValueError:
             self.statusbox.configure(state="normal")
             self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
+        
+        time.sleep(7)
 
-
-    def display_button_event(self):
-        # self.display_button.grid_forget()
         image_path = "img/graph.png"
 
         if os.path.exists(image_path):
             print("L'immagine 'graph.png' esiste.")
-            fig = Figure(dpi=1000)
+            fig = Figure(dpi=200)
             ax = fig.add_subplot(111)
             img = mpimg.imread(image_path)
             ax.imshow(img)
@@ -285,6 +330,26 @@ class App(customtkinter.CTk):
             canvas.draw()
         else: 
             print("L'immagine 'graph.png' non esiste.")
+
+
+    # def display_button_event(self):
+    #     # self.display_button.grid_forget()
+    #     image_path = "img/graph.png"
+
+    #     if os.path.exists(image_path):
+    #         print("L'immagine 'graph.png' esiste.")
+    #         fig = Figure(dpi=1000)
+    #         ax = fig.add_subplot(111)
+    #         img = mpimg.imread(image_path)
+    #         ax.imshow(img)
+    #         ax.axis('off')
+
+    #         canvas = FigureCanvasTkAgg(fig, master=self.center_frame)
+    #         canvas_widget = canvas.get_tk_widget()
+    #         canvas_widget.grid(row=1, column=0, sticky="nsew")
+    #         canvas.draw()
+    #     else: 
+    #         print("L'immagine 'graph.png' non esiste.")
 
 
 if __name__ == "__main__":
