@@ -7,6 +7,7 @@ from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
 import time
 import threading
+import sys
 
 
 Directories = {
@@ -32,6 +33,28 @@ G = nx.Graph()
 
 # Set the default client IP address
 default_client = '10.0.0.1'
+
+# To capture the output into "mininet.log"
+class DualOutput:
+    def __init__(self, log_filename):
+        self.terminal = sys.__stdout__
+        self.log = open(log_filename, "w", buffering=1)
+
+    def write(self, text):
+        self.terminal.write(text)
+        self.terminal.flush()
+
+        if "mininet>" not in text:
+            if "press Enter to continue..." not in text:
+                self.log.write(text)
+                self.log.flush()
+
+    def flush(self):
+        self.terminal.flush()
+        self.log.flush()
+
+sys.stdout = DualOutput("mininet.log")
+sys.stderr = sys.stdout
 
 class MyTopo (Topo):    
     def build(self):
@@ -224,8 +247,8 @@ def assign_services():
             with open(Directories["serv1"], "r") as file:
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started1 :
-                    print(f"\n\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
-                    print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
+                    print(f"\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
+                    print(f"\n(To request again the service: h1 python3 client.py {host_server1.IP()})\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  #start the server
                     time.sleep(3)
                     result = host_client.cmd("python3 client.py " + str(host_server1.IP()))
@@ -233,7 +256,7 @@ def assign_services():
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
-                    print("Server1 stopped!")
+                    print("\nServer1 stopped!\n")
                     host_server1.cmd('pkill -f ./Servers/server1.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started1 = False
@@ -245,8 +268,8 @@ def assign_services():
             with open(Directories["serv2"], "r") as file:
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started2 :
-                    print(f"\n\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
-                    print(f"\nTo get the service: h1 python3 client.py {host_server2.IP()}\n")
+                    print(f"\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
+                    print(f"\n(To request again the service: h1 python3 client.py {host_server2.IP()})\n")
                     host_server2.cmd('python3 ./Servers/server2.py &')  #start the server
                     time.sleep(3)
                     result = host_client.cmd("python3 client.py " + str(host_server2.IP()))
@@ -254,7 +277,7 @@ def assign_services():
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
-                    print("Server2 stopped!")
+                    print("\nServer2 stopped!\n")
                     host_server1.cmd('pkill -f ./Servers/server2.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started2 = False
@@ -267,8 +290,8 @@ def assign_services():
             with open(Directories["serv3"], "r") as file:
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started3 :
-                    print(f"\n\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
-                    print(f"\nTo get the service: h1 python3 client.py {host_server3.IP()}\n")
+                    print(f"\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
+                    print(f"\n(To request again the service: h1 python3 client.py {host_server3.IP()})\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  #start the server
                     time.sleep(3)
                     result = host_client.cmd("python3 client.py " + str(host_server3.IP()))
@@ -276,7 +299,7 @@ def assign_services():
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
-                    print("Server3 stopped!")
+                    print("\nServer3 stopped!\n")
                     host_server3.cmd('pkill -f ./Servers/server3.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started3 = False
@@ -289,8 +312,8 @@ def assign_services():
             with open(Directories["serv4"], "r") as file:
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started4 :
-                    print(f"\n\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
-                    print(f"\nTo get the service: h1 python3 client.py {host_server4.IP()}\n")
+                    print(f"\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
+                    print(f"\n(To request again the service: h1 python3 client.py {host_server4.IP()})\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # english: start the server
                     time.sleep(3)
                     result = host_client.cmd("python3 client.py " + str(host_server4.IP()))
@@ -298,7 +321,7 @@ def assign_services():
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
-                    print("Server4 stopped!")
+                    print("\nServer4 stopped!\n")
                     host_server4.cmd('pkill -f ./Servers/server4.py &')  #Stop the server
                     print("press Enter to continue...")
                     service_started4 = False

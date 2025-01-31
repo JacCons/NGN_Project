@@ -83,16 +83,16 @@ class App(customtkinter.CTk):
         self.create_button.focus_set()
 
         # STATUS BOX
-        self.statusbox = customtkinter.CTkTextbox(self, height=65)
-        self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
-        self.statusbox.insert("end", "Questa status box ora è in modalità solo lettura") 
+        self.statusbox = customtkinter.CTkTextbox(self, height=140)
+        self.statusbox.grid(row=3, column=1, columnspan=2, padx=(20, 20), pady=(10, 20), sticky="nsew")
+        self.statusbox.insert("end", "Welcome!\nFirst of all, create a network.\n") 
         self.statusbox.configure(state="disabled")  # Status box is read-only
 
         # NETWORK'S ARCHITECTURE
         self.center_frame = customtkinter.CTkFrame(self)
         self.center_frame.grid(row=0, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
         self.networkarch = customtkinter.CTkLabel(self.center_frame, text="Network's architecture:", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.networkarch.grid(row=0, column=0, padx=(20, 20), pady=(20, 10), sticky="nsew")
 
     
         # Adjustments to fit the image to the frame
@@ -137,6 +137,14 @@ class App(customtkinter.CTk):
         self.service2_button.configure(state = "disabled")
         self.service3_button.configure(state = "disabled")
         self.remove_all_flows.configure(state = "disabled")
+
+        with open("mininet.log", "w"):
+            pass
+
+        self.log_filename = "mininet.log"
+        self.last_position = 0
+
+        self.update_log()
         
 
     # Function to delete all flows
@@ -155,8 +163,7 @@ class App(customtkinter.CTk):
     def event_services(self, button, string):
         button_name = button.cget("text")
         self.statusbox.configure(state="normal")
-        self.statusbox.delete("1.0", "end")
-        self.statusbox.insert("end", f"{string} {button_name}\n")
+        self.statusbox.insert("end", f"{string} {button_name}")
 
         if button_name == service_date: # Selected service: Date
             try:
@@ -261,13 +268,12 @@ class App(customtkinter.CTk):
 
             print("topology_parameters.txt created...")
             self.statusbox.configure(state="normal")
-            self.statusbox.delete("1.0", "end")
-            self.statusbox.insert("end", f"Number of hosts: {numhost}\nNumber of switches: {numswitch}\n")
+            self.statusbox.insert("end", f"\nNumber of hosts: {numhost}\nNumber of switches: {numswitch}\n\n")
             myClass.start_mininet()
         except ValueError:
             self.statusbox.configure(state="normal")
-            self.statusbox.delete("1.0", "end")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
+            pass
         
         time.sleep(7)
 
@@ -289,6 +295,27 @@ class App(customtkinter.CTk):
             canvas.draw()
         else: 
             print("L'immagine 'graph.png' non esiste.")
+
+
+    # To see the output of mininet's CLI on the statusbox
+    def update_log(self):
+        try:
+            with open(self.log_filename, "r") as f:
+                f.seek(self.last_position)
+                new_content = f.read()
+
+                if new_content:
+                    self.statusbox.configure(state="normal")
+                    self.statusbox.insert("end", new_content)
+                    self.statusbox.configure(state="disable")
+                    self.statusbox.see("end")
+
+                self.last_position = f.tell()
+        
+        except Exception as e:
+                print(f"Errore nella lettura del file: {e}")
+
+        self.after(500, self.update_log)
 
     
     # Function to change the scaling of the widgets
