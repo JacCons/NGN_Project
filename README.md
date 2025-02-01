@@ -6,18 +6,20 @@
 
 This project integrates Software-Defined Networking (SDN) with Mininet to dynamically deploy and manage services composed of interconnected applications. A Python-based GUI simplifies interaction and management.
 
-### Key Features
+## KEY FEATURES
 
-- SDN Network: Simulated multi-switch network in Mininet with centralized flow control via an SDN controller.
-- Service Deployment: Deploy and manage multi-application services with automated host selection and flow configuration.
-- GUI: Intuitive interface for deploying services, managing flows, and monitoring network activity.
-- Dynamic Flow Management: Automatically configure and clean up network flows based on application requirements.
+- ***SDN Network***: Simulated multi-switch network in Mininet with centralized flow control via an SDN controller.
+- ***Service Deployment***: Deploy and manage multi-application services with automated host selection and flow configuration.
+- ***GUI***: Intuitive interface for deploying services, managing flows, and monitoring network activity.
+- ***Dynamic Flow Management***: Automatically configure and clean up network flows based on application requirements.
 
 ## PREREQUISITES
 
 - Install [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and the [Comnetsemu Virtual Machine](https://drive.google.com/drive/folders/1FP5Bx2DHp7oV57Ja38_x01ABiw3wK11M?usp=sharing)
-- Add NGN_Project as a shared folder in Comnetsemu VM settings.
-- Connect to the VM via SSH with the following command (***password: vagrant***):
+- Import `comnetsemu.ova` in Virtualbox
+- Clone this repository
+- Add `NGN_Project` folder as a shared folder in Comnetsemu VM settings (select automatic mounting).
+- Start the VM and then connect to it via SSH with the following command (***password: vagrant***):
 
   ```bash
     ssh -X -p 2222 vagrant@localhost
@@ -28,15 +30,16 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
   ```bash
     sudo usermod -aG vboxsf vagrant
   ```
-  Check if the vboxsf is in the group:
+  Check if the `vboxsf` is in the group:
 
   ```bash
-  groups vagrant
+    groups vagrant
   ``` 
 
-- For Mac users : install [_XQuartz_](https://www.xquartz.org/) and [enable forwarding](/Readme_files/X11_setup.md)
-- For Windows users: install [_mobaXterm_](https://mobaxterm.mobatek.net/download.html) and [enable forwarding](/Readme_files/X11_setup.md)
-- Install [Python 3.7](/Readme_files/Install_Python.md) version on the VIrtual Machine
+- <u>***For Mac users***</u>: install [XQuartz](https://www.xquartz.org/)
+- <u>***For Windows users***</u>: install [MobaXterm](https://mobaxterm.mobatek.net/download.html)
+- Enable [forwarding](/Readme_files/X11_setup.md)
+- Install [Python 3.7](/Readme_files/Install_Python.md) version on the VIrtual Machine. You can use terminal with SSH or directly write in the VM.
 
 ## FILES WITH DESCRIPTION
 1. **ngn_gui.py**: graphical user interface
@@ -50,48 +53,86 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 
 ## HOW TO RUN THE APPLICATION
 
-1. Open VirtualBox and start Comnetsemu Virtual Machine (comnetsemu)
-2. After logging-in, for a better “manageability”, instead of running commands directly into the VM it might be worth to use your own terminal (or MobaXterm for Windows machine) and ssh into the VM. To do so, run (***password: vagrant***): 
+1. **Open VirtualBox** and **start Comnetsemu** Virtual Machine (comnetsemu)
+   
+2. After boots the VM up, **for a better manageability**, instead of running commands directly into the VM it might be worth to **use your own terminal** (**or MobaXterm for Windows machine**) and ssh into the VM.
+   
+   To do so, run: 
 
    ```bash
      ssh -X -p 2222 vagrant@localhost
    ```
 
-3. Change directory to the shared folder sf_NGN_Project. Under default settings run:
+   > NOTE: password: vagrant
+
+3. **Change directory** to the shared folder sf_NGN_Project. Under default settings run:
    
    ```bash
      cd /media/sf_NGN_Project
    ```
 
-    3.1. If some permission issues arise, then use the superuser command:
-
-    ```bash
-      sudo su
-    ```
-
-      and then repeat the previous command.
-
-4. Run the ngn_gui.py program
+4. **Run the ngn_gui.py** program, it open the GUI and start controller and mininet:
 
     ```bash    
-      python3.7 ngn_gui.py #  open the GUI and start controller and mininet
+      python3.7 ngn_gui.py
+    ```
+5. Now you **should see some error** like: `ModuleNotFoundError: No module named 'customtkinter'` 
+   
+6. To **install required libraries** you must run the following scripts:
+
+    ```bash
+    python3.7 -m pip install <library_name>
+    ```
+    > NOTE: you probably only need to install `matplotlib` on python3.6, but it is safer to have it on both python installations, you never know :)
+    
+    ```bash
+    python3.6 -m pip install <library_name>
+    ```
+    E.g.
+
+    ```bash
+    python3.7 -m pip install customtkinter
+    ```
+    > NOTE: you probably only need to install `matplotlib` on python3.6, but it is safer to have it on both python installations, you never know :)
+
+    ```bash
+    python3.6 -m pip install customtkinter
     ```
 
-    The program will open the Graphical User Interface and the RYU controller will be turned-on. You should see the following:
+
+    Now **restart from step 4 until no error occurs**. (You should install only: `customtkinter`, `matplotlib` and `requests`)
+
+7. Now **the program will open the Graphical User Interface and the RYU controller** will be turned-on. 
+   
+   *You should see the following*:
 
     <img src="img/gui.png" alt="Controller" width="500">
     <img src="img/controller.png" alt="Controller" width="400">
 
-5. Use the textboxes to set the number of hosts and switches. Then press the button "CREATE TOPOLOGY" to generete the Mininet. Wait for the topology image to display
+8. Use the textboxes to **set** the ***number of hosts*** and ***switches***. 
+   
+   Then press the button `CREATE topology` to generete the Mininet. 
+   
+   Wait for the topology image to display...
   
     <img src="img/Topology.png" alt="Controller" width="500">
     <img src="img/Mininet.png" alt="Controller" width="500">
 
-6. Use the right-side buttons to turn on the servers. Once you have turned on the servers, use the mininet command line to request a service by running the client.py program on host1 (h1) specifying the server's IP you want to connect to. The ryu controller will automatically instantiate the required flow between the client and the server.
+9.  **Use the right-side buttons** to turn on the servers and instantiate the flows. 
+    
+    Once you have turned on the servers, the result appear on the GUI.
+    
+    <img src="img/data_service.png" alt="Controller" width="500">
+
+10. You can also use the **mininet command line to request a service** by running the client.py program on host1 (h1) specifying the server's IP you want to connect to. 
+    
+    The ryu controller will automatically instantiate the required flow between the client and the server, if no flows added before.
 
     <img src="img/Service_request.png" alt="Controller" width="500">
 
-7. To delete all flows press the REMOVE all flows button. This will automatically update the flow tables and delete previously added entries.
+11.  To delete all flows press the `REMOVE all flows button`. 
+      
+      This will automatically update the flow tables and delete previously added entries.
 
 ## Requirements
 
