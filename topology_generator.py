@@ -228,8 +228,8 @@ def assign_services():
                     print(f"\n(To request again the service: h1 python3 client.py {host_server1.IP()})\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  #start the server
                     time.sleep(3)
-                    result = host_client.cmd("python3 client.py " + str(host_server1.IP()))
-                    print(result)
+                    # result = host_client.cmd("python3 client.py " + str(host_server1.IP()))
+                    # print(result)
                     print("press Enter to continue...")
                     service_started1 = True
                 elif stato == "off" and service_started1:
@@ -249,8 +249,8 @@ def assign_services():
                     print(f"\n(To request again the service: h1 python3 client.py {host_server2.IP()})\n")
                     host_server2.cmd('python3 ./Servers/server2.py &')  #start the server
                     time.sleep(3)
-                    result = host_client.cmd("python3 client.py " + str(host_server2.IP()))
-                    print(result)
+                    # result = host_client.cmd("python3 client.py " + str(host_server2.IP()))
+                    # print(result)
                     print("press Enter to continue...")
                     service_started2 = True
                 elif stato == "off" and service_started2:
@@ -271,8 +271,8 @@ def assign_services():
                     print(f"\n(To request again the service: h1 python3 client.py {host_server3.IP()})\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  #start the server
                     time.sleep(3)
-                    result = host_client.cmd("python3 client.py " + str(host_server3.IP()))
-                    print(result)
+                    # result = host_client.cmd("python3 client.py " + str(host_server3.IP()))
+                    # print(result)
                     print("press Enter to continue...")
                     service_started3 = True
                 elif stato == "off" and service_started3:
@@ -293,8 +293,8 @@ def assign_services():
                     print(f"\n(To request again the service: h1 python3 client.py {host_server4.IP()})\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # english: start the server
                     time.sleep(3)
-                    result = host_client.cmd("python3 client.py " + str(host_server4.IP()))
-                    print(result)
+                    # result = host_client.cmd("python3 client.py " + str(host_server4.IP()))
+                    # print(result)
                     print("press Enter to continue...")
                     service_started4 = True
                 elif stato == "off" and service_started4:
@@ -319,6 +319,7 @@ def run_minimal_network():
     # Start the network
     net.start()
     net.staticArp()
+    wait_for_stp_convergence()
 
     # Start monitoring the file in a separate thread
     monitor_thread = threading.Thread(target=assign_services)
