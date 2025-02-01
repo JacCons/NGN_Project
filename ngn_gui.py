@@ -280,6 +280,8 @@ class App(customtkinter.CTk):
             self.statusbox.configure(state="normal")
             self.statusbox.insert("end", f"\nNumber of hosts: {numhost}\nNumber of switches: {numswitch}\n\n")
             myClass.start_mininet()
+
+            self.create_button.configure(state = "disabled")
         except ValueError:
             self.statusbox.configure(state="normal")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
