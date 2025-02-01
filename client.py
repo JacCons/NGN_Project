@@ -14,5 +14,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
     data = client_socket.recv(1024) # Receive up to 1024 bytes
     message = data.decode()
     print(message)
-    with open("log.txt", "a") as log_file:
+    with open("./Tools/log.txt", "a") as log_file:
         log_file.write(message + "\n")

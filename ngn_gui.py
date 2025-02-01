@@ -138,10 +138,10 @@ class App(customtkinter.CTk):
         self.service3_button.configure(state = "disabled")
         self.remove_all_flows.configure(state = "disabled")
 
-        with open("log.txt", "w"):
+        with open("./Tools/log.txt", "w"):
             pass
 
-        self.log_filename = "log.txt"
+        self.log_filename = "./Tools/log.txt"
         self.last_position = 0
 
         self.update_log()
@@ -265,7 +265,7 @@ class App(customtkinter.CTk):
 
             numswitch = int(self.entrynumswitch.get())
 
-            with open("topology_parameters.txt", "w") as f: # Write the number of hosts and switches in a file
+            with open("./Tools/topology_parameters.txt", "w") as f: # Write the number of hosts and switches in a file
                 f.write(str(numhost))
                 f.write("\n")
                 f.write(str(numswitch))
@@ -276,7 +276,7 @@ class App(customtkinter.CTk):
             self.service3_button.configure(state = "normal")
             self.remove_all_flows.configure(state = "normal")
 
-            print("topology_parameters.txt created...")
+            print("./Tools/topology_parameters.txt created...")
             self.statusbox.configure(state="normal")
             self.statusbox.insert("end", f"\nNumber of hosts: {numhost}\nNumber of switches: {numswitch}\n\n")
             myClass.start_mininet()

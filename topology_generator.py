@@ -38,7 +38,7 @@ class MyTopo (Topo):
         
         # Read the number of hosts and switches from the file
         try:
-            with open("topology_parameters.txt", "r") as f:
+            with open("./Tools/topology_parameters.txt", "r") as f:
                 valori = f.readlines()
                 n_host = int(valori[0].strip())
                 n_switch = int(valori[1].strip())

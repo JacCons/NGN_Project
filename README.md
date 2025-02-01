@@ -44,7 +44,7 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
 ## FILES WITH DESCRIPTION
 1. **ngn_gui.py**: graphical user interface
 2. **topology_generator.py**: generates the topology and assign services to servers
-3. **topology_parameters.txt**: contains user-input parameters to create the topology
+3. **./Tools/topology_parameters.txt**: contains user-input parameters to create the topology
 4. **simple_switch_stp_13.py**: contains the ryu controller configuration
 5. **openShellWithPy.py**: executes shell scripts on external consoles
 6. **Servers folder**: contains configuration files for servers and server's status files, that tell if they are on/off
