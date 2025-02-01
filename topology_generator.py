@@ -7,7 +7,6 @@ from mininet.cli import CLI
 from mininet.node import OVSSwitch, RemoteController
 import time
 import threading
-import sys
 
 
 Directories = {
@@ -33,28 +32,6 @@ G = nx.Graph()
 
 # Set the default client IP address
 default_client = '10.0.0.1'
-
-# To capture the output into "mininet.log"
-class DualOutput:
-    def __init__(self, log_filename):
-        self.terminal = sys.__stdout__
-        self.log = open(log_filename, "w", buffering=1)
-
-    def write(self, text):
-        self.terminal.write(text)
-        self.terminal.flush()
-
-        if "mininet>" not in text:
-            if "press Enter to continue..." not in text:
-                self.log.write(text)
-                self.log.flush()
-
-    def flush(self):
-        self.terminal.flush()
-        self.log.flush()
-
-sys.stdout = DualOutput("mininet.log")
-sys.stderr = sys.stdout
 
 class MyTopo (Topo):    
     def build(self):

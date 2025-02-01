@@ -138,10 +138,10 @@ class App(customtkinter.CTk):
         self.service3_button.configure(state = "disabled")
         self.remove_all_flows.configure(state = "disabled")
 
-        with open("mininet.log", "w"):
+        with open("log.txt", "w"):
             pass
 
-        self.log_filename = "mininet.log"
+        self.log_filename = "log.txt"
         self.last_position = 0
 
         self.update_log()
@@ -163,7 +163,6 @@ class App(customtkinter.CTk):
     def event_services(self, button, string):
         button_name = button.cget("text")
         self.statusbox.configure(state="normal")
-        self.statusbox.insert("end", f"{string} {button_name}")
 
         if button_name == service_date: # Selected service: Date
             try:
@@ -172,6 +171,7 @@ class App(customtkinter.CTk):
                         with open(Directories["serv1"], "w") as fi:                            
                             fi.write("off")
                             self.service1_button.configure(text=service_date, fg_color="#c74c3c")
+                            self.statusbox.insert("end", f"\nService stopped: {button_name}\n")
                         with open(Directories["serv4"], "w") as fii:   
                             fii.write("off")           
                             self.service4_button.configure(state = "disabled")
@@ -181,6 +181,7 @@ class App(customtkinter.CTk):
                             fi.write("on")
                             self.service1_button.configure(fg_color="#3f964b")
                             self.service4_button.configure(state = "normal")
+                            self.statusbox.insert("end", f"\n{string} {button_name}\n")
             except:
                 print("Error")
         if button_name == lucky_number: # Selected service: Lucky Number
@@ -190,10 +191,12 @@ class App(customtkinter.CTk):
                         with open(Directories["serv2"], "w") as fi:
                             fi.write("off")
                             self.service2_button.configure(fg_color="#c74c3c")
+                            self.statusbox.insert("end", f"\nService stopped: {button_name}\n")
                     else:
                         with open(Directories["serv2"], "w") as fi:
                             fi.write("on")
                             self.service2_button.configure(fg_color="#3f964b")
+                            self.statusbox.insert("end", f"\n{string} {button_name}\n")
             except:
                 print("Error")
         if button_name ==  daily_quote: # Selected service: Daily Quote
@@ -204,10 +207,12 @@ class App(customtkinter.CTk):
                         with open(Directories["serv3"], "w") as fi:
                             fi.write("off")
                             self.service3_button.configure(fg_color="#c74c3c")
+                            self.statusbox.insert("end", f"\nService stopped: {button_name}\n")
                     else:
                         with open(Directories["serv3"], "w") as fi:
                             fi.write("on")
                             self.service3_button.configure(fg_color="#3f964b")
+                            self.statusbox.insert("end", f"\n{string} {button_name}\n")
             except:
                 print("Error")   
         if button_name ==  two_steps_service: # Selected service: 2 Steps Service -> Date and Time
@@ -223,11 +228,13 @@ class App(customtkinter.CTk):
                                 a.write("off")
                                 self.service4_button.configure(fg_color="#c74c3c")
                                 self.service1_button.configure(text=service_date)
+                                self.statusbox.insert("end", f"\nService stopped: {button_name}\n")
                         elif var == "off":
                             with open(Directories["serv4"], "w") as b:
                                 b.write("on")
                                 self.service4_button.configure(fg_color="#3f964b")
                                 self.service1_button.configure(text=service_date_time)
+                                self.statusbox.insert("end", f"\n{string} {button_name}\n")
                 else:                    
                     with open(Directories["serv4"], "w") as fi: 
                         fi.write("off")    
@@ -238,6 +245,9 @@ class App(customtkinter.CTk):
                 print("Error")
         if button_name == "REMOVE all flows": # Selected button: Remove all flows
             self.delete_all_flows()
+            self.statusbox.insert("end", f"\n{string} {button_name}\n")
+        self.statusbox.configure(state="disable")
+        self.statusbox.see("end")
              
 
     # Function to create the network topology, the file "topology_generator.py" is executed
@@ -274,6 +284,9 @@ class App(customtkinter.CTk):
             self.statusbox.configure(state="normal")
             self.statusbox.insert("end", f"Error: Insert number of hosts and number of switches\n")
             pass
+
+        self.statusbox.configure(state="disable")
+        self.statusbox.see("end")
         
         time.sleep(7)
 
