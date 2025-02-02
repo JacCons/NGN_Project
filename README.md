@@ -48,6 +48,7 @@ This is the [PDF Presentation](./NGN_project.pdf) of the project.
   ```bash
     groups vagrant
   ``` 
+  Restart the Virtual Machine to save modifications.
 
 - <u>***For Mac users***</u>: install [XQuartz](https://www.xquartz.org/)
 - <u>***For Windows users***</u>: install [MobaXterm](https://mobaxterm.mobatek.net/download.html)
