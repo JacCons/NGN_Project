@@ -182,6 +182,7 @@ class App(customtkinter.CTk):
                             self.service1_button.configure(fg_color="#3f964b")
                             self.service4_button.configure(state = "normal")
                             self.statusbox.insert("end", f"\n{string} {button_name}\n")
+                            self.statusbox.insert("end", "To get the service follow the instructions on Mininet's CLI\n")
             except:
                 print("Error")
         if button_name == lucky_number: # Selected service: Lucky Number
@@ -197,6 +198,7 @@ class App(customtkinter.CTk):
                             fi.write("on")
                             self.service2_button.configure(fg_color="#3f964b")
                             self.statusbox.insert("end", f"\n{string} {button_name}\n")
+                            self.statusbox.insert("end", "To get the service follow the instructions on Mininet's CLI\n")
             except:
                 print("Error")
         if button_name ==  daily_quote: # Selected service: Daily Quote
@@ -213,6 +215,7 @@ class App(customtkinter.CTk):
                             fi.write("on")
                             self.service3_button.configure(fg_color="#3f964b")
                             self.statusbox.insert("end", f"\n{string} {button_name}\n")
+                            self.statusbox.insert("end", "To get the service follow the instructions on Mininet's CLI\n")
             except:
                 print("Error")   
         if button_name ==  two_steps_service: # Selected service: 2 Steps Service -> Date and Time
@@ -235,6 +238,7 @@ class App(customtkinter.CTk):
                                 self.service4_button.configure(fg_color="#3f964b")
                                 self.service1_button.configure(text=service_date_time)
                                 self.statusbox.insert("end", f"\n{string} {button_name}\n")
+                                self.statusbox.insert("end", "To get the service follow the instructions on Mininet's CLI\n")
                 else:                    
                     with open(Directories["serv4"], "w") as fi: 
                         fi.write("off")    

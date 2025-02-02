@@ -225,7 +225,7 @@ def assign_services():
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started1 :
                     print(f"\nStarting Server 1 IP: {host_server1.IP()} on host {host_server1} IP: {host_server1.IP()}...")
-                    print(f"\n(To request again the service: h1 python3 client.py {host_server1.IP()})\n")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server1.IP()}\n")
                     host_server1.cmd('python3 ./Servers/server1.py &')  #start the server
                     time.sleep(3)
                     # result = host_client.cmd("python3 client.py " + str(host_server1.IP()))
@@ -246,7 +246,7 @@ def assign_services():
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started2 :
                     print(f"\nStarting Server 2 IP: {host_server2.IP()} on host {host_server2} IP: {host_server2.IP()}...")
-                    print(f"\n(To request again the service: h1 python3 client.py {host_server2.IP()})\n")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server2.IP()}\n")
                     host_server2.cmd('python3 ./Servers/server2.py &')  #start the server
                     time.sleep(3)
                     # result = host_client.cmd("python3 client.py " + str(host_server2.IP()))
@@ -268,7 +268,7 @@ def assign_services():
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started3 :
                     print(f"\nStarting Server 3 IP: {host_server3.IP()} on host {host_server3} IP: {host_server3.IP()}...")
-                    print(f"\n(To request again the service: h1 python3 client.py {host_server3.IP()})\n")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server3.IP()}\n")
                     host_server3.cmd('python3 ./Servers/server3.py &')  #start the server
                     time.sleep(3)
                     # result = host_client.cmd("python3 client.py " + str(host_server3.IP()))
@@ -290,7 +290,7 @@ def assign_services():
                 stato = file.read().strip()   #read the file
                 if stato == "on" and not service_started4 :
                     print(f"\nStarting Server 4 IP: {host_server4.IP()} on host {host_server4} IP: {host_server4.IP()}...")
-                    print(f"\n(To request again the service: h1 python3 client.py {host_server4.IP()})\n")
+                    print(f"\nTo get the service: h1 python3 client.py {host_server4.IP()}\n")
                     host_server4.cmd('python3 ./Servers/server4.py &')  # english: start the server
                     time.sleep(3)
                     # result = host_client.cmd("python3 client.py " + str(host_server4.IP()))
