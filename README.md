@@ -2,9 +2,22 @@
 
 > NOTE: to visualize this file on VSCode press `Ctrl+Shift+V` or `Cmd+Shift+V` on Mac
 
+- [Next Generation Networks Project - Automatic deployment of "containers" - Berardo C., Castagnaro T., Consolaro J.](#next-generation-networks-project---automatic-deployment-of-containers---berardo-c-castagnaro-t-consolaro-j)
+  - [INTRODUCTION](#introduction)
+    - [Presentation](#presentation)
+  - [KEY FEATURES](#key-features)
+  - [PREREQUISITES](#prerequisites)
+  - [FILES WITH DESCRIPTION](#files-with-description)
+  - [HOW TO RUN THE APPLICATION](#how-to-run-the-application)
+  - [REQUIREMENTS](#requirements)
+
 ## INTRODUCTION
 
 This project integrates Software-Defined Networking (SDN) with Mininet to dynamically deploy and manage services composed of interconnected applications. A Python-based GUI simplifies interaction and management.
+
+### Presentation
+
+This is the [PDF Presentation](./NGN_project.pdf) of the project.
 
 ## KEY FEATURES
 
@@ -134,7 +147,7 @@ This project integrates Software-Defined Networking (SDN) with Mininet to dynami
       
       This will automatically update the flow tables and delete previously added entries.
 
-## Requirements
+## REQUIREMENTS
 
 - [x] Creare una repository su GitHub
 - [x] Create an SDN network in mininet with multiple switches
